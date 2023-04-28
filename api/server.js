@@ -1,11 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cookieSession from 'cookie-session';
-import { DataSource } from 'typeorm';
+import { DataSource } from 'typeorm'; 
 import passport from 'passport';
 import config from './config/passport';
 
 import login from './routes/login';
+import signup from './routes/signup'  // Import the file
 
 const dbConfig = require('./ormconfig.json');
 
@@ -29,6 +30,7 @@ config(AppDataSource);
 
 // wire up all the routes
 app.use(login(passport));
+app.use(signup(AppDataSource));
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', (_req, res) => {
