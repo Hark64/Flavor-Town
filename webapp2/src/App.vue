@@ -6,8 +6,10 @@
   
   const store = useUserStore();
   
-  const state = reactive({
+  const state = reactive({    // Kind of like a class- info we want to keep around.
     dialog: false,
+    firstName: '',
+    lastName: '',
     email: '',
     password: ''
   });
@@ -20,6 +22,17 @@
       }
     });
   }
+
+  function signup() {
+    const { firstName, lastName, email, password } = state;
+    store.signup({firstName, lastName, email, password}).then((error) => {
+      if (!error) {
+        state.dialog = false;
+      }
+    });
+    console.log('Signed up!')
+  }
+
 </script>
 
 <template>
@@ -32,6 +45,7 @@
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
+
         <v-btn>Login
           <v-dialog
             v-model="state.dialog"
@@ -65,6 +79,52 @@
             </v-card>
           </v-dialog>
         </v-btn>
+
+        <v-btn>Signup
+          <v-dialog
+            v-model="state.dialog"
+            activator="parent"
+            width="400">
+            <v-card>
+              <v-card-text>
+                <v-alert
+                  density="compact"
+                  type="warning"
+                  icon="$warning"
+                  title="There was an issue logging in."
+                  v-if="store.hasError"
+                >{{ store.error }}</v-alert>
+                <v-form class="mt-2">
+                  <v-text-field
+                    label="First Name"
+                    type="firstName"
+                    v-model="state.firstName"
+                  ></v-text-field>
+                  <v-text-field
+                    label="Last Name"
+                    type="lastName"
+                    v-model="state.lastName"
+                  ></v-text-field>
+                  <v-text-field
+                    label="Email address"
+                    type="email"
+                    v-model="state.email"
+                  ></v-text-field>
+                  <v-text-field
+                    label="Password"
+                    type="password"
+                    v-model="state.password">
+                  </v-text-field>
+                </v-form>
+              </v-card-text>
+              <v-card-actions class="d-flex flex-row-reverse ma-2">
+                <v-btn color="primary" @click="signup">Signup</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-btn>
+
+
       </nav>
     </div>
   </header>

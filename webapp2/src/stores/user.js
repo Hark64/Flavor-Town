@@ -20,6 +20,19 @@ export const useUserStore = defineStore('user', () => {
         });
     }
     
+    function signup({ firstName, lastName, email, password }) {
+        return axios.post("/api/signup", { firstName, lastName, password, email }).then(
+        (response) => {
+            console.log(response);
+            loggedIn = true;
+        }, (response) => {
+            hasError.value = true;
+            error.value = response.response.data.msg;
+            return hasError;
+        });
+    }
+
+
     function logout() {
         return axios.get("/api/logout").then(() => {
             loggedIn = false;
