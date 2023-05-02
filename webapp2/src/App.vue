@@ -20,6 +20,7 @@
       }
     });
   }
+
 </script>
 
 <template>
@@ -61,6 +62,7 @@
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
                 <v-btn color="primary" @click="login">Login</v-btn>
+
               </v-card-actions>
             </v-card>
           </v-dialog>

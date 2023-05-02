@@ -10,4 +10,10 @@ export default class User {
 
   @Column({ type: 'varchar', nullable: false })
   password
+
+  @Column({ type: 'varchar', nullable: false })
+  firstName
+
+  @Column({ type: 'varchar', nullable: false })
+  lastName
 }

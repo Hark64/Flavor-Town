@@ -12,7 +12,7 @@ export const useUserStore = defineStore('user', () => {
         return axios.post("/api/login", { email, password }).then(
         (response) => {
             console.log(response);
-            loggedIn = true;
+            loggedIn.value = true;
         }, (response) => {
             hasError.value = true;
             error.value = response.response.data.msg;
@@ -23,6 +23,14 @@ export const useUserStore = defineStore('user', () => {
     function logout() {
         return axios.get("/api/logout").then(() => {
             loggedIn = false;
+        });
+    }
+
+    function ping() {
+        return axios.get("/api/ping").then(() => {
+            loggedIn.value = true;
+        }, () => {
+            loggedIn.value = false;
         });
     }
 
