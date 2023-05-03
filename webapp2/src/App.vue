@@ -8,6 +8,9 @@
   
   const state = reactive({    // Kind of like a class- info we want to keep around.
     dialog: false,
+    signupDialog: false,
+    error: '',
+    hasError: false,
     firstName: '',
     lastName: '',
     email: '',
@@ -27,7 +30,8 @@
     const { firstName, lastName, email, password } = state;
     store.signup({firstName, lastName, email, password}).then((error) => {
       if (!error) {
-        state.dialog = false;
+        state.signupDialog = false;
+        console.log('Signed up!2')
       }
     });
     console.log('Signed up!')
@@ -82,7 +86,7 @@
 
         <v-btn>Signup
           <v-dialog
-            v-model="state.dialog"
+            v-model="state.signupDialog"
             activator="parent"
             width="400">
             <v-card>
@@ -91,7 +95,7 @@
                   density="compact"
                   type="warning"
                   icon="$warning"
-                  title="There was an issue logging in."
+                  title="There was an issue signing up."
                   v-if="store.hasError"
                 >{{ store.error }}</v-alert>
                 <v-form class="mt-2">
@@ -118,7 +122,7 @@
                 </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
-                <v-btn color="primary" @click="signup">Signup</v-btn>
+                <v-btn color="primary" @click="signup">yoyo</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
