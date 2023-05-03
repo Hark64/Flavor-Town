@@ -20,6 +20,18 @@ export const useUserStore = defineStore('user', () => {
             return hasError;
         });
     }
+
+    function signup({firstName, lastName, email, password}) {
+        return axios.post("/api/signup", {firstName, lastName, email, password}).then(
+        (response) => {
+            console.log(response);
+            loggedIn.value = true;
+        }, (response) => {
+            hasError.value = true;
+            error.value = response.response.data.msg;
+            return hasError;
+        });
+    }
     
     function logout() {
         return axios.get("/api/logout").then(() => {
@@ -36,6 +48,6 @@ export const useUserStore = defineStore('user', () => {
     }
 
 
-    return { loggedIn, error, hasError, login, logout, ping };
+    return { loggedIn, error, hasError, login, signup, logout, ping };
 
 });

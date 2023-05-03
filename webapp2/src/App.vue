@@ -2,6 +2,7 @@
   import { RouterLink, RouterView } from 'vue-router'
   import { reactive, onMounted } from 'vue';
   import HelloWorld from './components/HelloWorld.vue'
+  import Signup from './components/Signup.vue'
   import { useUserStore } from '@/stores/user';
   
   const store = useUserStore();
@@ -9,8 +10,15 @@
   const state = reactive({
     dialog: false,
     email: '',
-    password: ''
+    password: '', 
+    firstName: '',
+    lastName: '',
+    showLogin: true
   });
+
+  function toggleSignup() {
+    state.showLogin = !state.showLogin;
+  }
   
   function login() {
     const { email, password } = state;
@@ -19,6 +27,16 @@
         state.dialog = false;
       }
     });
+  }
+
+  function signup() {
+    const {firstName, lastName, email, password } = state;
+    store.signup({firstName, lastName, email, password}).then((error) => {
+      if (!error) {
+        state.dialog = false;
+      }
+    });
+    console.log('Signed up');
   }
 
   onMounted(() => {
@@ -51,7 +69,7 @@
                   title="There was an issue logging in."
                   v-if="store.hasError"
                 >{{ store.error }}</v-alert>
-                <v-form class="mt-2">
+                <v-form class="mt-2" v-if="state.showLogin">
                   <v-text-field
                     label="Email address"
                     type="email"
@@ -63,10 +81,33 @@
                     v-model="state.password">
                   </v-text-field>
                 </v-form>
+                <v-form v-if="!state.showLogin">
+                  <v-text-field
+                    label="First Name"
+                    type="firstName"
+                    v-model="state.firstName"
+                  ></v-text-field>
+                  <v-text-field
+                    label="Last Name"
+                    type="lastName"
+                    v-model="state.lastName"
+                  ></v-text-field>
+                  <v-text-field
+                    label="Email address"
+                    type="email"
+                    v-model="state.email"
+                  ></v-text-field>
+                  <v-text-field
+                    label="Password"
+                    type="password"
+                    v-model="state.password"
+                  ></v-text-field>
+                </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
-                <v-btn color="primary" @click="login">Login</v-btn>
-
+                <v-btn v-if="state.showLogin" color="primary" @click="login">Login</v-btn>
+                <v-btn v-if="state.showLogin" color="primary" @click="toggleSignup">Signup</v-btn>
+                <v-btn v-if="!state.showLogin" color="primary" @click="signup">Signup</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
