@@ -7,16 +7,18 @@ export default (DataSource) => {
     const todoResource = DataSource.getRepository(ToDo);
 
     //make all requests for this to be authenticate
-    router.use(isAuthenticated);
+    router.use('/todos', isAuthenticated);
 
     router.get('/todos', (request, response) => {
-        todoResource.find({where: {
-            user: request.user
-        }}).then(
+        todoResource.find({
+            where: {
+                user: request.user
+            }
+        }).then(
             (todos) => {
-                response.send({todos})
-            }, 
-            () => response.send({todos: []})
+                response.send({ todos })
+            },
+            () => response.send({ todos: [] })
         );
     })
 

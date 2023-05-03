@@ -8,6 +8,7 @@ import config from './config/passport';
 
 import login from './routes/login';
 import todos from './routes/todos';
+import signup from './routes/signup';
 
 const dbConfig = require('./ormconfig.json');
 
@@ -32,6 +33,7 @@ config(AppDataSource);
 // wire up all the routes
 app.use(login(passport));
 app.use(todos(AppDataSource));
+app.use(signup(AppDataSource));
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', (_req, res) => {

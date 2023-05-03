@@ -12,6 +12,12 @@ export class User {
     @Column({ type: 'varchar', nullable: false })
     password
 
-    @OneToMany(() => ToDo, (todo) => todo.user) 
+    @Column({ type: 'varchar', nullable: false })
+    firstName
+
+    @Column({ type: 'varchar', nullable: false })
+    lastName
+
+    @OneToMany(() => ToDo, (todo) => todo.user)
     todos
 }
