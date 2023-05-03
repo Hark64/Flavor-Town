@@ -26,6 +26,7 @@
     store.login({email, password}).then((error) => {
       if (!error) {
         state.dialog = false;
+        state.loggedIn = !state.loggedIn;
       }
     });
   }
