@@ -1,6 +1,6 @@
 <script setup>
   import { RouterLink, RouterView } from 'vue-router'
-  import { reactive } from 'vue';
+  import { reactive, onMounted } from 'vue';
   import HelloWorld from './components/HelloWorld.vue'
   import { useUserStore } from '@/stores/user';
   
@@ -21,6 +21,9 @@
     });
   }
 
+  onMounted(() => {
+    store.ping();
+  });
 </script>
 
 <template>
@@ -33,6 +36,7 @@
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/todos" v-if="store.loggedIn">Todos</RouterLink>
         <v-btn>Login
           <v-dialog
             v-model="state.dialog"
