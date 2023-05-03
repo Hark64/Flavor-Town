@@ -13,7 +13,8 @@
     password: '', 
     firstName: '',
     lastName: '',
-    showLogin: true
+    showLogin: true,
+    loggedIn: false
   });
 
   function toggleSignup() {
@@ -34,9 +35,9 @@
     store.signup({firstName, lastName, email, password}).then((error) => {
       if (!error) {
         state.dialog = false;
+        state.loggedIn = !state.loggedIn;
       }
     });
-    console.log('Signed up');
   }
 
   onMounted(() => {
@@ -55,7 +56,7 @@
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
         <RouterLink to="/todos" v-if="store.loggedIn">Todos</RouterLink>
-        <v-btn>Login
+        <v-btn v-if="!state.loggedIn">Login
           <v-dialog
             v-model="state.dialog"
             activator="parent"
@@ -107,10 +108,12 @@
               <v-card-actions class="d-flex flex-row-reverse ma-2">
                 <v-btn v-if="state.showLogin" color="primary" @click="login">Login</v-btn>
                 <v-btn v-if="state.showLogin" color="primary" @click="toggleSignup">Signup</v-btn>
-                <v-btn v-if="!state.showLogin" color="primary" @click="signup">Signup</v-btn>
+                <v-btn v-if="!state.showLogin" color="primary" @click="signup">Finish Signup</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
+        </v-btn>
+        <v-btn v-if="state.loggedIn">Logged In
         </v-btn>
       </nav>
     </div>

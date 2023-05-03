@@ -7,7 +7,6 @@ import passport from 'passport';
 import config from './config/passport';
 
 import login from './routes/login';
-import signup from './routes/signup';
 import todos from './routes/todos';
 import signup from './routes/signup';
 
@@ -33,7 +32,6 @@ config(AppDataSource);
 
 // wire up all the routes
 app.use(login(passport));
-app.use(signup(AppDataSource));
 app.use(todos(AppDataSource));
 app.use(signup(AppDataSource));
 
