@@ -7,12 +7,15 @@ export const useUserStore = defineStore('user', () => {
     const loggedIn = ref(false);
     const hasError = ref(false);
     const error = ref("");
-    
+
+    const signedUp = ref(false);
+
     function login({ email, password }) {
+        console.log("login")
         return axios.post("/api/login", { email, password }).then(
         (response) => {
             console.log(response);
-            loggedIn = true;
+            loggedIn.value = true;
         }, (response) => {
             hasError.value = true;
             error.value = response.response.data.msg;
@@ -21,10 +24,12 @@ export const useUserStore = defineStore('user', () => {
     }
     
     function signup({ firstName, lastName, email, password }) {
+        console.log(firstName, lastName, password, email)
         return axios.post("/api/signup", { firstName, lastName, password, email }).then(
         (response) => {
             console.log(response);
-            loggedIn = true;
+            signedUp.value = true;
+            return login({email, password});    // Promise chaining. Now front end can work on success of login. 
         }, (response) => {
             hasError.value = true;
             error.value = response.response.data.msg;
@@ -39,6 +44,7 @@ export const useUserStore = defineStore('user', () => {
         });
     }
 
-    return { loggedIn, error, hasError, login, logout };
+    return { loggedIn, error, hasError, login, logout, signup };
+    
 
 });

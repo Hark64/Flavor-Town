@@ -3,7 +3,7 @@ import PassportLocal from 'passport-local';
 import passport from 'passport';
 import { DataSource } from 'typeorm';
 
-import User from '../entities/user';
+import {User} from '../entities/user';
 
 const init = (DataSource) => {
   // Telling passport we want to use a Local Strategy. In other words,
@@ -37,7 +37,7 @@ const init = (DataSource) => {
     done(null, user.id);
   });
   //
-  passport.deserializeUser((id, done) => getRepository(User).findOneOrFail(id).then(
+  passport.deserializeUser((id, done) => DataSource.getRepository(User).findOneOrFail({where: {id}}).then(
     (foundUser) => {
       done(null, foundUser);
     },

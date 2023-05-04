@@ -27,14 +27,13 @@
   }
 
   function signup() {
+    console.log("sign up")
     const { firstName, lastName, email, password } = state;
     store.signup({firstName, lastName, email, password}).then((error) => {
       if (!error) {
         state.signupDialog = false;
-        console.log('Signed up!2')
       }
     });
-    console.log('Signed up!')
   }
 
 </script>
