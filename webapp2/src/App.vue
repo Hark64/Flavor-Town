@@ -1,7 +1,8 @@
 <script setup>
   import { RouterLink, RouterView } from 'vue-router'
-  import { reactive } from 'vue';
+  import { reactive, onMounted } from 'vue';
   import HelloWorld from './components/HelloWorld.vue'
+  import Signup from './components/Signup.vue'
   import { useUserStore } from '@/stores/user';
   
   const store = useUserStore();
@@ -9,17 +10,40 @@
   const state = reactive({
     dialog: false,
     email: '',
-    password: ''
+    password: '', 
+    firstName: '',
+    lastName: '',
+    showLogin: true,
+    loggedIn: false
   });
+
+  function toggleSignup() {
+    state.showLogin = !state.showLogin;
+  }
   
   function login() {
     const { email, password } = state;
     store.login({email, password}).then((error) => {
       if (!error) {
         state.dialog = false;
+        state.loggedIn = !state.loggedIn;
       }
     });
   }
+
+  function signup() {
+    const {firstName, lastName, email, password } = state;
+    store.signup({firstName, lastName, email, password}).then((error) => {
+      if (!error) {
+        state.dialog = false;
+        state.loggedIn = !state.loggedIn;
+      }
+    });
+  }
+
+  onMounted(() => {
+    store.ping();
+  });
 </script>
 
 <template>
@@ -32,7 +56,8 @@
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
-        <v-btn>Login
+        <RouterLink to="/todos" v-if="store.loggedIn">Todos</RouterLink>
+        <v-btn v-if="!state.loggedIn">Login
           <v-dialog
             v-model="state.dialog"
             activator="parent"
@@ -46,7 +71,7 @@
                   title="There was an issue logging in."
                   v-if="store.hasError"
                 >{{ store.error }}</v-alert>
-                <v-form class="mt-2">
+                <v-form class="mt-2" v-if="state.showLogin">
                   <v-text-field
                     label="Email address"
                     type="email"
@@ -58,12 +83,38 @@
                     v-model="state.password">
                   </v-text-field>
                 </v-form>
+                <v-form v-if="!state.showLogin">
+                  <v-text-field
+                    label="First Name"
+                    type="firstName"
+                    v-model="state.firstName"
+                  ></v-text-field>
+                  <v-text-field
+                    label="Last Name"
+                    type="lastName"
+                    v-model="state.lastName"
+                  ></v-text-field>
+                  <v-text-field
+                    label="Email address"
+                    type="email"
+                    v-model="state.email"
+                  ></v-text-field>
+                  <v-text-field
+                    label="Password"
+                    type="password"
+                    v-model="state.password"
+                  ></v-text-field>
+                </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
-                <v-btn color="primary" @click="login">Login</v-btn>
+                <v-btn v-if="state.showLogin" color="primary" @click="login">Login</v-btn>
+                <v-btn v-if="state.showLogin" color="primary" @click="toggleSignup">Signup</v-btn>
+                <v-btn v-if="!state.showLogin" color="primary" @click="signup">Finish Signup</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
+        </v-btn>
+        <v-btn v-if="state.loggedIn">Logged In
         </v-btn>
       </nav>
     </div>
