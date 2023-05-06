@@ -1,9 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import cookieSession from 'cookie-session';
 import { DataSource } from 'typeorm'; 
 import passport from 'passport';
 import config from './config/passport';
+import session from 'express-session';
 
 import login from './routes/login';
 import signup from './routes/signup'  // Import the file
@@ -16,13 +16,14 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false })); // For body parser
 app.use(bodyParser.json());
-app.use(cookieSession({
-  name: 'mysession',
-  keys: ['vueauthrandomkey'],
-  maxAge: 24 * 60 * 60 * 1000, // 24 hours
+app.use(session({
+  secret: 'mysession',
+  resave: false,
+  saveUninitialized: false,
 }));
-app.use(passport.initialize());
 app.use(passport.session());
+app.use(passport.initialize());
+
 
 const AppDataSource = new DataSource(dbConfig);
 
