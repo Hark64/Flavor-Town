@@ -21,6 +21,11 @@ const router = createRouter({
       path: '/todos',
       name: 'todos',
       component: () => import('../views/ToDosView.vue')
+    },
+    {
+      path: '/postrecipes',
+      name: 'postrecipes',
+      component: () => import('../views/PostRecipeView.vue')
     }
   ]
 })

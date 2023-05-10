@@ -41,6 +41,7 @@
     });
   }
 
+
   onMounted(() => {
     store.ping();
   });
@@ -57,9 +58,11 @@
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
         <RouterLink to="/todos" v-if="store.loggedIn">Todos</RouterLink>
+        <RouterLink to="/postrecipes">Recipes</RouterLink>
+  
         <v-btn v-if="!state.loggedIn">Login
           <v-dialog
-            v-model="state.dialog"
+            v-model="state.dialog2"
             activator="parent"
             width="400">
             <v-card>
