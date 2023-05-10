@@ -18,6 +18,7 @@ export default (DataSource) => {    // DataSource connected to database's user i
         userRepo.save(newUser).then(() =>{  // Asynchronous. On success, send back response. Important in web front because web timeout. 
             response.send()
         }, (error) => {response.status(500).send(error)}) // Send error if user is not unique 
+                        // in real world would be better to log this error, not output error to user
     });
     return router;
 }
