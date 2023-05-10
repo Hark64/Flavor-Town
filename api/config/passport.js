@@ -1,3 +1,6 @@
+// This API is written on a node server. The client would not know if we had written it in python, etc.
+// API encapsualtes caller from  implementation. 
+
 // we import passport packages required for authentication
 import PassportLocal from 'passport-local';
 import passport from 'passport';

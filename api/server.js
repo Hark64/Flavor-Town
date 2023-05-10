@@ -10,7 +10,7 @@ import signup from './routes/signup'  // Import the file
 
 const dbConfig = require('./ormconfig.json');
 
-// Setting up port
+// Setting up port 3000 to listen 
 const PORT = process.env.PORT || 3000;
 
 const app = express();
@@ -24,7 +24,7 @@ app.use(session({
 app.use(passport.session());
 app.use(passport.initialize());
 
-
+// configures datasource to be mariadb 
 const AppDataSource = new DataSource(dbConfig);
 
 config(AppDataSource);
