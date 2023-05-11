@@ -4,7 +4,9 @@ import isAuthenticated from '../middleware/isAuthenticated';
 
 export default (DataSource) => {
     const router = Router();
+    const multer = require('multer');
     const recipeResource = DataSource.getRepository(Recipe);
+    const upload = multer({ dest: 'uploads'});
 
     //make all requests for this to be authenticate
     router.use('/recipes', isAuthenticated);
