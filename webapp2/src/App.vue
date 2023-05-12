@@ -58,7 +58,7 @@
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
         <RouterLink to="/todos" v-if="store.loggedIn">Todos</RouterLink>
-        <RouterLink to="/postrecipes">Recipes</RouterLink>
+        <RouterLink to="/postrecipes" v-if="store.loggedIn">Recipes</RouterLink>
   
         <v-btn v-if="!state.loggedIn">Login
           <v-dialog

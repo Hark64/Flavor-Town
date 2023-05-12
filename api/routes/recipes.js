@@ -4,9 +4,9 @@ import isAuthenticated from '../middleware/isAuthenticated';
 
 export default (DataSource) => {
     const router = Router();
-    const multer = require('multer');
+    // const multer = require('multer');
     const recipeResource = DataSource.getRepository(Recipe);
-    const upload = multer({ dest: 'uploads'});
+    // const upload = multer({ dest: 'uploads'});
 
     //make all requests for this to be authenticate
     router.use('/recipes', isAuthenticated);
@@ -22,12 +22,25 @@ export default (DataSource) => {
         );
     })
 
+    // router.post('/recipes', upload.single('uploaded_file'), (request, response) => {
+    //     const { title, description } = request.body;
+    //     const path = request.file;
+    //     const recipe = recipeResource.create({
+    //         title,
+    //         description,
+    //         path, 
+    //         user: request.user
+    //     });
+    //     recipeResource.save(recipe).then((result) => {
+    //         response.send(result);
+    //     });
+    // });
+
     router.post('/recipes', (request, response) => {
-        const { title, description, imageURL } = request.body;
+        const { title, description } = request.body;
         const recipe = recipeResource.create({
             title,
             description,
-            imageURL, 
             user: request.user
         });
         recipeResource.save(recipe).then((result) => {

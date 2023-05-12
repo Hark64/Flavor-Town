@@ -1,25 +1,32 @@
 <script setup>
     import { onMounted, reactive } from 'vue';
+    import { useRecipesStore } from '@/stores/recipes';
+    const recipesStore = useRecipesStore();
 
     const state = reactive({
         newRecipe: {
             title: '',
             description: '',
-            imageURL: '',
-            task: ''
+            done: false
         }
     })
 
-    function handleFileInput(event) {
-        const file = event.target.files[0];
-        this.imageUrl = URL.createObjectURL(file);
+    function postRecipe() {
+        const { title, description } = state;
+        recipesStore.postRecipe({title, description}).then((error) => {
+            if (!error) {
+                done = true;
+            }
+        });
     }
+
+
     
 </script>
 <template>
     <main>
         <h1 class="text-h1">Create Post</h1>
-        <v-card>
+        <v-card v-if="!state.done">
             <v-card-text>
                 <v-form class="mt-2">
                   <v-text-field
@@ -33,10 +40,13 @@
                     v-model="state.description">
                   </v-text-field>
                   <v-card-text>Upload Photo</v-card-text>
-                  <input type="file" @change="handleFileInput"/>
+                  <!-- <form action = "/recipe" method = "post" enctype="multipart/form-data">
+                    <input type="file" name="image">
+                  </form> -->
                 </v-form>
             </v-card-text>
         </v-card>
-        <v-btn>Post Recipe </v-btn>
+        <h1>Done!</h1>
+        <v-btn @click="postRecipe">Post Recipe </v-btn>
     </main>
 </template>
