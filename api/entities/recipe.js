@@ -12,8 +12,8 @@ export class Recipe {
     @Column({type: 'varchar'})
     description
 
-    @Column({type: 'varchar'})
-    imageURL
+    // @Column({type: 'varchar'})
+    // imageURL
 
     @ManyToOne(() => User, (user) => user.todos)
     user

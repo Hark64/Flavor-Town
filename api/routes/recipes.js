@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { Recipe } from '../entities/recipe';
-import isAuthenticated from '../middleware/isAuthenticated';
 
 export default (DataSource) => {
     const router = Router();
@@ -8,8 +7,6 @@ export default (DataSource) => {
     const recipeResource = DataSource.getRepository(Recipe);
     // const upload = multer({ dest: 'uploads'});
 
-    //make all requests for this to be authenticate
-    router.use('/recipes', isAuthenticated);
 
     router.get('/recipes', (request, response) => {
         recipeResource.find({where: {
@@ -20,7 +17,7 @@ export default (DataSource) => {
             }, 
             () => response.send({recipes: []})
         );
-    })
+    });
 
     // router.post('/recipes', upload.single('uploaded_file'), (request, response) => {
     //     const { title, description } = request.body;
@@ -77,4 +74,5 @@ export default (DataSource) => {
             res.send(result);
         });
     });
+    return router;
 }
