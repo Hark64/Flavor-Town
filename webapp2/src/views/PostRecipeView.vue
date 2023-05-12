@@ -46,7 +46,7 @@
                 </v-form>
             </v-card-text>
         </v-card>
-        <h1>Done!</h1>
+        <h1 v-if="state.done">Done!</h1>
         <v-btn @click="postRecipe">Post Recipe </v-btn>
     </main>
 </template>
