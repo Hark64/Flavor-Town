@@ -29,10 +29,10 @@
 }
 
 function signup() {
-  const { firstName, lastName, email, password, zipCode } = state;
-  store.signup({ firstName, lastName, email, password, zipCode }).then((error) => {
+  const { firstName, lastName, email, zipCode, password } = state;
+  store.signup({ firstName, lastName, email, zipCode, password }).then((error) => {
     if (!error) {
-      state.dialog = false;
+      state.signupDialog = false;
       state.loggedIn = !state.loggedIn;
       console.log('Signed in');
     }
@@ -125,7 +125,7 @@ function signup() {
                   <v-text-field
                     label="ZipCode"
                     type="zipcode"
-                    v-model="state.email"
+                    v-model="state.zipCode"
                   ></v-text-field>
                   <v-text-field
                     label="Password"
