@@ -1,10 +1,11 @@
 <script setup>
+import SearchBar from '../components/SearchBar.vue'
 </script>
 
 <template>
   <main>
-    <h1>
-      This is the home page.
-    </h1>
+    <SearchBar />
   </main>
 </template>
+
+
