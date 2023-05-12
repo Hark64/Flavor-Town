@@ -18,6 +18,9 @@ export class User {
     @Column({ type: 'varchar', nullable: false })
     lastName
 
+    @Column({ type: 'varchar', nullable: false })
+    zipCode
+
     @OneToMany(() => ToDo, (todo) => todo.user)
     todos
 }

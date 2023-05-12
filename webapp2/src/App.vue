@@ -14,6 +14,7 @@
     firstName: '',
     lastName: '',
     email: '',
+    zipCode: '',
     password: ''  
   });
   
@@ -28,8 +29,8 @@
 }
 
 function signup() {
-  const { firstName, lastName, email, password } = state;
-  store.signup({ firstName, lastName, email, password }).then((error) => {
+  const { firstName, lastName, email, password, zipCode } = state;
+  store.signup({ firstName, lastName, email, password, zipCode }).then((error) => {
     if (!error) {
       state.dialog = false;
       state.loggedIn = !state.loggedIn;
@@ -53,7 +54,7 @@ function signup() {
       <ul>
         <li @click="navigateTo('home')"><a>Home</a></li>
         <li @click="navigateTo('events')"><a>Events</a></li>
-        <li @click="navigateTo('about')"><a>About</a></li>
+        <li @click="navigateTo('userProfile')"><a>User Profile</a></li>
       </ul>
     </div>
 
@@ -122,6 +123,11 @@ function signup() {
                     v-model="state.email"
                   ></v-text-field>
                   <v-text-field
+                    label="ZipCode"
+                    type="zipcode"
+                    v-model="state.email"
+                  ></v-text-field>
+                  <v-text-field
                     label="Password"
                     type="password"
                     v-model="state.password">
@@ -129,13 +135,13 @@ function signup() {
                 </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
-                <v-btn color="primary" @click="signup">yoyo</v-btn>
+                <v-btn color="primary" @click="signup">sign up</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
         </v-btn>
     </div>
-    <div class="container mt-4">
+    <div v-if="$route.path === '/'">
       <input
         type="text"
         class="form-control search-bar"

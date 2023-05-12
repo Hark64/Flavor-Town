@@ -21,8 +21,8 @@ export const useUserStore = defineStore('user', () => {
         });
     }
 
-    function signup({firstName, lastName, email, password}) {
-        return axios.post("/api/signup", {firstName, lastName, email, password}).then(
+    function signup({firstName, lastName, email, password, zipCode}) {
+        return axios.post("/api/signup", {firstName, lastName, email, password, zipCode}).then(
         (response) => {
             console.log(response);
             loggedIn.value = true;
