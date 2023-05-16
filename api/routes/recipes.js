@@ -20,27 +20,14 @@ export default (DataSource) => {
         );
     });
 
-    // router.post('/recipes', upload.single('uploaded_file'), (request, response) => {
-    //     const { title, description } = request.body;
-    //     const path = request.file;
-    //     const recipe = recipeResource.create({
-    //         title,
-    //         description,
-    //         path, 
-    //         user: request.user
-    //     });
-    //     recipeResource.save(recipe).then((result) => {
-    //         response.send(result);
-    //     });
-    // });
-
 
     router.post('/recipes', upload.single('uploaded_file'), (request, response) => {
-        const {title, description} = request.body;
+        const {title, description, videoLink} = request.body;
         const imagePath = request.file.path;
         const recipe = recipeResource.create({
             title,
             description,
+            videoLink,
             imagePath,
             user: request.user
         });

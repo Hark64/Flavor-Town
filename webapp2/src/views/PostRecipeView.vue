@@ -6,15 +6,16 @@
     const state = reactive({
         title: '',
         description: '',
+        videoLink: '',
         file: null
     })
 
     function postRecipe() {
-        const { title, description, file} = state;
+        const { title, description, videoLink, file} = state;
         const formData = new FormData();
         formData.append('uploaded_file', file);
 
-        recipesStore.postRecipe({title, description, file}).then((error) => {
+        recipesStore.postRecipe({title, description, videoLink, file}).then((error) => {
             if (!error) {
             }
         });
@@ -41,6 +42,11 @@
                     label="Description"
                     type="text"
                     v-model="state.description">
+                  </v-text-field>
+                  <v-text-field
+                    label="Video Link"
+                    type="text"
+                    v-model="state.videoLink">
                   </v-text-field>
                   <v-card-text>Upload Photo</v-card-text>
                   <input type="file" name="uploaded_file" @change="state.file = $event.target.files[0]"/>

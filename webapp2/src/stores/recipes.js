@@ -19,10 +19,11 @@ export const useRecipesStore = defineStore('recipes', () => {
     //     });
     // }
 
-    function postRecipe({ title, description, file}) {
+    function postRecipe({ title, description, videoLink, file}) {
         const formData = new FormData();
         formData.append('title', title);
         formData.append('description', description);
+        formData.append('videoLink', videoLink);
         formData.append('uploaded_file', file);
         
         return axios.post("/api/recipes", formData, {
