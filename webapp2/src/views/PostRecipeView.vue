@@ -4,23 +4,26 @@
     const recipesStore = useRecipesStore();
 
     const state = reactive({
-        newRecipe: {
-            title: '',
-            description: '',
-            done: false
-        }
+        title: '',
+        description: '',
+        file: null
     })
 
     function postRecipe() {
-        const { title, description } = state;
-        recipesStore.postRecipe({title, description}).then((error) => {
+        const { title, description, file} = state;
+        const formData = new FormData();
+        formData.append('uploaded_file', file);
+
+        recipesStore.postRecipe({title, description, file}).then((error) => {
             if (!error) {
-                done = true;
             }
         });
     }
 
-
+    function submitForm(event) {
+        event.preventDefault(); // Prevent the default form submission
+        postRecipe(); // Call the file upload handler manually
+    }
     
 </script>
 <template>
@@ -28,25 +31,22 @@
         <h1 class="text-h1">Create Post</h1>
         <v-card v-if="!state.done">
             <v-card-text>
-                <v-form class="mt-2">
+                <v-form class="mt-2" enctype="multipart/form-data">
                   <v-text-field
                     label="Title"
-                    type="title"
+                    type="text"
                     v-model="state.title"
                   ></v-text-field>
                   <v-text-field
                     label="Description"
-                    type="description"
+                    type="text"
                     v-model="state.description">
                   </v-text-field>
                   <v-card-text>Upload Photo</v-card-text>
-                  <!-- <form action = "/recipe" method = "post" enctype="multipart/form-data">
-                    <input type="file" name="image">
-                  </form> -->
+                  <input type="file" name="uploaded_file" @change="state.file = $event.target.files[0]"/>
                 </v-form>
+                <v-btn @click="submitForm">Submit</v-btn>
             </v-card-text>
         </v-card>
-        <h1 v-if="state.done">Done!</h1>
-        <v-btn @click="postRecipe">Post Recipe </v-btn>
     </main>
 </template>

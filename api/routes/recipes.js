@@ -3,9 +3,10 @@ import { Recipe } from '../entities/recipe';
 
 export default (DataSource) => {
     const router = Router();
-    // const multer = require('multer');
     const recipeResource = DataSource.getRepository(Recipe);
-    // const upload = multer({ dest: 'uploads'});
+   
+    const multer = require('multer');
+    const upload = multer({ dest: 'uploads/' })
 
 
     router.get('/recipes', (request, response) => {
@@ -33,11 +34,14 @@ export default (DataSource) => {
     //     });
     // });
 
-    router.post('/recipes', (request, response) => {
-        const { title, description } = request.body;
+
+    router.post('/recipes', upload.single('uploaded_file'), (request, response) => {
+        const {title, description} = request.body;
+        const imagePath = request.file.path;
         const recipe = recipeResource.create({
             title,
             description,
+            imagePath,
             user: request.user
         });
         recipeResource.save(recipe).then((result) => {
