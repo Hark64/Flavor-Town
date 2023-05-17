@@ -40,7 +40,7 @@ export const useUserStore = defineStore('user', () => {
 
     function logout() {
         return axios.get("/api/logout").then(() => {
-            loggedIn = false;
+            loggedIn.value = false;
         });
     }
 

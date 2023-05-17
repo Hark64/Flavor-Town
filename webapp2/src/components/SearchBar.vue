@@ -1,40 +1,42 @@
-<!--To use this component, just put
-    <SearchBar />
-    in the <main> section of your <template> section and import
-    import SearchBar from '../components/SearchBar.vue'
-    
-    This tag is just one thing, it is both the opening and closing tag 
-    so you DO NOT NEED <SearchBar></SearchBar>
-    I'm not even sure if that will work
--->
 <script setup>
   import { RouterLink, RouterView } from 'vue-router';
   import { reactive } from 'vue';
   import { useSearchStore } from '@/stores/search';
+  import { storeToRefs } from 'pinia';
 
   const store = useSearchStore;
 
   const state = reactive({
     dialog: false,
-    message: '',
-    tags: ['Thai', 'Greek', 'Mexican',
-        'Sweet', 'Spicy', 'Salty',
-        'Quick', 'Easy', 'Pro',
-        'Cheap', 'Expensive', 'Free'],
+    // message: '',
+    // tags: [{l: 'Thai', v: false}, {l: 'Greek', v: false}, {l: 'Mexican', v: false},
+    //  {l: 'Sweet', v: false}, {l: 'Spicy', v: false}, {l: 'Salty', v: false}, 
+    //  {l: 'Quick', v: false}, {l: 'Easy', v: false}, {l: 'Pro', v: false}, 
+    //  {l: 'Cheap', v: false}, {l: 'Expensive', v: false}, {l: 'Free', v: false}]
   });
 
   // state.message = store.message;
   // state.tags = store.tags;
 
-  function sendMessage () {
-    const { message, tags } = state;
-    store.goSearch({message, tags})
-  }
+  // function sendMessage () {
+  //   const { message, tags } = state;
+  //   console.log(state.message)
+  //   store.goSearch({message, tags}).then((error) => {
+  //     if (!error) {
+  //       state.dialog = false;
+  //     }
+  //   });
+  // }
 
   function clearMessage () {
-    console.log(state.message)
-    state.message = ''
+    //console.log(state.message)
+    //state.message = ''
+
+    //store.$reset();
+    console.log(store.message)
+    store.message='';
   }
+
 </script>
 
 
@@ -58,8 +60,7 @@
         prepend-inner-icon="mdi-magnify"
         single-line
 
-        v-model="state.message"
-        :prepend-icon="icon"
+        v-model="store.message"
         variant="filled"
         clear-icon="mdi-close-circle"
         clearable
@@ -68,11 +69,11 @@
         @click:clear="clearMessage"
       ></v-text-field>
 
-      <RouterLink to="/search">
-        <v-btn icon color="gray" dark @click="sendMessage">
+
+        <v-btn icon color="gray" dark to="/search">
           <v-icon>mdi-send-variant</v-icon>
         </v-btn>
-      </RouterLink>
+
 
 
       <v-btn icon color="gray" dark @click="state.dialog = true">
@@ -82,133 +83,16 @@
         width="auto">
           <v-card color="black">
             <v-container fluid>
-              <v-row>
-                <v-col
-                  cols="12"
-                  sm="4"
-                  md="4"
-                >
-                  <v-checkbox
-                    v-model="state.tags"
-                    label="Thai"
-                    color="red"
-                    value="red"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="state.tags"
-                    label="Greek"
-                    color="red-darken-3"
-                    value="red-darken-3"
-                    hide-details
-                  ></v-checkbox>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="4"
-                  md="4"
-                >
-                  <v-checkbox
-                    v-model="state.tags"
-                    label="Mexican"
-                    color="indigo"
-                    value="indigo"
-                    style="width: 150px;"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="state.tags"
-                    label="Sweet"
-                    color="indigo-darken-3"
-                    value="indigo-darken-3"
-                    hide-details
-                  ></v-checkbox>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="4"
-                  md="4"
-                >
-                  <v-checkbox
-                    v-model="state.tags"
-                    label="Spicy"
-                    color="orange"
-                    value="orange"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="state.tags"
-                    label="Salty"
-                    color="orange-darken-3"
-                    value="orange-darken-3"
-                    hide-details
-                  ></v-checkbox>
-                </v-col>
-              </v-row>
-
-              <v-row class="mt-0">
-                <v-col
-                  cols="12"
-                  sm="4"
-                  md="4"
-                >
-                  <v-checkbox
-                    v-model="state.tags"
-                    label="Quick"
-                    color="primary"
-                    value="primary"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="state.tags"
-                    label="Easy"
-                    color="secondary"
-                    value="secondary"
-                    hide-details
-                  ></v-checkbox>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="4"
-                  md="4"
-                >
-                  <v-checkbox
-                    v-model="state.tags"
-                    label="Pro"
-                    color="success"
-                    value="success"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="state.tags"
-                    label="Cheap"
-                    color="info"
-                    value="info"
-                    hide-details
-                  ></v-checkbox>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="4"
-                  md="4"
-                >
-                  <v-checkbox
-                    v-model="state.tags"
-                    label="Expensive"
-                    color="warning"
-                    value="warning"
-                    style="width: 150px;"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="state.tags"
-                    label="Free"
-                    color="error"
-                    value="error"
-                    hide-details
-                  ></v-checkbox>
-                </v-col>
-              </v-row>
+              <v-col v-for="tag in store.tags" :key="tag.id">
+                      <v-checkbox
+                        v-model="tag.val"
+                        color="blue"
+                        :id="index"
+                        :label="tag.label"
+                        value="blue"
+                        hide-details
+                      ></v-checkbox>
+              </v-col>
             </v-container>
           </v-card>
         </v-dialog>

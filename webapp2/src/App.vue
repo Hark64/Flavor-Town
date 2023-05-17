@@ -38,25 +38,17 @@
 
 </script>
 
-
 <template>
-  <div>
-    <div class="hamburger" @click="toggleMenu">
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-    </div>
-    <div class="menu" :class="{ 'menu-open': isMenuOpen }">
-      <button class="close-button" @click="toggleMenu">&times;</button>
-      <ul>
-        <li @click="navigateTo('home')"><a>Home</a></li>
-        <li @click="navigateTo('events')"><a>Events</a></li>
-        <li @click="navigateTo('about')"><a>About</a></li>
-      </ul>
-    </div>
+  <header>
+    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
-    <div>
-      <v-btn>Login
+    <div class="wrapper">
+      <HelloWorld msg="You did it!" />
+
+      <nav>
+
+
+        <v-btn>Login
           <v-dialog
             v-model="state.dialog"
             activator="parent"
@@ -89,6 +81,7 @@
             </v-card>
           </v-dialog>
         </v-btn>
+
         <v-btn>Signup
           <v-dialog
             v-model="state.signupDialog"
@@ -132,108 +125,75 @@
             </v-card>
           </v-dialog>
         </v-btn>
-    </div>
-    <div class="container mt-4">
-      <input
-        type="text"
-        class="form-control search-bar"
-        v-model="searchQuery"
-        placeholder="Search..."
-      />
-    </div>
 
 
-    <router-view></router-view>
-  </div>
+      </nav>
+    </div>
+  </header>
+
+  <RouterView />
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      searchQuery: '',
-      isMenuOpen: false
-    };
-  },
-  methods: {
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen;
-    },
-    navigateTo(route) {
-      this.$router.push({ name: route });
-      this.isMenuOpen = false;
-    }
-  }
-};
-</script>
-
-<style>
-.hamburger {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  width: 30px;
-  height: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
+<style scoped>
+header {
+  line-height: 1.5;
+  max-height: 100vh;
 }
 
-.hamburger-line {
+.logo {
+  display: block;
+  margin: 0 auto 2rem;
+}
+
+nav {
   width: 100%;
-  height: 4px;
-  background-color: black;
+  font-size: 12px;
+  text-align: center;
+  margin-top: 2rem;
 }
 
-.menu {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 200px;
-  height: 100%;
-  background-color: lightgray; /* Adjust the background color as needed */
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
-  z-index: 1;
+nav a.router-link-exact-active {
+  color: var(--color-text);
 }
 
-.menu-open {
-  transform: translateX(0);
-}
-
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  border: none;
+nav a.router-link-exact-active:hover {
   background-color: transparent;
-  font-size: 20px;
-  cursor: pointer;
 }
 
-.container {
-  display: flex;
-  justify-content: center;
+nav a {
+  display: inline-block;
+  padding: 0 1rem;
+  border-left: 1px solid var(--color-border);
 }
 
-.search-bar {
-  width: 300px; /* Adjust the width as needed */
+nav a:first-of-type {
+  border: 0;
 }
 
-.menu ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 50px 20px;
-}
+@media (min-width: 1024px) {
+  header {
+    display: flex;
+    place-items: center;
+    padding-right: calc(var(--section-gap) / 2);
+  }
 
-.menu li {
-  margin-bottom: 20px;
-}
+  .logo {
+    margin: 0 2rem 0 0;
+  }
 
-.menu a {
-  text-decoration: none;
-  color: black;
-  font-size: 18px;
+  header .wrapper {
+    display: flex;
+    place-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  nav {
+    text-align: left;
+    margin-left: -1rem;
+    font-size: 1rem;
+
+    padding: 1rem 0;
+    margin-top: 1rem;
+  }
 }
 </style>
