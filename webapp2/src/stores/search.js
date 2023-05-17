@@ -55,5 +55,5 @@ export const useSearchStore = defineStore('search', () => {
     //     });
     // }
     
-    return { hasError, error, message, tags, goSearch, $reset };
+    return { hasError, error, message, tags, $reset };
 });

@@ -4,37 +4,14 @@
   import { useSearchStore } from '@/stores/search';
   import { storeToRefs } from 'pinia';
 
-  const store = useSearchStore;
+  const store = useSearchStore();
 
   const state = reactive({
-    dialog: false,
-    // message: '',
-    // tags: [{l: 'Thai', v: false}, {l: 'Greek', v: false}, {l: 'Mexican', v: false},
-    //  {l: 'Sweet', v: false}, {l: 'Spicy', v: false}, {l: 'Salty', v: false}, 
-    //  {l: 'Quick', v: false}, {l: 'Easy', v: false}, {l: 'Pro', v: false}, 
-    //  {l: 'Cheap', v: false}, {l: 'Expensive', v: false}, {l: 'Free', v: false}]
+    dialog: false
   });
 
-  // state.message = store.message;
-  // state.tags = store.tags;
-
-  // function sendMessage () {
-  //   const { message, tags } = state;
-  //   console.log(state.message)
-  //   store.goSearch({message, tags}).then((error) => {
-  //     if (!error) {
-  //       state.dialog = false;
-  //     }
-  //   });
-  // }
-
   function clearMessage () {
-    //console.log(state.message)
-    //state.message = ''
-
-    //store.$reset();
-    console.log(store.message)
-    store.message='';
+    store.$reset();
   }
 
 </script>
@@ -87,7 +64,6 @@
                       <v-checkbox
                         v-model="tag.val"
                         color="blue"
-                        :id="index"
                         :label="tag.label"
                         value="blue"
                         hide-details
