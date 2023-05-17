@@ -1,0 +1,213 @@
+<script>
+
+</script>
+
+<template>
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>My Social Media Profile</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header>
+    <div class="header-left">
+      <img class="header-btn" id="hamburger-btn" src="../assets/hamburger-btn.png" alt="slide-menu-btn">
+      <h1>Recipes.com</h1>
+    </div>
+    <div class="header-buttons">
+      <img class="header-btn" id="logout-btn" src="../assets/logout-btn.png" alt="logout-btn">
+    </div>
+  </header>
+  <main>
+    <div class="profile-info">
+      <img src="../assets/pfp.png" alt="Profile Picture">
+      <h2>Shayan Daijavad</h2>
+      <p>San Luis Obispo, CA</p>
+    </div>
+    <div class="button-container">
+      <button class="recipes-button">Recipes</button>
+    </div>
+    <div class="posts-container">
+      <div class="post">
+        <img src="../assets/post.png" alt="Post 1">
+        <div class="post-overlay">
+          <button>Button 1</button>
+          <button>Button 2</button>
+        </div>
+      </div>
+      <div class="post">
+        <img src="../assets/post.png" alt="Post 2">
+      </div>
+      <div class="post">
+        <img src="../assets/post.png" alt="Post 3">
+      </div>
+      <div class="post">
+        <img src="../assets/post.png" alt="Post 4">
+      </div>
+      <div class="post">
+        <img src="../assets/post.png" alt="Post 5">
+      </div>
+      <div class="post">
+        <img src="../assets/post.png" alt="Post 6">
+      </div>
+      <div class="post">
+        <img src="../assets/post.png" alt="Post 7">
+      </div>
+      <div class="post">
+        <img src="../assets/post.png" alt="Post 8">
+      </div>
+      <div class="post">
+        <img src="../assets/post.png" alt="Post 9">
+      </div>
+    </div>
+  </main>
+</body>
+
+</html>
+</template>
+
+<style scoped>
+/* Global styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  font-size: 16px;
+}
+
+header {
+  background-color: #ffffff;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#hamburger-btn {
+  margin-right: 20px;
+}
+
+#logout-btn {
+  width: 165px;
+  margin-right: 20px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  margin: 10px;
+}
+
+.header-left img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50;
+  margin: 20px;
+}
+
+h2 {
+  margin-right: 20px;
+}
+
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  margin-left: 10%;
+}
+
+.profile-info img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50;
+  margin: 20px;
+}
+
+.button-container {
+  text-align: center;
+}
+
+.recipes-button {
+  font-size: 24px;
+  padding: 20px 40px;
+  border-radius: 20px;
+  border: none;
+  background-color: lightgrey;
+  margin: 20px;
+  margin-bottom: 60px;
+}
+
+
+
+/* Layout for profile page */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.posts-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  max-width: 90%;  
+  margin: 0 auto;
+}
+
+.posts-container .post {
+  width: calc(33.33% - 20px);
+  margin: 10px;
+  box-sizing: border-box;
+}
+
+.posts-container img {
+  width: 100%;
+}
+
+/* Layout for posts */
+.post {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.post-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.post-description {
+  padding: 10px;
+}
+
+.post-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.post-text {
+  font-size: 14px;
+  color: #666666;
+}
+
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+
+</style>

@@ -1,150 +1,97 @@
 <script setup>
-  import { RouterLink, RouterView } from 'vue-router'
-  import { reactive } from 'vue';
-  import HelloWorld from './components/HelloWorld.vue'
-  import { useUserStore } from '@/stores/user';
-  
-  const store = useUserStore();
-  
-  const state = reactive({    // Kind of like a class- info we want to keep around.
-    dialog: false,
-    signupDialog: false,
-    error: '',
-    hasError: false,
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: ''
-  });
-  
-  function login() {
-    const { email, password } = state;
-    store.login({email, password}).then((error) => {
-      if (!error) {
-        state.dialog = false;
-      }
-    });
-  }
+import { RouterLink, RouterView, createRouter } from 'vue-router'
+import { reactive, onMounted } from 'vue';
+import HelloWorld from './components/HelloWorld.vue'
+// import Signup from './components/Signup.vue'
+import { useUserStore } from '@/stores/user';
+import AccountPage from './views/Account.vue';
 
-  function signup() {
-    console.log("sign up")
-    const { firstName, lastName, email, password } = state;
-    store.signup({firstName, lastName, email, password}).then((error) => {
-      if (!error) {
-        state.signupDialog = false;
-      }
-    });
-  }
+const store = useUserStore();
+
+const state = reactive({
+  dialog: false,
+  email: '',
+  password: '',
+  firstName: '',
+  lastName: '',
+  showLogin: true,
+  loggedIn: false
+});
+
+function toggleSignup() {
+  state.showLogin = !state.showLogin;
+}
+
+function login() {
+  const { email, password } = state;
+  store.login({ email, password }).then((error) => {
+    if (!error) {
+      state.dialog = false;
+      state.loggedIn = !state.loggedIn;
+    }
+  });
+}
+
+function signup() {
+  const { firstName, lastName, email, password } = state;
+  store.signup({ firstName, lastName, email, password }).then((error) => {
+    if (!error) {
+      state.dialog = false;
+      state.loggedIn = !state.loggedIn;
+    }
+  });
+}
+
+onMounted(() => {
+  store.ping();
+});
 
 </script>
 
 
 <template>
-  <div>
-    <div class="hamburger" @click="toggleMenu">
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-    </div>
-    <div class="menu" :class="{ 'menu-open': isMenuOpen }">
-      <button class="close-button" @click="toggleMenu">&times;</button>
-      <ul>
-        <li @click="navigateTo('home')"><a>Home</a></li>
-        <li @click="navigateTo('events')"><a>Events</a></li>
-        <li @click="navigateTo('about')"><a>About</a></li>
-      </ul>
-    </div>
-
-    <div>
-      <v-btn>Login
-          <v-dialog
-            v-model="state.dialog"
-            activator="parent"
-            width="400">
-            <v-card>
-              <v-card-text>
-                <v-alert
-                  density="compact"
-                  type="warning"
-                  icon="$warning"
-                  title="There was an issue logging in."
-                  v-if="store.hasError"
-                >{{ store.error }}</v-alert>
-                <v-form class="mt-2">
-                  <v-text-field
-                    label="Email address"
-                    type="email"
-                    v-model="state.email"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Password"
-                    type="password"
-                    v-model="state.password">
-                  </v-text-field>
-                </v-form>
-              </v-card-text>
-              <v-card-actions class="d-flex flex-row-reverse ma-2">
-                <v-btn color="primary" @click="login">Login</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-btn>
-        <v-btn>Signup
-          <v-dialog
-            v-model="state.signupDialog"
-            activator="parent"
-            width="400">
-            <v-card>
-              <v-card-text>
-                <v-alert
-                  density="compact"
-                  type="warning"
-                  icon="$warning"
-                  title="There was an issue signing up."
-                  v-if="store.hasError"
-                >{{ store.error }}</v-alert>
-                <v-form class="mt-2">
-                  <v-text-field
-                    label="First Name"
-                    type="firstName"
-                    v-model="state.firstName"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Last Name"
-                    type="lastName"
-                    v-model="state.lastName"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Email address"
-                    type="email"
-                    v-model="state.email"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Password"
-                    type="password"
-                    v-model="state.password">
-                  </v-text-field>
-                </v-form>
-              </v-card-text>
-              <v-card-actions class="d-flex flex-row-reverse ma-2">
-                <v-btn color="primary" @click="signup">yoyo</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-btn>
-    </div>
-    <div class="container mt-4">
-      <input
-        type="text"
-        class="form-control search-bar"
-        v-model="searchQuery"
-        placeholder="Search..."
-      />
+  <header>
+    <div class="wrapper">
+      <nav>
+        <div class="right-menu">
+          <RouterLink to="/account">Account</RouterLink>
+          <div class="login-buttons">
+            <v-btn v-if="!state.loggedIn">Login
+              <v-dialog v-model="state.dialog" activator="parent" width="400">
+                <v-card>
+                  <v-card-text>
+                    <v-alert density="compact" type="warning" icon="$warning" title="There was an issue logging in."
+                      v-if="store.hasError">{{ store.error }}</v-alert>
+                    <v-form class="mt-2" v-if="state.showLogin">
+                      <v-text-field label="Email address" type="email" v-model="state.email"></v-text-field>
+                      <v-text-field label="Password" type="password" v-model="state.password">
+                      </v-text-field>
+                    </v-form>
+                    <v-form v-if="!state.showLogin">
+                      <v-text-field label="First Name" type="firstName" v-model="state.firstName"></v-text-field>
+                      <v-text-field label="Last Name" type="lastName" v-model="state.lastName"></v-text-field>
+                      <v-text-field label="Email address" type="email" v-model="state.email"></v-text-field>
+                      <v-text-field label="Password" type="password" v-model="state.password"></v-text-field>
+                    </v-form>
+                  </v-card-text>
+                  <v-card-actions class="d-flex flex-row-reverse ma-2">
+                    <v-btn v-if="state.showLogin" color="primary" @click="login">Login</v-btn>
+                    <v-btn v-if="state.showLogin" color="primary" @click="toggleSignup">Signup</v-btn>
+                    <v-btn v-if="!state.showLogin" color="primary" @click="signup">Finish Signup</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-btn>
+            <v-btn v-if="state.loggedIn">Logged In
+            </v-btn>
+          </div>
+        </div>
+      </nav>
     </div>
 
 
     <router-view></router-view>
-  </div>
+  </header>
 </template>
 
 <script>
@@ -168,34 +115,25 @@ export default {
 </script>
 
 <style>
-.hamburger {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  width: 30px;
-  height: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
+body {
+  background-color: #ffffff;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto 2rem;
 }
 
 .hamburger-line {
   width: 100%;
-  height: 4px;
-  background-color: black;
-}
+  font-size: 12px;
+  text-align: center;
+  margin-top: 2rem;
 
-.menu {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 200px;
-  height: 100%;
-  background-color: lightgray; /* Adjust the background color as needed */
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
-  z-index: 1;
+  /* Add the following styles to move the account and login buttons to the top right */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .menu-open {
