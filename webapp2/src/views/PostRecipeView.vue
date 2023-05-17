@@ -12,8 +12,6 @@
 
     function postRecipe() {
         const { title, description, videoLink, file} = state;
-        const formData = new FormData();
-        formData.append('uploaded_file', file);
 
         recipesStore.postRecipe({title, description, videoLink, file}).then((error) => {
             if (!error) {

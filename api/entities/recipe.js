@@ -16,7 +16,7 @@ export class Recipe {
     videoLink
 
     @Column({type: 'varchar'})
-    imagePath
+    fileName
 
     @ManyToOne(() => User, (user) => user.todos)
     user

@@ -6,18 +6,17 @@ import axios from 'axios';
 export const useRecipesStore = defineStore('recipes', () => {
     const hasError = ref(false);
     const error = ref("");
+    const loading = ref(false);
+    const recipes = ref([]);
     
 
-    // function postRecipe({ title, description, formData}) {
-    //     return axios.post("/api/recipes", { title, description, formData}).then(
-    //     (response) => {
-    //         console.log(response);
-    //     }, (response) => {
-    //         hasError.value = true;
-    //         error.value = response.response.data.msg;
-    //         return hasError;
-    //     });
-    // }
+    function loadRecipes() {
+        loading.value = true;
+        return axios.get("/api/recipes").then((_recipes) => {
+            recipes.value = _recipes.data.recipes;
+            loading.value = false;
+        });
+    }
 
     function postRecipe({ title, description, videoLink, file}) {
         const formData = new FormData();
@@ -25,6 +24,7 @@ export const useRecipesStore = defineStore('recipes', () => {
         formData.append('description', description);
         formData.append('videoLink', videoLink);
         formData.append('uploaded_file', file);
+
         
         return axios.post("/api/recipes", formData, {
             headers: {

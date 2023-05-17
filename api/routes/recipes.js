@@ -6,7 +6,17 @@ export default (DataSource) => {
     const recipeResource = DataSource.getRepository(Recipe);
    
     const multer = require('multer');
-    const upload = multer({ dest: 'uploads/' })
+    // const upload = multer({ dest: 'uploads/' })
+
+    const storage = multer.diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+            cb(null, file.originalname + '-' + uniqueSuffix);
+        },
+      });
+      
+    const upload = multer({ storage: storage });
 
 
     router.get('/recipes', (request, response) => {
@@ -23,12 +33,12 @@ export default (DataSource) => {
 
     router.post('/recipes', upload.single('uploaded_file'), (request, response) => {
         const {title, description, videoLink} = request.body;
-        const imagePath = request.file.path;
+        const fileName = request.file.filename;
         const recipe = recipeResource.create({
             title,
             description,
             videoLink,
-            imagePath,
+            fileName,
             user: request.user
         });
         recipeResource.save(recipe).then((result) => {
