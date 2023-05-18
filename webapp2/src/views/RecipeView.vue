@@ -2,8 +2,13 @@
     import { onMounted, reactive } from 'vue';
     import { useRecipesStore } from '@/stores/recipes';
     const recipesStore = useRecipesStore();
-</script>
 
+    onMounted(() => {
+        recipesStore.loadRecipes();
+    });
+
+</script>
+    
 <template>
   <main>
     

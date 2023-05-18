@@ -40,5 +40,5 @@ export const useRecipesStore = defineStore('recipes', () => {
         });
     }
     
-    return { postRecipe };
+    return { error, hasError, loading, recipes, loadRecipes, postRecipe };
 });
