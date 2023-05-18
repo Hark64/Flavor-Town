@@ -2,12 +2,11 @@
   import { RouterLink, RouterView } from 'vue-router';
   import { reactive } from 'vue';
   import { useSearchStore } from '@/stores/search';
-  import { storeToRefs } from 'pinia';
 
   const store = useSearchStore();
 
   const state = reactive({
-    dialog: false
+    dialog: false,
   });
 
   function clearMessage () {
@@ -17,13 +16,11 @@
 </script>
 
 
-
-
 <template>
 <v-card
     class="pa-4"
     flat
-    height="100px"
+    height="200px"
     color="transparent"
     opacity=0.5
   >
@@ -51,7 +48,9 @@
           <v-icon>mdi-send-variant</v-icon>
         </v-btn>
 
-
+        <v-btn icon color="gray" dark @click="store.showZip = !store.showZip">
+          <v-icon>{{ store.showZip ? 'mdi-map-marker': 'mdi-map-marker-off'}}</v-icon>
+        </v-btn>
 
       <v-btn icon color="gray" dark @click="state.dialog = true">
         <v-icon>mdi-tag</v-icon>
@@ -73,7 +72,22 @@
           </v-card>
         </v-dialog>
       </v-btn>
-
     </v-toolbar>
+
+        <v-text-field v-if="store.showZip"
+          hide-details
+          prepend-inner-icon="mdi-magnify"
+          single-line
+
+          v-model="store.zip"
+          variant="filled"
+          clear-icon="mdi-close-circle"
+          clearable
+          label="Zipcode"
+          counter
+          maxlength="5"
+          type="number"
+          @click:clear="clearMessage"
+        ></v-text-field>
   </v-card>
 </template>

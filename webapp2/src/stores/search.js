@@ -7,6 +7,9 @@ export const useSearchStore = defineStore('search', () => {
     const hasError = ref(false);
     const error = ref("");
     
+    const showZip = ref(false);
+
+    const zip = ref(0);
     const message = ref('');
     const tags = ref( [{id: 1, label: 'Thai', val: false}, {id: 2, label: 'Greek', val: false}, {id: 3, label: 'Mexican', val: false},
     {id: 4, label: 'Sweet', val: false}, {id: 5, label: 'Spicy', val: false}, {id: 6, label: 'Salty', val: false}, 
@@ -15,25 +18,20 @@ export const useSearchStore = defineStore('search', () => {
 
     function $reset(){
         message.value=''
+        zip.value = 0
         tags.value=[{id: 1, label: 'Thai', val: false}, {id: 2, label: 'Greek', val: false}, {id: 3, label: 'Mexican', val: false},
         {id: 4, label: 'Sweet', val: false}, {id: 5, label: 'Spicy', val: false}, {id: 6, label: 'Salty', val: false}, 
         {id: 7, label: 'Quick', val: false}, {id: 8, label: 'Easy', val: false}, {id: 9, label: 'Pro', val: false}, 
         {id: 10, label: 'Cheap', val: false}, {id: 11, label: 'Expensive', val: false}, {id: 12, label: 'Free', val: false}]
     }
 
-    // function goSearch({ sentMessage, sentTags}) {
-    //     console.log('Search')
-    //     console.log(sentMessage, sentTags)
-    //     message.value = sentMessage;
-    //     tags.value = sentTags;
-    // }
 
-    // function loadRecipes() {
-    //     return axios.get("/api/recipes").then((_todos) => {
-    //         todos.value = _todos.data.todos;
-    //         loading.value = false;
-    //     });
-    // }
+    function loadRecipes() {
+        return axios.get("/api/recipes").then((_todos) => {
+            todos.value = _todos.data.todos;
+            loading.value = false;
+        });
+    }
 
     // function updateTodo(todo) {
     //     const idx = todos.value.indexOf(todo);
@@ -55,5 +53,5 @@ export const useSearchStore = defineStore('search', () => {
     //     });
     // }
     
-    return { hasError, error, message, tags, $reset };
+    return { hasError, error, showZip, message, tags, zip, $reset };
 });
