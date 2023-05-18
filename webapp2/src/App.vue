@@ -1,7 +1,6 @@
 <script setup>
   import { RouterLink, RouterView } from 'vue-router'
-  import { reactive } from 'vue';
-  
+  import { reactive, onMounted } from 'vue';
   import { useUserStore } from '@/stores/user';
   
   const store = useUserStore();
@@ -15,14 +14,21 @@
     lastName: '',
     email: '',
     zipCode: '',
-    password: ''  
+    password: '', 
+    showLogin: true,
+    loggedIn: false
   });
+
+  function toggleSignup() {
+    state.showLogin = !state.showLogin;
+  }
   
-  function login() {
+function login() {
   const { email, password } = state;
   store.login({ email, password }).then((error) => {
     if (!error) {
       state.dialog = false;
+      state.loggedIn = !state.loggedIn;
       console.log('Logged in');
     }
   });
@@ -48,6 +54,8 @@ function signup() {
       <div class="hamburger-line"></div>
       <div class="hamburger-line"></div>
       <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
     </div>
     <div class="menu" :class="{ 'menu-open': isMenuOpen }">
       <button class="close-button" @click="toggleMenu">&times;</button>
@@ -55,13 +63,15 @@ function signup() {
         <li @click="navigateTo('home')"><a>Home</a></li>
         <li @click="navigateTo('events')"><a>Events</a></li>
         <li @click="navigateTo('userProfile')"><a>User Profile</a></li>
+        <li @click="navigateTo('postrecipes')"><a>Post Recipes</a></li>
+        <li @click="navigateTo('recipes')"><a>Recipes</a></li>
       </ul>
     </div>
-
+        
     <div>
       <v-btn>Login
           <v-dialog
-            v-model="state.dialog"
+            v-model="state.dialog2"
             activator="parent"
             width="400">
             <v-card>
@@ -73,7 +83,7 @@ function signup() {
                   title="There was an issue logging in."
                   v-if="store.hasError"
                 >{{ store.error }}</v-alert>
-                <v-form class="mt-2">
+                <v-form class="mt-2" v-if="state.showLogin">
                   <v-text-field
                     label="Email address"
                     type="email"
@@ -85,12 +95,38 @@ function signup() {
                     v-model="state.password">
                   </v-text-field>
                 </v-form>
+                <v-form v-if="!state.showLogin">
+                  <v-text-field
+                    label="First Name"
+                    type="firstName"
+                    v-model="state.firstName"
+                  ></v-text-field>
+                  <v-text-field
+                    label="Last Name"
+                    type="lastName"
+                    v-model="state.lastName"
+                  ></v-text-field>
+                  <v-text-field
+                    label="Email address"
+                    type="email"
+                    v-model="state.email"
+                  ></v-text-field>
+                  <v-text-field
+                    label="Password"
+                    type="password"
+                    v-model="state.password"
+                  ></v-text-field>
+                </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
-                <v-btn color="primary" @click="login">Login</v-btn>
+                <v-btn v-if="state.showLogin" color="primary" @click="login">Login</v-btn>
+                <v-btn v-if="state.showLogin" color="primary" @click="toggleSignup">Signup</v-btn>
+                <v-btn v-if="!state.showLogin" color="primary" @click="signup">Finish Signup</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
+        </v-btn>
+        <v-btn v-if="state.loggedIn">Logged In
         </v-btn>
         <v-btn>Signup
           <v-dialog

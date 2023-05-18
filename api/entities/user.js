@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { ToDo } from './todo';
+import { Recipe } from './recipe';
 
 @Entity()
 export class User {
@@ -12,6 +13,7 @@ export class User {
     @Column({ type: 'varchar', nullable: false })
     password
 
+
     @Column({ type: 'varchar', nullable: false })
     firstName
 
@@ -23,4 +25,8 @@ export class User {
 
     @OneToMany(() => ToDo, (todo) => todo.user)
     todos
+
+    @OneToMany(() => Recipe, (recipe) => recipe.user) 
+    recipes
+
 }
