@@ -22,18 +22,26 @@ const router = createRouter({
       name: 'todos',
       component: () => import('../views/ToDosView.vue')
     },
-
+    {
+      path: '/postrecipes',
+      name: 'postrecipes',
+      component: () => import('../views/PostRecipeView.vue')
+    },
+    {
+      path: '/recipes',
+      name: 'recipes',
+      component: () => import('../views/RecipeView.vue')
+    },
     {
       path: '/events',
       name: 'events',
       component: () => import('../views/Events.vue')
     },
-
     {
       path: '/createevent',
       name: 'createevent',
       component: () => import('../views/createevent.vue')
-    },
+    }
   ]
 })
 
