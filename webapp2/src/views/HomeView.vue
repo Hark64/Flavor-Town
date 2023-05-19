@@ -4,7 +4,7 @@ import SearchBar from '../components/SearchBar.vue'
 
 <template>
   <main>
-    <SearchBar />
+    <RouterView to="/account" />
   </main>
 </template>
 

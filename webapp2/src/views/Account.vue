@@ -12,31 +12,13 @@
 </head>
 
 <body>
-  <header>
-    <div class="header-left">
-      <img class="header-btn" id="hamburger-btn" src="../assets/hamburger-btn.png" alt="slide-menu-btn">
-      <h1>Recipes.com</h1>
-    </div>
-    <div class="header-buttons">
-      <img class="header-btn" id="logout-btn" src="../assets/logout-btn.png" alt="logout-btn">
-    </div>
-  </header>
   <main>
-    <div class="profile-info">
-      <img src="../assets/pfp.png" alt="Profile Picture">
-      <h2>Shayan Daijavad</h2>
-      <p>San Luis Obispo, CA</p>
-    </div>
     <div class="button-container">
       <button class="recipes-button">Recipes</button>
     </div>
     <div class="posts-container">
       <div class="post">
         <img src="../assets/post.png" alt="Post 1">
-        <div class="post-overlay">
-          <button>Button 1</button>
-          <button>Button 2</button>
-        </div>
       </div>
       <div class="post">
         <img src="../assets/post.png" alt="Post 2">
