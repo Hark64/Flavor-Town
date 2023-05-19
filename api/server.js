@@ -5,6 +5,7 @@ import session from 'express-session';
 import { DataSource } from 'typeorm';
 import passport from 'passport';
 import config from './config/passport';
+import session from 'express-session';
 
 import login from './routes/login';
 import todos from './routes/todos';
@@ -15,7 +16,7 @@ import createevent from './routes/events';
 
 const dbConfig = require('./ormconfig.json');
 
-// Setting up port
+// Setting up port 3000 to listen 
 const PORT = process.env.PORT || 3000;
 
 const app = express();
@@ -27,8 +28,10 @@ app.use(session({
   saveUninitialized: false
 }));
 app.use(passport.session());
+app.use(passport.session());
 app.use(passport.initialize());
 
+// configures datasource to be mariadb 
 const AppDataSource = new DataSource(dbConfig);
 
 config(AppDataSource);

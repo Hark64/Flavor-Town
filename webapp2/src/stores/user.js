@@ -10,6 +10,7 @@ export const useUserStore = defineStore('user', () => {
 
     
     function login({ email, password }) {
+        console.log("login")
         return axios.post("/api/login", { email, password }).then(
         (response) => {
             console.log(response);
@@ -32,7 +33,8 @@ export const useUserStore = defineStore('user', () => {
             return hasError;
         });
     }
-    
+
+
     function logout() {
         return axios.get("/api/logout").then(() => {
             loggedIn.value = false;
