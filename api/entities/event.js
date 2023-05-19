@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-
+import { User } from './user';
 @Entity()
 export class Event {
     @PrimaryGeneratedColumn()
@@ -13,4 +13,9 @@ export class Event {
 
     @Column({ type: 'varchar', nullable: false })
     description
+
+    // @Column({ type: 'varchar', nullable: false })
+    // zipCode
+
+
 }

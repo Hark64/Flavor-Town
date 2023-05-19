@@ -14,7 +14,8 @@
     firstName: '',
     lastName: '',
     email: '',
-    password: ''  
+    password: '',
+    zipCode: ''
   });
   
   function login() {
@@ -28,12 +29,12 @@
 }
 
 function signup() {
-  const { firstName, lastName, email, password } = state;
-  store.signup({ firstName, lastName, email, password }).then((error) => {
+  const { firstName, lastName, email, password, zipCode} = state;
+  store.signup({ firstName, lastName, email, password, zipCode }).then((error) => {
     if (!error) {
       state.dialog = false;
       state.loggedIn = !state.loggedIn;
-      console.log('Signed in');
+      console.log('Signed up');
     }
   });
 }
@@ -122,6 +123,11 @@ function signup() {
                     v-model="state.email"
                   ></v-text-field>
                   <v-text-field
+                    label="Zip Code"
+                    type="zipCode"
+                    v-model="state.zipCode"
+                  ></v-text-field>
+                  <v-text-field
                     label="Password"
                     type="password"
                     v-model="state.password">
@@ -164,7 +170,7 @@ export default {
     navigateTo(route) {
       this.$router.push({ name: route });
       this.isMenuOpen = false;
-    }
+    } 
   }
 };
 </script>
