@@ -159,9 +159,7 @@ function signup() {
         placeholder="Search..."
       />
     </div>
-
-
-  
+    <router-view></router-view>
   </div>
 </template>
 
