@@ -1,7 +1,6 @@
 <script setup>
   import { RouterLink, RouterView } from 'vue-router'
-  import { reactive } from 'vue';
-  
+  import { reactive, onMounted } from 'vue';
   import { useUserStore } from '@/stores/user';
   
   const store = useUserStore();
@@ -15,14 +14,16 @@
     lastName: '',
     email: '',
     zipCode: '',
-    password: ''  
+    password: '', 
+    showLogin: true,
+    loggedIn: false
   });
   
-function login() {
+  function login() {
   const { email, password } = state;
   store.login({ email, password }).then((error) => {
     if (!error) {
-      state.loginDialog = false;
+      state.dialog = false;
       console.log('Logged in');
     }
   });
@@ -67,6 +68,8 @@ function logOut(){
       <div class="hamburger-line"></div>
       <div class="hamburger-line"></div>
       <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
     </div>
     <div class="menu" :class="{ 'menu-open': isMenuOpen }">
       <button class="close-button" @click="toggleMenu">&times;</button>
@@ -74,10 +77,12 @@ function logOut(){
         <li @click="navigateTo('home')"><a>Home</a></li>
         <li @click="navigateTo('events')"><a>Events</a></li>
         <li @click="navigateTo('userProfile')"><a>User Profile</a></li>
+        <li @click="navigateTo('postrecipes')"><a>Post Recipes</a></li>
+        <li @click="navigateTo('recipes')"><a>Recipes</a></li>
       </ul>
     </div>
 
-    <div v-if="!state.loggedIn">
+    <div>
       <v-btn>Login
           <v-dialog
             v-model="state.loginDialog"
@@ -176,7 +181,7 @@ function logOut(){
     </div>
 
 
-    <router-view></router-view>
+  
   </div>
 </template>
 

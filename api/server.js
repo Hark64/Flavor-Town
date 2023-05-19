@@ -9,7 +9,9 @@ import config from './config/passport';
 import login from './routes/login';
 import todos from './routes/todos';
 import signup from './routes/signup';
+import recipes from './routes/recipes';
 import createevent from './routes/events';
+
 
 const dbConfig = require('./ormconfig.json');
 
@@ -35,6 +37,7 @@ config(AppDataSource);
 app.use(login(passport));
 app.use(todos(AppDataSource));
 app.use(signup(AppDataSource));
+app.use(recipes(AppDataSource));
 app.use(createevent(AppDataSource));
 
 // respond with "hello world" when a GET request is made to the homepage
