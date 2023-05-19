@@ -6,7 +6,7 @@
   const store = useUserStore();
   
   const state = reactive({    // Kind of like a class- info we want to keep around.
-    dialog: false,
+    loginDialog: false,
     signupDialog: false,
     error: '',
     hasError: false,
@@ -18,17 +18,12 @@
     showLogin: true,
     loggedIn: false
   });
-
-  function toggleSignup() {
-    state.showLogin = !state.showLogin;
-  }
   
-function login() {
+  function login() {
   const { email, password } = state;
   store.login({ email, password }).then((error) => {
     if (!error) {
       state.dialog = false;
-      state.loggedIn = !state.loggedIn;
       console.log('Logged in');
     }
   });
@@ -41,6 +36,25 @@ function signup() {
       state.signupDialog = false;
       state.loggedIn = !state.loggedIn;
       console.log('Signed in');
+    }
+  });
+}
+
+function switchToSignup(){
+  state.loginDialog = false;
+  state.signupDialog = true;
+}
+
+function switchToLogin(){
+  state.loginDialog = true;
+  state.signupDialog = false;
+}
+
+function logOut(){
+  store.logout().then((error) => {
+    if (!error) {
+      state.loggedIn = false;
+      console.log('Logged out');
     }
   });
 }
@@ -67,11 +81,11 @@ function signup() {
         <li @click="navigateTo('recipes')"><a>Recipes</a></li>
       </ul>
     </div>
-        
+
     <div>
       <v-btn>Login
           <v-dialog
-            v-model="state.dialog"
+            v-model="state.loginDialog"
             activator="parent"
             width="400">
             <v-card>
@@ -94,13 +108,17 @@ function signup() {
                     type="password"
                     v-model="state.password">
                   </v-text-field>
+                  <p>Don't have an account?</p> <v-btn @click="switchToSignup">Sign Up</v-btn>
+
                 </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
                 <v-btn color="primary" @click="login">Login</v-btn>
               </v-card-actions>
             </v-card>
+
           </v-dialog>
+  
         </v-btn>
         <v-btn>Signup
           <v-dialog
@@ -142,6 +160,8 @@ function signup() {
                     type="password"
                     v-model="state.password">
                   </v-text-field>
+                  <p>Already have an account?</p> <v-btn @click="switchToLogin">Log In</v-btn>
+
                 </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
