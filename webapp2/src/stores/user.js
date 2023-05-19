@@ -7,6 +7,7 @@ export const useUserStore = defineStore('user', () => {
     const loggedIn = ref(false);
     const hasError = ref(false);
     const error = ref("");
+    
 
     
     function login({ email, password }) {

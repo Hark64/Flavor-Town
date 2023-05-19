@@ -76,7 +76,7 @@ function logOut(){
       <ul>
         <li @click="navigateTo('home')"><a>Home</a></li>
         <li @click="navigateTo('events')"><a>Events</a></li>
-        <li @click="navigateTo('userProfile')"><a>User Profile</a></li>
+        <li @click="navigateTo('account')"><a>Account</a></li>
         <li @click="navigateTo('postrecipes')"><a>Post Recipes</a></li>
         <li @click="navigateTo('recipes')"><a>Recipes</a></li>
       </ul>
@@ -171,14 +171,6 @@ function logOut(){
           </v-dialog>
         </v-btn>
     </div>
-    <div v-if="$route.path === '/'">
-      <input
-        type="text"
-        class="form-control search-bar"
-        v-model="searchQuery"
-        placeholder="Search..."
-      />
-    </div>
     <router-view></router-view>
   </div>
 </template>
@@ -251,10 +243,6 @@ export default {
 .container {
   display: flex;
   justify-content: center;
-}
-
-.search-bar {
-  width: 300px; /* Adjust the width as needed */
 }
 
 .menu ul {

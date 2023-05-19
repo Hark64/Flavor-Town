@@ -16,11 +16,6 @@ const router = createRouter({
       component: () => import('../views/ToDosView.vue')
     },
     {
-      path: '/userProfile',
-      name: 'userProfile',
-      component: () => import('../views/userProfileView.vue')
-    },
-    {
       path: '/postrecipes',
       name: 'postrecipes',
       component: () => import('../views/PostRecipeView.vue')
@@ -41,9 +36,9 @@ const router = createRouter({
       component: () => import('../views/createevent.vue')
     },
     {
-      path: '/search',
-      name: 'search',
-      component: () => import('../views/SearchView.vue')
+      path: "/account",
+      name: "account",
+      component: () => import("../views/Account.vue")
     }
   ]
 })
