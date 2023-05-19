@@ -71,7 +71,7 @@ function signup() {
     <div>
       <v-btn>Login
           <v-dialog
-            v-model="state.dialog2"
+            v-model="state.dialog"
             activator="parent"
             width="400">
             <v-card>
@@ -83,7 +83,7 @@ function signup() {
                   title="There was an issue logging in."
                   v-if="store.hasError"
                 >{{ store.error }}</v-alert>
-                <v-form class="mt-2" v-if="state.showLogin">
+                <v-form class="mt-2">
                   <v-text-field
                     label="Email address"
                     type="email"
@@ -95,38 +95,12 @@ function signup() {
                     v-model="state.password">
                   </v-text-field>
                 </v-form>
-                <v-form v-if="!state.showLogin">
-                  <v-text-field
-                    label="First Name"
-                    type="firstName"
-                    v-model="state.firstName"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Last Name"
-                    type="lastName"
-                    v-model="state.lastName"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Email address"
-                    type="email"
-                    v-model="state.email"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Password"
-                    type="password"
-                    v-model="state.password"
-                  ></v-text-field>
-                </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
-                <v-btn v-if="state.showLogin" color="primary" @click="login">Login</v-btn>
-                <v-btn v-if="state.showLogin" color="primary" @click="toggleSignup">Signup</v-btn>
-                <v-btn v-if="!state.showLogin" color="primary" @click="signup">Finish Signup</v-btn>
+                <v-btn color="primary" @click="login">Login</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
-        </v-btn>
-        <v-btn v-if="state.loggedIn">Logged In
         </v-btn>
         <v-btn>Signup
           <v-dialog
@@ -187,7 +161,7 @@ function signup() {
     </div>
 
 
-    <router-view></router-view>
+  
   </div>
 </template>
 
