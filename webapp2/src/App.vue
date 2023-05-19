@@ -35,7 +35,7 @@ function signup() {
     if (!error) {
       state.signupDialog = false;
       state.loggedIn = !state.loggedIn;
-      console.log('Signed in');
+      console.log('Signed up');
     }
   });
 }
@@ -190,7 +190,7 @@ export default {
     navigateTo(route) {
       this.$router.push({ name: route });
       this.isMenuOpen = false;
-    }
+    } 
   }
 };
 </script>

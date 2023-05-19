@@ -10,15 +10,21 @@ const state = reactive({
   description: ''
 });
 
-function postEvent() {
+
+
+// when user clicks post, posts to database and to events page
+// check
+function handleEvent() {
   const { title, location, description } = state;
   store.postEvent({ title, location, description}).then((error) => {
     if (!error) {
-      console.log('Event posted');
-    }
-  });
-  
-}
+        store.getEvent().then((error) => {
+        if (!error) {
+          console.log('Event posted');
+        }
+      });
+      console.log('Event posted to database');
+    }})}
 
 </script>
 
@@ -31,7 +37,7 @@ function postEvent() {
     <v-text-field label="Enter Title (Required)" type="title" v-model="state.title"></v-text-field>
     <v-text-field label="Enter Location (Required)" type="location" v-model="state.location"></v-text-field>
     <v-text-field label="Enter Description" type="description" v-model="state.description"></v-text-field>
-    <router-link tag="v-btn" to="events" @click="postEvent">Post Event</router-link>
+    <router-link tag="v-btn" to="events" @click="handleEvent">Post Event</router-link>
   </v-form>
       
     </div>
@@ -40,7 +46,7 @@ function postEvent() {
 <style>
 .createevent{
   position: fixed;
-  top: 100px;
+  top: 150px;
   left: 100px;
 }
 .form{

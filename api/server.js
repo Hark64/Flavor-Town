@@ -5,7 +5,7 @@ import session from 'express-session';
 import { DataSource } from 'typeorm';
 import passport from 'passport';
 import config from './config/passport';
-import session from 'express-session';
+
 
 import login from './routes/login';
 import todos from './routes/todos';
