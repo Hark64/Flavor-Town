@@ -1,7 +1,7 @@
 <script setup>
     import { ref } from 'vue';
     const valid = ref(true);
-    const firstname = ref("")
+    const firstName = ref("")
 </script>
 
 <template>

@@ -1,9 +1,14 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import SearchBar from '../components/SearchBar.vue'
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <SearchBar />
+    <h1>
+      This is the main recipe page.
+    </h1>
   </main>
 </template>
+
+

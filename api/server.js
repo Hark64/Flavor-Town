@@ -6,14 +6,17 @@ import { DataSource } from 'typeorm';
 import passport from 'passport';
 import config from './config/passport';
 
+
 import login from './routes/login';
 import todos from './routes/todos';
 import signup from './routes/signup';
 import recipes from './routes/recipes';
+import createevent from './routes/events';
+
 
 const dbConfig = require('./ormconfig.json');
 
-// Setting up port
+// Setting up port 3000 to listen 
 const PORT = process.env.PORT || 3000;
 
 const app = express();
@@ -25,8 +28,10 @@ app.use(session({
   saveUninitialized: false
 }));
 app.use(passport.session());
+app.use(passport.session());
 app.use(passport.initialize());
 
+// configures datasource to be mariadb 
 const AppDataSource = new DataSource(dbConfig);
 
 config(AppDataSource);
@@ -36,6 +41,7 @@ app.use(login(passport));
 app.use(todos(AppDataSource));
 app.use(signup(AppDataSource));
 app.use(recipes(AppDataSource));
+app.use(createevent(AppDataSource));
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', (_req, res) => {

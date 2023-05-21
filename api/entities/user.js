@@ -13,13 +13,17 @@ export class User {
     @Column({ type: 'varchar', nullable: false })
     password
 
-  @Column({ type: 'varchar', nullable: false })
-  firstName
 
-  @Column({ type: 'varchar', nullable: false })
-  lastName
+    @Column({ type: 'varchar', nullable: false })
+    firstName
 
-    @OneToMany(() => ToDo, (todo) => todo.user) 
+    @Column({ type: 'varchar', nullable: false })
+    lastName
+
+    @Column({ type: 'varchar', nullable: false })
+    zipCode
+
+    @OneToMany(() => ToDo, (todo) => todo.user)
     todos
 
     @OneToMany(() => Recipe, (recipe) => recipe.user) 

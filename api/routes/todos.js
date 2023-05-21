@@ -10,13 +10,15 @@ export default (DataSource) => {
     router.use('/todos', isAuthenticated);
 
     router.get('/todos', (request, response) => {
-        todoResource.find({where: {
-            user: request.user
-        }}).then(
+        todoResource.find({
+            where: {
+                user: request.user
+            }
+        }).then(
             (todos) => {
-                response.send({todos})
-            }, 
-            () => response.send({todos: []})
+                response.send({ todos })
+            },
+            () => response.send({ todos: [] })
         );
     })
 
