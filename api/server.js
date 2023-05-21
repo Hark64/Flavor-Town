@@ -1,12 +1,18 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { DataSource } from 'typeorm'; 
+import cookieSession from 'cookie-session';
+import session from 'express-session';
+import { DataSource } from 'typeorm';
 import passport from 'passport';
 import config from './config/passport';
-import session from 'express-session';
+
 
 import login from './routes/login';
-import signup from './routes/signup'  // Import the file
+import todos from './routes/todos';
+import signup from './routes/signup';
+import recipes from './routes/recipes';
+import createevent from './routes/events';
+
 
 const dbConfig = require('./ormconfig.json');
 
@@ -19,8 +25,9 @@ app.use(bodyParser.json());
 app.use(session({
   secret: 'mysession',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: false
 }));
+app.use(passport.session());
 app.use(passport.session());
 app.use(passport.initialize());
 
@@ -31,7 +38,10 @@ config(AppDataSource);
 
 // wire up all the routes
 app.use(login(passport));
+app.use(todos(AppDataSource));
 app.use(signup(AppDataSource));
+app.use(recipes(AppDataSource));
+app.use(createevent(AppDataSource));
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', (_req, res) => {

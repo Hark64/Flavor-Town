@@ -1,19 +1,32 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { ToDo } from './todo';
+import { Recipe } from './recipe';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id
+    @PrimaryGeneratedColumn()
+    id
 
-  @Column({ type: 'varchar', unique: true })  // Unique automatically includes nullable: false. 
-  email
+    @Column({ type: 'varchar', unique: true })
+    email
 
-  @Column({ type: 'varchar', nullable: false })
-  password
+    @Column({ type: 'varchar', nullable: false })
+    password
 
-  @Column({type: 'varchar', nullable: false })
-  firstName
 
-  @Column({type: 'varchar', nullable: false })
-  lastName
+    @Column({ type: 'varchar', nullable: false })
+    firstName
+
+    @Column({ type: 'varchar', nullable: false })
+    lastName
+
+    @Column({ type: 'varchar', nullable: false })
+    zipCode
+
+    @OneToMany(() => ToDo, (todo) => todo.user)
+    todos
+
+    @OneToMany(() => Recipe, (recipe) => recipe.user) 
+    recipes
+
 }

@@ -5,7 +5,7 @@ import SearchBar from '../components/SearchBar.vue'
 <template>
   <div class="about">
     <SearchBar />
-    <h1>This is a search page</h1>
+    <h1>Results...</h1>
   </div>
 </template>
 

@@ -1,40 +1,63 @@
 <script setup>
   import { RouterLink, RouterView } from 'vue-router'
-  import { reactive } from 'vue';
-  import HelloWorld from './components/HelloWorld.vue'
+  import { reactive, onMounted } from 'vue';
   import { useUserStore } from '@/stores/user';
   
   const store = useUserStore();
   
   const state = reactive({    // Kind of like a class- info we want to keep around.
-    dialog: false,
+    loginDialog: false,
     signupDialog: false,
     error: '',
     hasError: false,
     firstName: '',
     lastName: '',
     email: '',
-    password: ''
+    zipCode: '',
+    password: '', 
+    showLogin: true,
+    loggedIn: false
   });
   
   function login() {
-    const { email, password } = state;
-    store.login({email, password}).then((error) => {
-      if (!error) {
-        state.dialog = false;
-      }
-    });
-  }
+  const { email, password } = state;
+  store.login({ email, password }).then((error) => {
+    if (!error) {
+      state.dialog = false;
+      console.log('Logged in');
+    }
+  });
+}
 
-  function signup() {
-    console.log("sign up")
-    const { firstName, lastName, email, password } = state;
-    store.signup({firstName, lastName, email, password}).then((error) => {
-      if (!error) {
-        state.signupDialog = false;
-      }
-    });
-  }
+function signup() {
+  const { firstName, lastName, email, zipCode, password } = state;
+  store.signup({ firstName, lastName, email, zipCode, password }).then((error) => {
+    if (!error) {
+      state.signupDialog = false;
+      state.loggedIn = !state.loggedIn;
+      console.log('Signed up');
+    }
+  });
+}
+
+function switchToSignup(){
+  state.loginDialog = false;
+  state.signupDialog = true;
+}
+
+function switchToLogin(){
+  state.loginDialog = true;
+  state.signupDialog = false;
+}
+
+function logOut(){
+  store.logout().then((error) => {
+    if (!error) {
+      state.loggedIn = false;
+      console.log('Logged out');
+    }
+  });
+}
 
 </script>
 
@@ -45,20 +68,24 @@
       <div class="hamburger-line"></div>
       <div class="hamburger-line"></div>
       <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
     </div>
     <div class="menu" :class="{ 'menu-open': isMenuOpen }">
       <button class="close-button" @click="toggleMenu">&times;</button>
       <ul>
         <li @click="navigateTo('home')"><a>Home</a></li>
         <li @click="navigateTo('events')"><a>Events</a></li>
-        <li @click="navigateTo('about')"><a>About</a></li>
+        <li @click="navigateTo('account')"><a>Account</a></li>
+        <li @click="navigateTo('postrecipes')"><a>Post Recipes</a></li>
+        <li @click="navigateTo('recipes')"><a>Recipes</a></li>
       </ul>
     </div>
 
     <div>
       <v-btn>Login
           <v-dialog
-            v-model="state.dialog"
+            v-model="state.loginDialog"
             activator="parent"
             width="400">
             <v-card>
@@ -81,13 +108,17 @@
                     type="password"
                     v-model="state.password">
                   </v-text-field>
+                  <p>Don't have an account?</p> <v-btn @click="switchToSignup">Sign Up</v-btn>
+
                 </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
                 <v-btn color="primary" @click="login">Login</v-btn>
               </v-card-actions>
             </v-card>
+
           </v-dialog>
+  
         </v-btn>
         <v-btn>Signup
           <v-dialog
@@ -120,29 +151,26 @@
                     v-model="state.email"
                   ></v-text-field>
                   <v-text-field
+                    label="ZipCode"
+                    type="zipcode"
+                    v-model="state.zipCode"
+                  ></v-text-field>
+                  <v-text-field
                     label="Password"
                     type="password"
                     v-model="state.password">
                   </v-text-field>
+                  <p>Already have an account?</p> <v-btn @click="switchToLogin">Log In</v-btn>
+
                 </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
-                <v-btn color="primary" @click="signup">yoyo</v-btn>
+                <v-btn color="primary" @click="signup">sign up</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
         </v-btn>
     </div>
-    <div class="container mt-4">
-      <input
-        type="text"
-        class="form-control search-bar"
-        v-model="searchQuery"
-        placeholder="Search..."
-      />
-    </div>
-
-
     <router-view></router-view>
   </div>
 </template>
@@ -162,7 +190,7 @@ export default {
     navigateTo(route) {
       this.$router.push({ name: route });
       this.isMenuOpen = false;
-    }
+    } 
   }
 };
 </script>
@@ -183,7 +211,7 @@ export default {
 .hamburger-line {
   width: 100%;
   height: 4px;
-  background-color: black;
+  background-color: rgb(237, 221, 221);
 }
 
 .menu {
@@ -215,10 +243,6 @@ export default {
 .container {
   display: flex;
   justify-content: center;
-}
-
-.search-bar {
-  width: 300px; /* Adjust the width as needed */
 }
 
 .menu ul {

@@ -5,6 +5,9 @@ import SearchBar from '../components/SearchBar.vue'
 <template>
   <main>
     <SearchBar />
+    <h1>
+      This is the main recipe page.
+    </h1>
   </main>
 </template>
 
