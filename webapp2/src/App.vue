@@ -16,14 +16,16 @@
     zipCode: '',
     password: '', 
     showLogin: true,
-    loggedIn: false
+    loggedIn: false,
+    isButtonDisabled: false,
   });
   
   function login() {
   const { email, password } = state;
   store.login({ email, password }).then((error) => {
     if (!error) {
-      state.dialog = false;
+      state.loginDialog = false;
+      state.loggedIn = true;
       console.log('Logged in');
     }
   });
@@ -34,7 +36,7 @@ function signup() {
   store.signup({ firstName, lastName, email, zipCode, password }).then((error) => {
     if (!error) {
       state.signupDialog = false;
-      state.loggedIn = !state.loggedIn;
+      state.loggedIn = true;
       console.log('Signed up');
     }
   });
@@ -83,7 +85,7 @@ function logOut(){
     </div>
 
     <div>
-      <v-btn>Login
+      <v-btn v-if= !state.loggedIn>Login
           <v-dialog
             v-model="state.loginDialog"
             activator="parent"
@@ -109,18 +111,15 @@ function logOut(){
                     v-model="state.password">
                   </v-text-field>
                   <p>Don't have an account?</p> <v-btn @click="switchToSignup">Sign Up</v-btn>
-
                 </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
                 <v-btn color="primary" @click="login">Login</v-btn>
               </v-card-actions>
             </v-card>
-
           </v-dialog>
-  
         </v-btn>
-        <v-btn>Signup
+        <v-btn v-if = !state.loggedIn>Signup
           <v-dialog
             v-model="state.signupDialog"
             activator="parent"
@@ -161,7 +160,6 @@ function logOut(){
                     v-model="state.password">
                   </v-text-field>
                   <p>Already have an account?</p> <v-btn @click="switchToLogin">Log In</v-btn>
-
                 </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
@@ -169,6 +167,8 @@ function logOut(){
               </v-card-actions>
             </v-card>
           </v-dialog>
+        </v-btn>
+        <v-btn v-if = state.loggedIn @click="logOut">Logout
         </v-btn>
     </div>
     <router-view></router-view>
