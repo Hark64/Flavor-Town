@@ -10,24 +10,26 @@ onMounted(() => {
 
 </script>
 <template>
+  
   <div class>
     <RouterLink class="postbutton" to="/createevent">Create Event</RouterLink>
     <v-card
     class="mx-auto"
     min-width="1200"
+    min-height="210"
     variant="outlined"
     v-for="event in store.eventsList" :key="event.title"
   >
     <v-card-item>
       <div>
-        <div class="text-overline mb-1">
+        <div class="text-overline mb-2">
           <h1> Location: </h1>
-          {{event.location}}
+          {{event.location}} {{event.zipCode}}
         </div>
-        <div class="text-h6 mb-1">
+        <div class="text-h3 mb-1">
           {{event.title}}
         </div>
-        <div class="text-caption"> {{event.description}} </div>
+        <div > Details: {{event.description}} </div>
       </div>
     </v-card-item>
   </v-card>
@@ -54,4 +56,6 @@ onMounted(() => {
   color: #338d33;
   border-bottom: 4px double black;
 }
+
+
 </style>

@@ -29,4 +29,7 @@ export class User {
     @OneToMany(() => Recipe, (recipe) => recipe.user) 
     recipes
 
+    @OneToMany(() => Event, (event) => event.user) 
+    events
+
 }

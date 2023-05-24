@@ -7,7 +7,8 @@ const store = useEventStore();
 const state = reactive({
   title: '',
   location: '',
-  description: ''
+  description: '',
+  zipCode: ''
 });
 
 
@@ -15,8 +16,8 @@ const state = reactive({
 // when user clicks post, posts to database and to events page
 // check
 function handleEvent() {
-  const { title, location, description } = state;
-  store.postEvent({ title, location, description}).then((error) => {
+  const { title, location, description, zipCode } = state;
+  store.postEvent({ title, location, description, zipCode}).then((error) => {
     if (!error) {
         store.getEvent().then((error) => {
         if (!error) {
@@ -36,6 +37,7 @@ function handleEvent() {
       <v-form class="form">
     <v-text-field label="Enter Title (Required)" type="title" v-model="state.title"></v-text-field>
     <v-text-field label="Enter Location (Required)" type="location" v-model="state.location"></v-text-field>
+    <v-text-field label="Enter Zip Code" type="zipCode" v-model="state.zipCode"></v-text-field>
     <v-text-field label="Enter Description" type="description" v-model="state.description"></v-text-field>
     <router-link tag="v-btn" to="events" @click="handleEvent">Post Event</router-link>
   </v-form>

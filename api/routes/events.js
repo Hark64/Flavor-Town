@@ -7,11 +7,12 @@ export default (DataSource) => {
   const eventRepo = DataSource.getRepository(Event);
   
   router.use('/createevent', isAuthenticated).post('/createevent', (request, response) => {
-    const { title, location, description } = request.body;
+    const { title, location, description, zipCode } = request.body;
     const newEvent = eventRepo.create({
       title, 
       location,
-      description
+      description,
+      zipCode
     });
     eventRepo.save(newEvent).then(() => {
       response.send();
