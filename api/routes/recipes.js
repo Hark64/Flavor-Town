@@ -9,7 +9,7 @@ export default (DataSource) => {
     // const upload = multer({ dest: 'uploads/' })
 
     const storage = multer.diskStorage({
-        destination: './uploads',
+        destination: '../webapp2/uploads',
         filename: (req, file, cb) => {
             const uniquePrefix = Date.now() + '-' + Math.round(Math.random() * 1E9)
             cb(null, uniquePrefix + '-' + file.originalname);
@@ -30,10 +30,15 @@ export default (DataSource) => {
         );
     });
 
+    // router.getImage('/recipes', (request, response) => {
+    //     const filePath = request.filePath;
+    //     response.sendFile(filePath);
+    // });
+
 
     router.post('/recipes', upload.single('uploaded_file'), (request, response) => {
         const {title, description, videoLink} = request.body;
-        const fileName = "../../../api/uploads/" + request.file.filename;
+        const fileName = "../../uploads/" + request.file.filename;
         const recipe = recipeResource.create({
             title,
             description,

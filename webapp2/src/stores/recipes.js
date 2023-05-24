@@ -12,11 +12,24 @@ export const useRecipesStore = defineStore('recipes', () => {
 
     function loadRecipes() {
         loading.value = true;
-        return axios.get("/api/recipes").then((_recipes) => {
-            recipes.value = _recipes.data.recipes;
-            loading.value = false;
-        });
+        return axios.get("/api/recipes").then(
+            (response) => {
+                recipes.value = response.data.recipes;
+            },
+            (response) => {
+                hasError.value = true;
+                error.value = response.response.data.msg;
+                return hasError;
+            }
+        )
+
     }
+
+    // function loadImage({filePath}) {
+    //     return axios.getImage("/api/recipes", filePath).then(
+    //         response
+    //     )
+    // }
 
     function postRecipe({ title, description, videoLink, file}) {
         const formData = new FormData();
