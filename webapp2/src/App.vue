@@ -1,25 +1,25 @@
 <script setup>
-  import { RouterLink, RouterView } from 'vue-router'
-  import { reactive, onMounted } from 'vue';
-  import { useUserStore } from '@/stores/user';
-  
-  const store = useUserStore();
-  
-  const state = reactive({    // Kind of like a class- info we want to keep around.
-    loginDialog: false,
-    signupDialog: false,
-    error: '',
-    hasError: false,
-    firstName: '',
-    lastName: '',
-    email: '',
-    zipCode: '',
-    password: '', 
-    showLogin: true,
-    loggedIn: false
-  });
-  
-  function login() {
+import { RouterLink, RouterView } from 'vue-router'
+import { reactive, onMounted } from 'vue';
+import { useUserStore } from '@/stores/user';
+
+const store = useUserStore();
+
+const state = reactive({    // Kind of like a class- info we want to keep around.
+  loginDialog: false,
+  signupDialog: false,
+  error: '',
+  hasError: false,
+  firstName: '',
+  lastName: '',
+  email: '',
+  zipCode: '',
+  password: '',
+  showLogin: true,
+  loggedIn: false
+});
+
+function login() {
   const { email, password } = state;
   store.login({ email, password }).then((error) => {
     if (!error) {
@@ -40,17 +40,17 @@ function signup() {
   });
 }
 
-function switchToSignup(){
+function switchToSignup() {
   state.loginDialog = false;
   state.signupDialog = true;
 }
 
-function switchToLogin(){
+function switchToLogin() {
   state.loginDialog = true;
   state.signupDialog = false;
 }
 
-function logOut(){
+function logOut() {
   store.logout().then((error) => {
     if (!error) {
       state.loggedIn = false;
@@ -64,49 +64,36 @@ function logOut(){
 
 <template>
   <div>
-    <div class="hamburger" @click="toggleMenu">
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-    </div>
-    <div class="menu" :class="{ 'menu-open': isMenuOpen }">
-      <button class="close-button" @click="toggleMenu">&times;</button>
-      <ul>
-        <li @click="navigateTo('home')"><a>Home</a></li>
-        <li @click="navigateTo('events')"><a>Events</a></li>
-        <li @click="navigateTo('account')"><a>Account</a></li>
-        <li @click="navigateTo('postrecipes')"><a>Post Recipes</a></li>
-        <li @click="navigateTo('recipes')"><a>Recipes</a></li>
-      </ul>
-    </div>
+    <div class="topBar">
+      <v-btn class="hamburger" @click="toggleMenu">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+      </v-btn>
 
-    <div>
-      <v-btn>Login
-          <v-dialog
-            v-model="state.loginDialog"
-            activator="parent"
-            width="400">
+      <div class="menu" :class="{ 'menu-open': isMenuOpen }">
+        <button class="close-button" @click="toggleMenu">&times;</button>
+        <ul>
+          <li @click="navigateTo('home')"><a>Home</a></li>
+          <li @click="navigateTo('events')"><a>Events</a></li>
+          <li @click="navigateTo('account')"><a>Account</a></li>
+          <li @click="navigateTo('postrecipes')"><a>Post Recipes</a></li>
+          <li @click="navigateTo('recipes')"><a>Recipes</a></li>
+        </ul>
+      </div>
+
+      <div class="buttonsContainer">
+        <v-btn>Login
+          <v-dialog v-model="state.loginDialog" activator="parent" width="400">
             <v-card>
               <v-card-text>
-                <v-alert
-                  density="compact"
-                  type="warning"
-                  icon="$warning"
-                  title="There was an issue logging in."
-                  v-if="store.hasError"
-                >{{ store.error }}</v-alert>
+                <v-alert density="compact" type="warning" icon="$warning" title="There was an issue logging in."
+                  v-if="store.hasError">{{ store.error }}</v-alert>
                 <v-form class="mt-2">
-                  <v-text-field
-                    label="Email address"
-                    type="email"
-                    v-model="state.email"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Password"
-                    type="password"
-                    v-model="state.password">
+                  <v-text-field label="Email address" type="email" v-model="state.email"></v-text-field>
+                  <v-text-field label="Password" type="password" v-model="state.password">
                   </v-text-field>
                   <p>Don't have an account?</p> <v-btn @click="switchToSignup">Sign Up</v-btn>
 
@@ -118,47 +105,20 @@ function logOut(){
             </v-card>
 
           </v-dialog>
-  
+
         </v-btn>
         <v-btn>Signup
-          <v-dialog
-            v-model="state.signupDialog"
-            activator="parent"
-            width="400">
+          <v-dialog v-model="state.signupDialog" activator="parent" width="400">
             <v-card>
               <v-card-text>
-                <v-alert
-                  density="compact"
-                  type="warning"
-                  icon="$warning"
-                  title="There was an issue signing up."
-                  v-if="store.hasError"
-                >{{ store.error }}</v-alert>
+                <v-alert density="compact" type="warning" icon="$warning" title="There was an issue signing up."
+                  v-if="store.hasError">{{ store.error }}</v-alert>
                 <v-form class="mt-2">
-                  <v-text-field
-                    label="First Name"
-                    type="firstName"
-                    v-model="state.firstName"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Last Name"
-                    type="lastName"
-                    v-model="state.lastName"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Email address"
-                    type="email"
-                    v-model="state.email"
-                  ></v-text-field>
-                  <v-text-field
-                    label="ZipCode"
-                    type="zipcode"
-                    v-model="state.zipCode"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Password"
-                    type="password"
-                    v-model="state.password">
+                  <v-text-field label="First Name" type="firstName" v-model="state.firstName"></v-text-field>
+                  <v-text-field label="Last Name" type="lastName" v-model="state.lastName"></v-text-field>
+                  <v-text-field label="Email address" type="email" v-model="state.email"></v-text-field>
+                  <v-text-field label="ZipCode" type="zipcode" v-model="state.zipCode"></v-text-field>
+                  <v-text-field label="Password" type="password" v-model="state.password">
                   </v-text-field>
                   <p>Already have an account?</p> <v-btn @click="switchToLogin">Log In</v-btn>
 
@@ -170,6 +130,8 @@ function logOut(){
             </v-card>
           </v-dialog>
         </v-btn>
+      </div>
+
     </div>
     <router-view></router-view>
   </div>
@@ -190,21 +152,21 @@ export default {
     navigateTo(route) {
       this.$router.push({ name: route });
       this.isMenuOpen = false;
-    } 
+    }
   }
 };
 </script>
 
 <style>
+.topBar {
+  margin-bottom: 4rem;
+}
+
 .hamburger {
-  position: fixed;
   top: 20px;
   left: 20px;
-  width: 30px;
+  width: 20px;
   height: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   cursor: pointer;
 }
 
@@ -215,15 +177,16 @@ export default {
 }
 
 .menu {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 200px;
   height: 100%;
-  background-color: lightgray; /* Adjust the background color as needed */
+  background-color: lightgray;
+  /* Adjust the background color as needed */
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
-  z-index: 1;
+  z-index: 2;
 }
 
 .menu-open {
@@ -248,7 +211,6 @@ export default {
 .menu ul {
   list-style-type: none;
   padding: 0;
-  margin: 50px 20px;
 }
 
 .menu li {
@@ -259,5 +221,11 @@ export default {
   text-decoration: none;
   color: black;
   font-size: 18px;
+}
+
+.buttonsContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
 }
 </style>
