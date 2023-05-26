@@ -24,6 +24,12 @@ function handleEvent() {
           console.log('Event posted');
         }
       });
+      store.getEventInZip().then((error) => {
+        if (!error) {
+          console.log('Event in zip posted');
+        }
+      });
+
       console.log('Event posted to database');
     }})}
 

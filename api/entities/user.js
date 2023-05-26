@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { ToDo } from './todo';
 import { Recipe } from './recipe';
+import { Event } from './event';
 
 @Entity()
 export class User {

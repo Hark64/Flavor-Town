@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { Event } from '../entities/event';
 import isAuthenticated from '../middleware/isAuthenticated';
+import { Not } from "typeorm"
 
 export default (DataSource) => {
   const router = Router();
@@ -12,7 +13,8 @@ export default (DataSource) => {
       title, 
       location,
       description,
-      zipCode
+      zipCode,
+      user: request.user
     });
     eventRepo.save(newEvent).then(() => {
       response.send();
@@ -20,7 +22,20 @@ export default (DataSource) => {
   });
 
   router.use('/events', isAuthenticated).get('/events', (request, response) => {
-      eventRepo.find().then(
+      eventRepo.find({where: {
+        zipCode: Not(request.user.zipCode)
+      }}).then(
+            (events) => {
+                response.send({ events })
+            },
+            () => response.send({ events: [] })
+        );
+    })
+
+    router.use('/eventszip', isAuthenticated).get('/eventszip', (request, response) => {
+      eventRepo.find({where: {
+        zipCode: request.user.zipCode
+      }}).then(
             (events) => {
                 response.send({ events })
             },
@@ -29,4 +44,9 @@ export default (DataSource) => {
     })
 
   return router;
+
+
+
+
+
 }
