@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { ToDo } from './todo';
 import { Recipe } from './recipe';
 import { Rating } from './rating';
+import { Event } from './event';
 
 @Entity()
 export class User {
@@ -32,5 +33,8 @@ export class User {
 
     @OneToMany(() => Rating, (rating) => rating.user) 
     ratings
+    
+    @OneToMany(() => Event, (event) => event.user) 
+    events
 
 }
