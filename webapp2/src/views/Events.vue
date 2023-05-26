@@ -34,24 +34,3 @@ onMounted(() => {
   </div>
   
 </template>
-
-<style>
-  .postbutton {
-    display: inline-block;
-    padding: 10px 20px;
-    border: 1px solid #d9c9c9;
-    border-radius: 4px;
-    position: fixed;
-    top: 20px;
-    left: 100px;
-  }
-
-  h1 {
-  display: inline-block;
-  margin: 5px;
-  font-size: 15px;
-  font-family: "Playfair Display", serif;
-  color: #338d33;
-  border-bottom: 4px double black;
-}
-</style>
