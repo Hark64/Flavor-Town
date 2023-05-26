@@ -8,13 +8,11 @@ export const useEventStore = defineStore('event', () => {
     const hasError = ref(false);
     const error = ref("");
     
-    const events = ref([{title: "testing", location: "slo", description:"testing again"}, 
-    {title: "testing 2", location: "slo", description:"testing again"},
-    {title: "testing 3", location: "slo", description:"testing again"}]);
     const eventsList = ref([])
+    const eventsListZip = ref([])
 
-    function postEvent({ title, location, description }) {
-        return axios.post("/api/createevent", { title, location, description }).then(
+    function postEvent({ title, location, description, zipCode }) {
+        return axios.post("/api/createevent", { title, location, description, zipCode }).then(
         (response) => {
             console.log(response);
         }, (response) => {
@@ -40,7 +38,22 @@ export const useEventStore = defineStore('event', () => {
         );
       }
 
-    return {eventsList, events, error, hasError, postEvent, getEvent};
+      function getEventInZip() {
+        return axios.get('/api/eventszip').then(
+          (response) => {
+            console.log(response);
+            eventsListZip.value = response.data.events;
+            console.log("Success")
+          },
+          (response) => {
+            hasError.value = true;
+            error.value = response.response.data.msg;
+            return hasError;
+          
+          }
+        );
+      }
+    return {eventsList, eventsListZip, error, hasError, postEvent, getEvent, getEventInZip};
 
 });
 

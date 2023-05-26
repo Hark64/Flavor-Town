@@ -15,6 +15,7 @@
 
         recipesStore.postRecipe({title, description, videoLink, file}).then((error) => {
             if (!error) {
+                console.log("Recipe Posted");
             }
         });
     }

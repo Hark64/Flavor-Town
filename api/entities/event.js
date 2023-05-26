@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { User } from './user';
 @Entity()
 export class Event {
@@ -14,8 +14,9 @@ export class Event {
     @Column({ type: 'varchar', nullable: false })
     description
 
-    // @Column({ type: 'varchar', nullable: false })
-    // zipCode
+    @Column({ type: 'varchar', nullable: false })
+    zipCode
 
-
+    @ManyToOne(() => User, (user) => user.events)
+    user
 }
