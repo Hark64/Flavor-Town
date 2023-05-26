@@ -3,12 +3,16 @@ import SearchBar from '../components/SearchBar.vue'
 </script>
 
 <template>
-  <main>
+  <div class="main">
     <SearchBar />
-    <h1>
-      This is the main recipe page.
-    </h1>
-  </main>
+  </div>
 </template>
 
-
+<style scoped>
+.main {
+  display: flex;
+  justify-content: center; /* Align items horizontally in the center */
+  align-items: center; /* Align items vertically in the center */
+  width: 80%;
+}
+</style>

@@ -26,7 +26,7 @@
 </script>
 <template>
     <main>
-        <h1 class="text-h1">Todos</h1>
+        <h1>Todos</h1>
         <v-table density="compact">
             <thead>
             <tr>
@@ -59,3 +59,6 @@
         </v-table>
     </main>
 </template>
+
+<style scoped>
+</style>

@@ -43,7 +43,7 @@ function handleEvent() {
     </div>
 </template>
 
-<style>
+<style scoped>
 .createevent{
   position: fixed;
   top: 150px;

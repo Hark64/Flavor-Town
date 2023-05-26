@@ -9,7 +9,7 @@ import SearchBar from '../components/SearchBar.vue'
   </div>
 </template>
 
-<style>
+<style scoped>
 @media (min-width: 1024px) {
   .about {
     min-height: 100vh;

@@ -27,7 +27,7 @@
 </script>
 <template>
     <main>
-        <h1 class="text-h1">Create Post</h1>
+        <h1>Create Post</h1>
         <v-card v-if="!state.done">
             <v-card-text>
                 <v-form class="mt-2" enctype="multipart/form-data">
@@ -54,3 +54,6 @@
         </v-card>
     </main>
 </template>
+
+<style scoped>
+</style>

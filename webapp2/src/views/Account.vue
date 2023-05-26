@@ -4,7 +4,7 @@
 
 <template>
 
-<nav>
+
 
     <div class="preview">
       <img src="https://i.pinimg.com/736x/3f/94/70/3f9470b34a8e3f526dbdb022f9f19cf7.jpg" class="pfp" id="prev">
@@ -13,7 +13,7 @@
         <p>San Luis Obispo, CA</p>
       </div>
     </div>
-  </nav>
+
 
 <body>
   <main>
@@ -64,15 +64,6 @@
 body {
   font-family: sans-serif;
   font-size: 16px;
-}
-
-header {
-  background-color: #ffffff;
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
 }
 
 
@@ -126,7 +117,7 @@ h2 {
   padding: 20px 40px;
   border-radius: 20px;
   border: none;
-  background-color: lightgrey;
+  background-color: white;
   margin: 20px;
   margin-bottom: 60px;
 }

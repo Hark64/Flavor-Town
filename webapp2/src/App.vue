@@ -65,7 +65,13 @@ function logOut() {
 <template>
   <head>
     <!-- Other meta tags, stylesheets, etc. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mandali&display=swap" rel="stylesheet">
   </head>
 
   <div>
@@ -126,7 +132,6 @@ function logOut() {
                   <v-text-field label="Password" type="password" v-model="state.password">
                   </v-text-field>
                   <p>Already have an account?</p> <v-btn @click="switchToLogin">Log In</v-btn>
-
                 </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
@@ -138,6 +143,8 @@ function logOut() {
       </div>
 
     </div>
+
+
     <router-view></router-view>
   </div>
 </template>
@@ -163,9 +170,10 @@ export default {
 </script>
 
 <style>
-li{
+li {
   color: white;
 }
+
 .logo {
   font-family: 'Pacifico', cursive;
   color: rgb(245, 185, 113);
@@ -180,7 +188,8 @@ li{
 
 .barLeft {
   display: flex;
-  align-items: center; /* Center the items vertically */
+  align-items: center;
+  /* Center the items vertically */
 }
 
 .hamburger {
@@ -208,12 +217,12 @@ li{
 
 
 .menu {
-  position: absolute;
+  position:fixed;
   top: 0;
   left: 0;
-  width: 200px;
+  width: 300px;
   height: 100%;
-  background-color: lightgrey;
+  background-color: white;
   /* Adjust the background color as needed */
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
@@ -226,19 +235,17 @@ li{
 }
 
 .close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  margin-left: 20px;
   border: none;
   background-color: transparent;
-  font-size: 20px;
+  font-size: 40px;
   cursor: pointer;
 }
 
 .menuBtn {
-  margin: 10px;
-  margin-left: 20px;
+  margin: 16px 10px 20px 48px;
   cursor: pointer;
+  font-size: 28px;
 }
 
 .signLogBtn {
@@ -246,6 +253,9 @@ li{
   width: 100px;
   height: 40px;
   font-size: 16px;
+  font-family: 'Mandali', sans-serif;
+  font-weight: bold;
+
 }
 
 
@@ -257,6 +267,7 @@ li{
 
 #signup {
   height: 40px;
+  border: 2px solid rgb(200, 200, 200); /* Add this line to add a border */
 }
 
 .menu ul {
@@ -271,12 +282,10 @@ li{
 .menu a {
   text-decoration: none;
   color: black;
-  font-size: 18px;
 }
 
 .buttonsContainer {
-  position: fixed;
+  position: absolute;
   top: 20px;
   right: 20px;
-}
-</style>
+}</style>
