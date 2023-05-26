@@ -1,1 +1,1 @@
-DELETE FROM event
+DELETE from user
