@@ -25,11 +25,18 @@ export const useRecipesStore = defineStore('recipes', () => {
 
     }
 
-    // function loadImage({filePath}) {
-    //     return axios.getImage("/api/recipes", filePath).then(
-    //         response
-    //     )
-    // }
+    function loadScores() {
+        return axios.get("/api/recipes/${recipeID}/score").then(
+            (response) => {
+                console.log(response);
+            }, (response) => {
+                hasError.value = true;
+                error.value = response.response.data.msg;
+                return hasError;
+            }
+        )
+    }
+
 
     function postRecipe({ title, description, videoLink, file}) {
         const formData = new FormData();
@@ -53,5 +60,5 @@ export const useRecipesStore = defineStore('recipes', () => {
         });
     }
     
-    return { error, hasError, loading, recipes, loadRecipes, postRecipe };
+    return { error, hasError, loading, recipes, loadRecipes, loadScores, postRecipe };
 });

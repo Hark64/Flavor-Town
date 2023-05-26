@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { User } from './user';
+import { Rating } from './rating';
 
 @Entity()
 export class Recipe {
@@ -18,6 +19,12 @@ export class Recipe {
     @Column({type: 'varchar'})
     fileName
 
-    @ManyToOne(() => User, (user) => user.todos)
+    @Column({type: 'numeric', default: 0})
+    score
+
+    @ManyToOne(() => User, (user) => user.recipes)
     user
+
+    @OneToMany(() => Rating, (rating) => rating.recipe) 
+    ratings
 }

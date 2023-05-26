@@ -6,7 +6,6 @@ export default (DataSource) => {
     const recipeResource = DataSource.getRepository(Recipe);
    
     const multer = require('multer');
-    // const upload = multer({ dest: 'uploads/' })
 
     const storage = multer.diskStorage({
         destination: '../webapp2/uploads',
@@ -29,12 +28,6 @@ export default (DataSource) => {
             () => response.send({recipes: []})
         );
     });
-
-    // router.getImage('/recipes', (request, response) => {
-    //     const filePath = request.filePath;
-    //     response.sendFile(filePath);
-    // });
-
 
     router.post('/recipes', upload.single('uploaded_file'), (request, response) => {
         const {title, description, videoLink} = request.body;
