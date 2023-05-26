@@ -63,29 +63,34 @@ function logOut() {
 
 
 <template>
+  <head>
+    <!-- Other meta tags, stylesheets, etc. -->
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  </head>
+
   <div>
     <div class="topBar">
-      <v-btn class="hamburger" @click="toggleMenu">
-        <div class="hamburger-line"></div>
-        <div class="hamburger-line"></div>
-        <div class="hamburger-line"></div>
-        <div class="hamburger-line"></div>
-        <div class="hamburger-line"></div>
-      </v-btn>
+      <div class="barLeft">
+        <v-btn class="hamburger" @click="toggleMenu" icon>
+          <v-icon>mdi-menu</v-icon>
+        </v-btn>
+
+        <h1 class="logo" @click="navigateTo('home')">Recipes.com</h1>
+      </div>
 
       <div class="menu" :class="{ 'menu-open': isMenuOpen }">
         <button class="close-button" @click="toggleMenu">&times;</button>
         <ul>
-          <li @click="navigateTo('home')"><a>Home</a></li>
-          <li @click="navigateTo('events')"><a>Events</a></li>
-          <li @click="navigateTo('account')"><a>Account</a></li>
-          <li @click="navigateTo('postrecipes')"><a>Post Recipes</a></li>
-          <li @click="navigateTo('recipes')"><a>Recipes</a></li>
+          <h1 class="menuBtn" @click="navigateTo('home')"><a>Home</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('events')"><a>Events</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('account')"><a>Account</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('postrecipes')"><a>Post Recipes</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('recipes')"><a>Recipes</a></h1>
         </ul>
       </div>
 
       <div class="buttonsContainer">
-        <v-btn>Login
+        <v-btn class="signLogBtn" id="login">Login
           <v-dialog v-model="state.loginDialog" activator="parent" width="400">
             <v-card>
               <v-card-text>
@@ -107,7 +112,7 @@ function logOut() {
           </v-dialog>
 
         </v-btn>
-        <v-btn>Signup
+        <v-btn class="signLogBtn" id="signup">Signup
           <v-dialog v-model="state.signupDialog" activator="parent" width="400">
             <v-card>
               <v-card-text>
@@ -158,23 +163,49 @@ export default {
 </script>
 
 <style>
+li{
+  color: white;
+}
+.logo {
+  font-family: 'Pacifico', cursive;
+  color: rgb(245, 185, 113);
+  font-size: 42px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
 .topBar {
   margin-bottom: 4rem;
 }
 
+.barLeft {
+  display: flex;
+  align-items: center; /* Center the items vertically */
+}
+
 .hamburger {
-  top: 20px;
-  left: 20px;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
+  width: 40px;
+  /* Adjust the width and height as needed */
+  height: 40px;
+  /* Add padding and box-sizing to adjust the size of the lines */
+  margin: 20px;
+  /* Add background color and other styles as desired */
+  background-color: rgb(245, 185, 113);
+  color: white;
+  border-radius: 10%;
+
 }
 
 .hamburger-line {
-  width: 100%;
+  /* Set the height, width, and background color of each line */
+  display: block;
   height: 4px;
-  background-color: rgb(237, 221, 221);
+  width: 100%;
+  background-color: black;
+  /* Add margin to separate the lines */
+  margin-bottom: 6px;
 }
+
 
 .menu {
   position: absolute;
@@ -182,11 +213,12 @@ export default {
   left: 0;
   width: 200px;
   height: 100%;
-  background-color: lightgray;
+  background-color: lightgrey;
   /* Adjust the background color as needed */
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
   z-index: 2;
+  border-radius: 0px 10px 10px 0px;
 }
 
 .menu-open {
@@ -203,9 +235,28 @@ export default {
   cursor: pointer;
 }
 
-.container {
-  display: flex;
-  justify-content: center;
+.menuBtn {
+  margin: 10px;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.signLogBtn {
+  margin-left: 20px;
+  width: 100px;
+  height: 40px;
+  font-size: 16px;
+}
+
+
+#login {
+  background-color: rgb(245, 185, 113);
+  color: white;
+  height: 40px;
+}
+
+#signup {
+  height: 40px;
 }
 
 .menu ul {
