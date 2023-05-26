@@ -12,6 +12,7 @@ import todos from './routes/todos';
 import signup from './routes/signup';
 import recipes from './routes/recipes';
 import createevent from './routes/events';
+import ratings from './routes/ratings';
 
 
 const dbConfig = require('./ormconfig.json');
@@ -42,6 +43,7 @@ app.use(todos(AppDataSource));
 app.use(signup(AppDataSource));
 app.use(recipes(AppDataSource));
 app.use(createevent(AppDataSource));
+app.use(ratings(AppDataSource));
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', (_req, res) => {
