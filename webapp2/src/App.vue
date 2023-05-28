@@ -104,7 +104,7 @@ function navigateTo(route) {
           <h1 class="menuBtn" @click="navigateTo('/events')"><a>Events</a></h1>
           <h1 class="menuBtn" @click="navigateTo('/account')"><a>Account</a></h1>
           <h1 class="menuBtn" @click="navigateTo('/postrecipes')"><a>Post Recipes</a></h1>
-          <h1 class="menuBtn" @click="navigateTo('/recipes')"><a>Recipes</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/recipes')"><a>My Recipes</a></h1>
         </ul>
       </div>
 
