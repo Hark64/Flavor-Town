@@ -1,5 +1,12 @@
-<script>
+<script setup>
+import { useUserStore } from '@/stores/user';
+import { onMounted} from 'vue';
+const store = useUserStore();
 
+onMounted(() => {
+        store.getUser();    // TODO- idk why this doesnt work
+        console.log(store.currentUser);
+});
 </script>
 
 <template>
