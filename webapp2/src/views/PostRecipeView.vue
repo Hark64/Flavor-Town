@@ -7,7 +7,8 @@
         title: '',
         description: '',
         videoLink: '',
-        file: null
+        file: null,
+        successDialog: false,
     })
 
     function postRecipe() {
@@ -16,19 +17,34 @@
         recipesStore.postRecipe({title, description, videoLink, file}).then((error) => {
             if (!error) {
                 console.log("Recipe Posted");
+                //RecipeSuccessDialog();  TODO - Ideally we want this here but it's not running. Probably async stuff.
             }
         });
     }
 
     function submitForm(event) {
         event.preventDefault(); // Prevent the default form submission
-        postRecipe(); // Call the file upload handler manually
+        postRecipe();
+        RecipeSuccessDialog();  // TODO- Right now, THIS ALWAYS SHOWS even if post fails. 
+                                // TODO make dialog disapear after time or put x button
+
     }
-    
+
+    function RecipeSuccessDialog() {
+        state.successDialog= true;
+    }
 </script>
+
 <template>
     <main>
         <h1 class="text-h1">Create Post</h1>
+        <v-dialog  v-if=state.successDialog activator="parent" width="400">
+            <v-card>
+              <v-card-text >
+                Recipe successfully and deliciously submitted. 
+              </v-card-text>
+            </v-card>
+          </v-dialog>
         <v-card v-if="!state.done">
             <v-card-text>
                 <v-form class="mt-2" enctype="multipart/form-data">
@@ -54,4 +70,5 @@
             </v-card-text>
         </v-card>
     </main>
+
 </template>
