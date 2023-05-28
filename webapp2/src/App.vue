@@ -38,6 +38,7 @@ function signup() {
       state.signupDialog = false;
       state.loggedIn = true;
       console.log('Signed up');
+      store.login({email, password});
     }
   });
 }
