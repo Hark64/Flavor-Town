@@ -20,7 +20,7 @@ onMounted(() => {
     min-width="1200"
     min-height="210"
     variant="outlined"
-    v-for="event in store.eventsListZip" :key="event.title"
+    v-for="event in store.eventsListZip" :key="event.id"
     >
     <v-card-item>
       <div>
@@ -42,7 +42,7 @@ onMounted(() => {
     min-width="1200"
     min-height="210"
     variant="outlined"
-    v-for="event in store.eventsList" :key="event.title"
+    v-for="event in store.eventsList" :key="event.id"
     >
     <v-card-item>
       <div>
@@ -60,26 +60,3 @@ onMounted(() => {
   </div>
 </div>
 </template>
-
-<style>
-  .postbutton {
-    display: inline-block;
-    padding: 10px 20px;
-    border: 1px solid #d9c9c9;
-    border-radius: 4px;
-    position: fixed;
-    top: 20px;
-    left: 100px;
-  }
-
-  h1 {
-  display: inline-block;
-  margin: 5px;
-  font-size: 15px;
-  font-family: "Playfair Display", serif;
-  color: #338d33;
-  border-bottom: 4px double black;
-}
-
-
-</style>

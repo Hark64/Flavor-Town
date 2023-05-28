@@ -5,7 +5,7 @@ export class Event {
     @PrimaryGeneratedColumn()
     id
 
-    @Column({ type: 'varchar', unique: true })
+    @Column({ type: 'varchar', nullable: false })
     title
 
     @Column({ type: 'varchar', nullable: false })
