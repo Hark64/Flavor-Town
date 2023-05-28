@@ -6,6 +6,7 @@ const store = useUserStore();
 onMounted(() => {
         store.getUser();    // TODO- idk why this doesnt work
         console.log(store.currentUser);
+        
 });
 </script>
 
