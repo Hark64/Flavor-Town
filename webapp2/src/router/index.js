@@ -21,7 +21,7 @@ const router = createRouter({
       component: () => import('../views/PostRecipeView.vue')
     },
     {
-      path: '/recipes',
+      path: '/recipes/:id',
       name: 'recipes',
       component: () => import('../views/RecipeView.vue')
     },
@@ -39,6 +39,12 @@ const router = createRouter({
       path: "/account",
       name: "account",
       component: () => import("../views/Account.vue")
+    }
+    ,
+    {
+      path: "/search",
+      name: "search",
+      component: () => import("../views/SearchView.vue")
     }
   ]
 })

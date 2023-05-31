@@ -18,6 +18,6 @@ export class Recipe {
     @Column({type: 'varchar'})
     fileName
 
-    @ManyToOne(() => User, (user) => user.todos)
+    @ManyToOne(() => User, (user) => user.recipes)
     user
 }

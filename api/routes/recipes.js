@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { Recipe } from '../entities/recipe';
+import { User } from '../entities/user';
+
 
 export default (DataSource) => {
     const router = Router();
     const recipeResource = DataSource.getRepository(Recipe);
+    const userResource = DataSource.getRepository(User);
    
     const multer = require('multer');
     // const upload = multer({ dest: 'uploads/' })
@@ -20,14 +23,18 @@ export default (DataSource) => {
 
 
     router.get('/recipes', (request, response) => {
-        recipeResource.find({where: {
-            user: request.user
-        }}).then(
-            (recipes) => {
-                response.send({recipes})
-            }, 
-            () => response.send({recipes: []})
-        );
+        recipeResource.createQueryBuilder("recipes")
+            .leftJoinAndSelect("recipes.user", "user")
+            .getMany()
+            .then(
+                (recipes) => {
+                    response.send({recipes})
+                }, 
+                () => response.send({recipes: []})
+            );
+
+             //.where("recipes.zipcode = :zip", { zip: "idk how to get this from frontend search.js store" })
+             //put after leftjoin
     });
 
 
