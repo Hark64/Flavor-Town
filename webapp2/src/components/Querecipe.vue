@@ -12,7 +12,7 @@
 <template>
   <router-link
     :to="{
-      name: 'recipes',
+      name: 'singleRecipe',
       params: {
         id: obj.id
       }

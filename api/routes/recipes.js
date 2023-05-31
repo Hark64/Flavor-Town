@@ -9,20 +9,19 @@ export default (DataSource) => {
     const userResource = DataSource.getRepository(User);
    
     const multer = require('multer');
-    // const upload = multer({ dest: 'uploads/' })
 
     const storage = multer.diskStorage({
-        destination: './uploads',
+        destination: '../webapp2/uploads',
         filename: (req, file, cb) => {
-            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-            cb(null, file.originalname + '-' + uniqueSuffix);
+            const uniquePrefix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+            cb(null, uniquePrefix + '-' + file.originalname);
         },
       });
       
     const upload = multer({ storage: storage });
 
 
-    router.get('/recipes', (request, response) => {
+    router.get('/search', (request, response) => {
         recipeResource.createQueryBuilder("recipes")
             .leftJoinAndSelect("recipes.user", "user")
             .getMany()
@@ -37,10 +36,9 @@ export default (DataSource) => {
              //put after leftjoin
     });
 
-
     router.post('/recipes', upload.single('uploaded_file'), (request, response) => {
         const {title, description, videoLink} = request.body;
-        const fileName = request.file.filename;
+        const fileName = "../../uploads/" + request.file.filename;
         const recipe = recipeResource.create({
             title,
             description,

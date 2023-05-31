@@ -29,7 +29,7 @@ export const useSearchStore = defineStore('search', () => {
 
     function loadResults() {
 
-        return axios.get("/api/recipes").then((_recipes) => {
+        return axios.get("/api/search").then((_recipes) => {
             var temp = _recipes.data.recipes;
             temp.sort(compareArrays);
 

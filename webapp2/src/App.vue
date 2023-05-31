@@ -1,29 +1,34 @@
 <script setup>
-  import { RouterLink, RouterView } from 'vue-router'
-  import { reactive, onMounted } from 'vue';
-  import { useUserStore } from '@/stores/user';
-  
-  const store = useUserStore();
-  
-  const state = reactive({    // Kind of like a class- info we want to keep around.
-    loginDialog: false,
-    signupDialog: false,
-    error: '',
-    hasError: false,
-    firstName: '',
-    lastName: '',
-    email: '',
-    zipCode: '',
-    password: '', 
-    showLogin: true,
-    loggedIn: false
-  });
-  
-  function login() {
+import router from './router/index.js'
+import { RouterLink, RouterView } from 'vue-router'
+import { reactive, onMounted } from 'vue';
+import { useUserStore } from '@/stores/user';
+
+const store = useUserStore();
+
+const state = reactive({    // Kind of like a class- info we want to keep around.
+  loginDialog: false,
+  signupDialog: false,
+  error: '',
+  hasError: false,
+  firstName: '',
+  lastName: '',
+  email: '',
+  zipCode: '',
+  password: '',
+  showLogin: true,
+  loggedIn: false,
+  isButtonDisabled: false,
+  searchQuery: '',
+  isMenuOpen: false,
+});
+
+function login() {
   const { email, password } = state;
   store.login({ email, password }).then((error) => {
     if (!error) {
-      state.dialog = false;
+      state.loginDialog = false;
+      state.loggedIn = true;
       console.log('Logged in');
     }
   });
@@ -34,23 +39,24 @@ function signup() {
   store.signup({ firstName, lastName, email, zipCode, password }).then((error) => {
     if (!error) {
       state.signupDialog = false;
-      state.loggedIn = !state.loggedIn;
+      state.loggedIn = true;
       console.log('Signed up');
+      store.login({email, password});
     }
   });
 }
 
-function switchToSignup(){
+function switchToSignup() {
   state.loginDialog = false;
   state.signupDialog = true;
 }
 
-function switchToLogin(){
+function switchToLogin() {
   state.loginDialog = true;
   state.signupDialog = false;
 }
 
-function logOut(){
+function logOut() {
   store.logout().then((error) => {
     if (!error) {
       state.loggedIn = false;
@@ -59,109 +65,84 @@ function logOut(){
   });
 }
 
+function toggleMenu(){
+  state.isMenuOpen = !state.isMenuOpen;
+}
+
+function navigateTo(route) {
+  if (!state.loggedIn && (route  != '/') && (route != '/recipes')){
+    state.loginDialog = true;
+    return;
+  }
+  router.push(route);
+  toggleMenu(); 
+}
+
 </script>
 
 
 <template>
-  <div>
-    <div class="hamburger" @click="toggleMenu">
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-      <div class="hamburger-line"></div>
-    </div>
-    <div class="menu" :class="{ 'menu-open': isMenuOpen }">
-      <button class="close-button" @click="toggleMenu">&times;</button>
-      <ul>
-        <li @click="navigateTo('home')"><a>Home</a></li>
-        <li @click="navigateTo('events')"><a>Events</a></li>
-        <li @click="navigateTo('account')"><a>Account</a></li>
-        <li @click="navigateTo('postrecipes')"><a>Post Recipes</a></li>
-        <li @click="navigateTo('recipes')"><a>Recipes</a></li>
-      </ul>
-    </div>
+  <head>
+    <!-- Other meta tags, stylesheets, etc. -->
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  </head>
 
-    <div>
-      <v-btn>Login
-          <v-dialog
-            v-model="state.loginDialog"
-            activator="parent"
-            width="400">
+  <div>
+    <div class="topBar">
+      <div class="barLeft">
+        <v-btn class="hamburger" @click="toggleMenu" icon>
+          <v-icon>mdi-menu</v-icon>
+        </v-btn>
+
+        <h1 class="logo" @click="navigateTo('/')">FlavorTown.com</h1>
+      </div>
+
+      <div class="menu" :class="{ 'menu-open': state.isMenuOpen }">
+        <button class="close-button" @click="toggleMenu">&times;</button>
+        <ul>
+          <h1 class="menuBtn" @click="navigateTo('/')"><a>Home</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/events')"><a>Events</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/account')"><a>Account</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/postrecipes')"><a>Post Recipes</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/recipes')"><a>My Recipes</a></h1>
+        </ul>
+      </div>
+
+      <div class="buttonsContainer">
+        <v-btn class="signLogBtn" id="login" v-if=!state.loggedIn>Login
+          <v-dialog v-model="state.loginDialog" activator="parent" width="400">
             <v-card>
               <v-card-text>
-                <v-alert
-                  density="compact"
-                  type="warning"
-                  icon="$warning"
-                  title="There was an issue logging in."
-                  v-if="store.hasError"
-                >{{ store.error }}</v-alert>
+                <v-alert density="compact" type="warning" icon="$warning" title="There was an issue logging in."
+                  v-if="store.hasError">{{ store.error }}</v-alert>
                 <v-form class="mt-2">
-                  <v-text-field
-                    label="Email address"
-                    type="email"
-                    v-model="state.email"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Password"
-                    type="password"
-                    v-model="state.password">
+                  <v-text-field label="Email address" type="email" v-model="state.email"></v-text-field>
+                  <v-text-field label="Password" type="password" v-model="state.password">
                   </v-text-field>
                   <p>Don't have an account?</p> <v-btn @click="switchToSignup">Sign Up</v-btn>
-
                 </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
                 <v-btn color="primary" @click="login">Login</v-btn>
               </v-card-actions>
             </v-card>
-
           </v-dialog>
-  
+
         </v-btn>
-        <v-btn>Signup
-          <v-dialog
-            v-model="state.signupDialog"
-            activator="parent"
-            width="400">
+        <v-btn class="signLogBtn" id="signup" v-if=!state.loggedIn>Signup
+          <v-dialog v-model="state.signupDialog" activator="parent" width="400">
             <v-card>
               <v-card-text>
-                <v-alert
-                  density="compact"
-                  type="warning"
-                  icon="$warning"
-                  title="There was an issue signing up."
-                  v-if="store.hasError"
-                >{{ store.error }}</v-alert>
+                <v-alert density="compact" type="warning" icon="$warning" title="There was an issue signing up."
+                  v-if="store.hasError">{{ store.error }}</v-alert>
                 <v-form class="mt-2">
-                  <v-text-field
-                    label="First Name"
-                    type="firstName"
-                    v-model="state.firstName"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Last Name"
-                    type="lastName"
-                    v-model="state.lastName"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Email address"
-                    type="email"
-                    v-model="state.email"
-                  ></v-text-field>
-                  <v-text-field
-                    label="ZipCode"
-                    type="zipcode"
-                    v-model="state.zipCode"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Password"
-                    type="password"
-                    v-model="state.password">
+                  <v-text-field label="First Name" type="firstName" v-model="state.firstName"></v-text-field>
+                  <v-text-field label="Last Name" type="lastName" v-model="state.lastName"></v-text-field>
+                  <v-text-field label="Email address" type="email" v-model="state.email"></v-text-field>
+                  <v-text-field label="ZipCode" type="zipcode" v-model="state.zipCode"></v-text-field>
+                  <v-text-field label="Password" type="password" v-model="state.password">
                   </v-text-field>
                   <p>Already have an account?</p> <v-btn @click="switchToLogin">Log In</v-btn>
-
                 </v-form>
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
@@ -170,60 +151,73 @@ function logOut(){
             </v-card>
           </v-dialog>
         </v-btn>
+        <v-btn v-if = state.loggedIn @click="logOut">Logout
+        </v-btn>
+      </div>
     </div>
     <router-view></router-view>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      searchQuery: '',
-      isMenuOpen: false
-    };
-  },
-  methods: {
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen;
-    },
-    navigateTo(route) {
-      this.$router.push({ name: route });
-      this.isMenuOpen = false;
-    } 
-  }
-};
-</script>
+
 
 <style>
-.hamburger {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  width: 30px;
-  height: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+li{
+  color: white;
+}
+.logo {
+  font-family: 'Pacifico', cursive;
+  color: rgb(245, 185, 113);
+  font-size: 42px;
+  margin-left: 8px;
   cursor: pointer;
 }
 
-.hamburger-line {
-  width: 100%;
-  height: 4px;
-  background-color: rgb(237, 221, 221);
+.topBar {
+  margin-bottom: 4rem;
 }
 
+.barLeft {
+  display: flex;
+  align-items: center; /* Center the items vertically */
+}
+
+.hamburger {
+  width: 40px;
+  /* Adjust the width and height as needed */
+  height: 40px;
+  /* Add padding and box-sizing to adjust the size of the lines */
+  margin: 20px;
+  /* Add background color and other styles as desired */
+  background-color: rgb(245, 185, 113);
+  color: white;
+  border-radius: 10%;
+
+}
+
+.hamburger-line {
+  /* Set the height, width, and background color of each line */
+  display: block;
+  height: 4px;
+  width: 100%;
+  background-color: black;
+  /* Add margin to separate the lines */
+  margin-bottom: 6px;
+}
+
+
 .menu {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 200px;
   height: 100%;
-  background-color: lightgray; /* Adjust the background color as needed */
+  background-color: lightgrey;
+  /* Adjust the background color as needed */
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
-  z-index: 1;
+  z-index: 2;
+  border-radius: 0px 10px 10px 0px;
 }
 
 .menu-open {
@@ -240,15 +234,33 @@ export default {
   cursor: pointer;
 }
 
-.container {
-  display: flex;
-  justify-content: center;
+.menuBtn {
+  margin: 10px;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.signLogBtn {
+  margin-left: 20px;
+  width: 100px;
+  height: 40px;
+  font-size: 16px;
+}
+
+
+#login {
+  background-color: rgb(245, 185, 113);
+  color: white;
+  height: 40px;
+}
+
+#signup {
+  height: 40px;
 }
 
 .menu ul {
   list-style-type: none;
   padding: 0;
-  margin: 50px 20px;
 }
 
 .menu li {
@@ -259,5 +271,11 @@ export default {
   text-decoration: none;
   color: black;
   font-size: 18px;
+}
+
+.buttonsContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
 }
 </style>
