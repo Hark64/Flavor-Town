@@ -6,6 +6,6 @@
 
 <template>
   <main>
-    <div>User {{ $route.params.id }}</div>
+    <div>Recipe ID {{ $route.params.id }}</div>
   </main>
 </template>
