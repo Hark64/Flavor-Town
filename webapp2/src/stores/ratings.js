@@ -9,7 +9,7 @@ export const useRatingsStore = defineStore('ratings', () => {
 
 
     function postRating({ score, description, recipeID}) {
-        return axios.post("/api/recipes/${recipeID}/ratings", { score, description, recipeID }).then(
+        return axios.post(`/api/recipes/${recipeID}/ratings`, { score, description, recipeID }).then(
         (response) => {
             console.log(response);
         }, (response) => {
@@ -18,6 +18,12 @@ export const useRatingsStore = defineStore('ratings', () => {
             return hasError;
         });
     }
+
+
+    function deleteRatings(recipe) {
+        return axios.delete(`/api/recipes/${recipe.id}/ratings`).then(() => {
+        })
+    }
     
-    return { error, hasError, postRating };
+    return { error, hasError, postRating, deleteRatings };
 });

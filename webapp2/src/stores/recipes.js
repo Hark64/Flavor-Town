@@ -22,19 +22,6 @@ export const useRecipesStore = defineStore('recipes', () => {
                 return hasError;
             }
         )
-
-    }
-
-    function loadScores() {
-        return axios.get("/api/recipes/${recipeID}/score").then(
-            (response) => {
-                console.log(response);
-            }, (response) => {
-                hasError.value = true;
-                error.value = response.response.data.msg;
-                return hasError;
-            }
-        )
     }
 
 
@@ -59,6 +46,13 @@ export const useRecipesStore = defineStore('recipes', () => {
             return hasError;
         });
     }
-    
-    return { error, hasError, loading, recipes, loadRecipes, loadScores, postRecipe };
+
+    function deleteRecipe(recipe) {
+        const idx = recipes.value.indexOf(recipe);
+        return axios.delete(`/api/recipes/${recipe.id}`).then(() => {
+            recipes.value.splice(idx, 1);
+        })
+    }
+
+    return { error, hasError, loading, recipes, loadRecipes, postRecipe, deleteRecipe };
 });

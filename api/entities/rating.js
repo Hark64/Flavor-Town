@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, AfterInsert } from 'typeorm';
 import { Recipe } from './recipe'
 import { User } from './user'
 

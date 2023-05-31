@@ -33,51 +33,13 @@ export default (DataSource) => {
             response.send(result);
         });
     });
+    
 
-    router.get('recipes/:recipeID/score', (request, response) => {
-        const recipeID = request.body;
-        let sumScore = 0;
-
-        ratingResource.find({where: {
-            recipe: recipeID
-        }}).then(
-            ratings => {
-                ratings.foreach((rating) => {
-                    sumScore += rating.score;
-                });
-
-                recipeResource.findOne({where: {
-                    id: recipeID
-                }}).then(
-                    (recipe) => {
-                        if (ratings.length > 0) {
-                            recipe.score = sumScore / ratings.length;
-                        }
-                        else {
-                            recipe.score = 0;
-                        }
-                        recipeResource.save(recipe).then(() => {
-                            response.send(recipe.score);
-                        });
-                    }
-                );
-                () => response.send({score: 0});
-            },
-        );
-
+    router.delete('/recipes/:id/ratings', (req, res) => {
+        ratingResource.delete({recipe: {id: req.params.id} }).then((result) => {
+            res.send(result);
+        });
     });
-
-    router.get('/recipes', (request, response) => {
-        recipeResource.find({where: {
-            user: request.user
-        }}).then(
-            (recipes) => {
-                response.send({recipes})
-            }, 
-            () => response.send({recipes: []})
-        );
-    });
-
 
     return router;
 }

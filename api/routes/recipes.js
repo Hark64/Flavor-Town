@@ -16,16 +16,32 @@ export default (DataSource) => {
       });
       
     const upload = multer({ storage: storage });
+    // router.get('/recipes', (request, response) => {
+    //     recipeResource.find({where: {
+    //         user: request.user
+    //     }}).then(
+    //         (recipes) => {
+    //             response.send({recipes})
+    //         }, 
+    //         () => response.send({recipes: []})
+    //     );
+    // });
 
 
     router.get('/recipes', (request, response) => {
-        recipeResource.find({where: {
-            user: request.user
-        }}).then(
+        recipeResource.createQueryBuilder("recipe")
+        .leftJoin("recipe.ratings", "rating")
+        .addSelect("AVG(rating.score)", "avgScore")
+        .where("recipe.user = :userID", { userID: request.user.id })
+        .groupBy("recipe.id")
+        .getRawMany()
+        .then(
             (recipes) => {
-                response.send({recipes})
+                response.send({recipes});
             }, 
-            () => response.send({recipes: []})
+            () => {
+                response.send({recipes: []});
+            }
         );
     });
 

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, AfterUpdate, AfterInsert } from 'typeorm';
 import { User } from './user';
 import { Rating } from './rating';
 
@@ -20,11 +20,12 @@ export class Recipe {
     fileName
 
     @Column({type: 'numeric', default: 0})
-    score
+    avgScore
 
     @ManyToOne(() => User, (user) => user.recipes)
     user
 
     @OneToMany(() => Rating, (rating) => rating.recipe) 
     ratings
+
 }
