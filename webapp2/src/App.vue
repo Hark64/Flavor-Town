@@ -21,6 +21,11 @@ const state = reactive({    // Kind of like a class- info we want to keep around
   isButtonDisabled: false,
   searchQuery: '',
   isMenuOpen: false,
+
+  methods: {
+    // TO DO make method in app.vue to export. something like login state.
+  }
+
 });
 
 function login() {
@@ -77,7 +82,6 @@ function navigateTo(route) {
   router.push(route);
   toggleMenu(); 
 }
-
 </script>
 
 
@@ -102,7 +106,7 @@ function navigateTo(route) {
         <ul>
           <h1 class="menuBtn" @click="navigateTo('/')"><a>Home</a></h1>
           <h1 class="menuBtn" @click="navigateTo('/events')"><a>Events</a></h1>
-          <h1 class="menuBtn" @click="navigateTo('/account')"><a>Account</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/account')"><a>My Account</a></h1>
           <h1 class="menuBtn" @click="navigateTo('/postrecipes')"><a>Post Recipes</a></h1>
           <h1 class="menuBtn" @click="navigateTo('/recipes')"><a>My Recipes</a></h1>
         </ul>

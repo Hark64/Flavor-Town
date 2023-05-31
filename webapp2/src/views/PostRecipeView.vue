@@ -17,6 +17,7 @@
         recipesStore.postRecipe({title, description, videoLink, file}).then((error) => {
             if (!error) {
                 console.log("Recipe Posted");
+                alert('Profile updated successfully!')
                 //RecipeSuccessDialog();  TODO - Ideally we want this here but it's not running. Probably async stuff.
             }
         });
@@ -25,7 +26,7 @@
     function submitForm(event) {
         event.preventDefault(); // Prevent the default form submission
         postRecipe();
-        RecipeSuccessDialog();  // TODO- Right now, THIS ALWAYS SHOWS even if post fails. 
+        //RecipeSuccessDialog();  // TODO- Right now, THIS ALWAYS SHOWS even if post fails. 
                                 // TODO make dialog disapear after time or put x button
 
     }
