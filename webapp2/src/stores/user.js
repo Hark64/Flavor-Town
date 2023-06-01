@@ -67,6 +67,6 @@ export const useUserStore = defineStore('user', () => {
     }
 
 
-    return { loggedIn, error, hasError, login, signup, logout, ping, getUser };
+    return { loggedIn, error, hasError, login, signup, logout, ping, getUser, currentUser };
 
 });

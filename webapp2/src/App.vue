@@ -140,6 +140,8 @@ function navigateTo(route) {
                 <v-alert density="compact" type="warning" icon="$warning" title="There was an issue signing up."
                   v-if="store.hasError">{{ store.error }}</v-alert>
                 <v-form class="mt-2">
+                  <!-- Make a checkbox. -->
+                  <p>By signing up for FlavorTown.com, you are consenting to us using your location.</p> 
                   <v-text-field label="First Name" type="firstName" v-model="state.firstName"></v-text-field>
                   <v-text-field label="Last Name" type="lastName" v-model="state.lastName"></v-text-field>
                   <v-text-field label="Email address" type="email" v-model="state.email"></v-text-field>

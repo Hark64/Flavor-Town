@@ -22,6 +22,7 @@
     onMounted(() => {
         recipesStore.loadScores();
         recipesStore.loadRecipes();
+        userStore.getUser();
     });
 
     function openEditAccountDialog() {
@@ -40,7 +41,7 @@
 
     function saveAccountInfo() {
       console.log("Changes to account information saved.")
-      // TODO need to tie to backend.
+      // TODO need to tie to backend. Will be a put instead of a post.
       state.showEditAccountDialog = false;
     }
 
@@ -93,11 +94,12 @@
     
 <template>   
   <main>
-    <div>
+    <!-- v-for="recipe in recipesStore.recipes" :key="recipe.id" -->
+    <div v-for="recipe in recipesStore.recipes" :key="recipe.id">
       <!--<img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600"></img>-->
       <h1>PROFILE</h1>
-      <p>First Name: {{ user.firstName }} </p>
-      <p>Last Name:  {{ user.lastName }} </p>
+      <p>First Name: {{ userStore.currentUser.firstName }} </p>
+      <p>Last Name:  boop boop </p>
       <p>Email: nonya@business.com</p>
       <p>ZipCode: 1234</p>
     </div>
