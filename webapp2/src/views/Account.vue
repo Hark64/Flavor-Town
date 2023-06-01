@@ -90,17 +90,29 @@
       state.showDeletePostDialog = false;
     }
 
+    function consoleLog() {
+      console.log(userStore.currentUser);
+      console.log(userStore.currentUser[0]);
+      console.log(userStore.currentUser[0].firstName);
+      console.log(userStore.currentUser[0].lastName);
+      console.log(userStore.currentUser[0].email);
+      console.log(userStore.currentUser[0].zipCode);
+    }
+
 </script>
     
 <template>   
   <main>
     <div>
       <!--<img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600"></img>-->
+      <v-btn @click="consoleLog()"></v-btn>
       <h1>PROFILE</h1>
-      <p>First Name: {{ userStore.currentUser[0].firstName }} </p>
-      <p>Last Name: {{ userStore.currentUser[0].lastName }} </p>
-      <p>Email: {{ userStore.currentUser[0].email }}</p>
-      <p>ZipCode: {{ userStore.currentUser[0].zipCode }}</p>
+      <div v-if="userStore.currentUser">
+        <p>First Name: {{ userStore.currentUser[0].firstName }} </p>
+        <p>Last Name: {{ userStore.currentUser[0].lastName }} </p>
+        <p>Email: {{ userStore.currentUser[0].email }}</p>
+        <p>ZipCode: {{ userStore.currentUser[0].zipCode }}</p>
+      </div>
     </div>
     <!-- TODO HTML img tag of profile pic -->
 
