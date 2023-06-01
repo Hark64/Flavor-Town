@@ -94,14 +94,13 @@
     
 <template>   
   <main>
-    <!-- v-for="recipe in recipesStore.recipes" :key="recipe.id" -->
-    <div v-for="recipe in recipesStore.recipes" :key="recipe.id">
+    <div>
       <!--<img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600"></img>-->
       <h1>PROFILE</h1>
-      <p>First Name: {{ userStore.currentUser.firstName }} </p>
-      <p>Last Name:  boop boop </p>
-      <p>Email: nonya@business.com</p>
-      <p>ZipCode: 1234</p>
+      <p>First Name: {{ userStore.currentUser[0].firstName }} </p>
+      <p>Last Name: {{ userStore.currentUser[0].lastName }} </p>
+      <p>Email: {{ userStore.currentUser[0].email }}</p>
+      <p>ZipCode: {{ userStore.currentUser[0].zipCode }}</p>
     </div>
     <!-- TODO HTML img tag of profile pic -->
 

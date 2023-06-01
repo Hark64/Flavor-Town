@@ -18,16 +18,5 @@ export default (DataSource) => {
         );
     })
 
-    router.get('/userRecipe', (request, response) => {
-      recipeResource.find({where: {
-          user: request.user
-      }}).then(
-          (recipes) => {
-              response.send({recipes})
-          }, 
-          () => response.send({recipes: []})
-      );
-  });
-
   return router;
 }
