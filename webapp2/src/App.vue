@@ -17,7 +17,7 @@ const state = reactive({    // Kind of like a class- info we want to keep around
   zipCode: '',
   password: '',
   showLogin: true,
-  loggedIn: false,
+  //loggedIn: false,
   isButtonDisabled: false,
   searchQuery: '',
   isMenuOpen: false,
@@ -28,7 +28,7 @@ function login() {
   store.login({ email, password }).then((error) => {
     if (!error) {
       state.loginDialog = false;
-      state.loggedIn = true;
+      store.loggedIn = true;
       console.log('Logged in');
     }
   });
@@ -39,7 +39,6 @@ function signup() {
   store.signup({ firstName, lastName, email, zipCode, password }).then((error) => {
     if (!error) {
       state.signupDialog = false;
-      state.loggedIn = true;
       console.log('Signed up');
       store.login({email, password});
     }
@@ -59,7 +58,7 @@ function switchToLogin() {
 function logOut() {
   store.logout().then((error) => {
     if (!error) {
-      state.loggedIn = false;
+      store.loggedIn = false;
       console.log('Logged out');
     }
   });
@@ -70,14 +69,13 @@ function toggleMenu(){
 }
 
 function navigateTo(route) {
-  if (!state.loggedIn && (route  != '/') && (route != '/recipes')){
+  if (!store.loggedIn && (route  != '/') && (route != '/recipes')){
     state.loginDialog = true;
     return;
   }
   router.push(route);
   toggleMenu(); 
 }
-
 </script>
 
 
@@ -109,7 +107,7 @@ function navigateTo(route) {
       </div>
 
       <div class="buttonsContainer">
-        <v-btn class="signLogBtn" id="login" v-if=!state.loggedIn>Login
+        <v-btn class="signLogBtn" id="login" v-if=!store.loggedIn>Login
           <v-dialog v-model="state.loginDialog" activator="parent" width="400">
             <v-card>
               <v-card-text>
@@ -129,7 +127,7 @@ function navigateTo(route) {
           </v-dialog>
 
         </v-btn>
-        <v-btn class="signLogBtn" id="signup" v-if=!state.loggedIn>Signup
+        <v-btn class="signLogBtn" id="signup" v-if=!store.loggedIn>Signup
           <v-dialog v-model="state.signupDialog" activator="parent" width="400">
             <v-card>
               <v-card-text>
@@ -153,7 +151,7 @@ function navigateTo(route) {
             </v-card>
           </v-dialog>
         </v-btn>
-        <v-btn v-if = state.loggedIn @click="logOut">Logout
+        <v-btn v-if = store.loggedIn @click="logOut">Logout
         </v-btn>
       </div>
     </div>
