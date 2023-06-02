@@ -1,1 +1,1 @@
-DELETE from user
+DELETE from recipe

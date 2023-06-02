@@ -1,95 +1,237 @@
-<script>
+<script setup>
+    import { onMounted, reactive } from 'vue';
+    import { useRecipesStore } from '@/stores/recipes';
+    import { useRatingsStore } from '@/stores/ratings';
+    import { useUserStore } from '@/stores/user';
+import { storeToRefs } from 'pinia';
+    //import { SvgIcon } from '@jamescoyle/vue-icon';
+    //import { mdiDotsVertical } from '@mdi/js';
+
+
+    const userStore = useUserStore();
+    const recipesStore = useRecipesStore();
+    const ratingsStore = useRatingsStore();
+
+    const state = reactive({
+        score: 0,
+        description: '',
+        showEditAccountDialog: false, // Popup for Editing Account details.
+        showConfirmDeleteDialog: false, // Popup for confirming delete Account request. 
+        showDeletePostDialog: false,
+    })
+
+    onMounted(() => {
+      state.loading=false;
+      recipesStore.loadRecipes();
+      recipesStore.recipes.forEach((recipe) => {
+        ratingsStore.getRatings(recipe.recipe_id);
+      });
+      state.loading = true;
+      userStore.getUser();
+    });
+
+    function openEditAccountDialog() {
+      console.log("Opened edit dialog.");
+      state.showEditAccountDialog = true;
+    }
+
+    function postReview(recipeID) {
+      const {score, description} = state;
+      ratingsStore.postRating({score, description, recipeID}).then((error) => {
+        if (!error) {
+          console.log("Review posted.");
+        }
+      });
+    }
+
+    function saveAccountInfo() {
+      console.log("Changes to account information saved.")
+      // TODO need to tie to backend. Will be a put instead of a post.
+      //userStore.currentUser[0].firstName
+      //userStore.currentUser[0] = firstName;
+    }
+
+    function logout() {
+      // TODO sign out and delete
+      // TODO not sure why the logout button
+        userStore.deleteAccount().then((error) => {
+          //this.$root.logout();
+          console.log("Error during logout", error)
+        });
+     
+      
+    }
+
+    function askConfirmationToDeleteAccount(){
+      console.log("Popup opened: asking confirmation to delete account.")
+      state.showConfirmDeleteDialog = true;
+    }
+
+    function deleteAccount(){
+      // TODO Actually Delete Account (api call)
+      // TODO Actually remove popups and logout
+      state.showConfirmDeleteDialog = false;
+      state.showEditAccountDialog = false;
+      logout();
+      alert("Account successfully deleted.");
+    }
+
+    function abortDelete(){
+      console.log("User decided not to delete account.")
+      state.showConfirmDeleteDialog = false;
+    }
+
+    function openDeletePostDialog(){
+      console.log("Popup opened: asking confirmation to delete account.")
+      state.showDeletePostDialog = true;
+    }
+
+    function deletePost(){
+      // TODO Actually delete the post from front end and back end?? 
+      console.log("Post deleted.")
+      state.showDeletePostDialog = false;
+      alert("Your delicious post has been deleted.")  // TODO It would be nice to have the alert appear AFTER popup goes away.
+    }
+
+    function abortDeletePost(){
+      console.log("Post not deleted.")
+      state.showDeletePostDialog = false;
+    }
+
+
 
 </script>
-
-<template>
-
-<nav>
-
-    <div class="preview">
-      <img src="https://i.pinimg.com/736x/3f/94/70/3f9470b34a8e3f526dbdb022f9f19cf7.jpg" class="pfp" id="prev">
-      <div class="text">
-        <h1>Shayan Daijavad</h1>
-        <p>San Luis Obispo, CA</p>
-      </div>
-    </div>
-  </nav>
-
-<body>
+    
+<template>   
   <main>
-    <div class="button-container">
-      <button class="recipes-button">Recipes</button>
-    </div>
-    <div class="posts-container">
-      <div class="post">
-        <img src="../assets/post.png" alt="Post 1">
-      </div>
-      <div class="post">
-        <img src="../assets/post.png" alt="Post 2">
-      </div>
-      <div class="post">
-        <img src="../assets/post.png" alt="Post 3">
-      </div>
-      <div class="post">
-        <img src="../assets/post.png" alt="Post 4">
-      </div>
-      <div class="post">
-        <img src="../assets/post.png" alt="Post 5">
-      </div>
-      <div class="post">
-        <img src="../assets/post.png" alt="Post 6">
-      </div>
-      <div class="post">
-        <img src="../assets/post.png" alt="Post 7">
-      </div>
-      <div class="post">
-        <img src="../assets/post.png" alt="Post 8">
-      </div>
-      <div class="post">
-        <img src="../assets/post.png" alt="Post 9">
+    <div>
+      <!--<img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600"></img>-->
+      <h1>PROFILE</h1>
+      <div v-if="userStore.currentUser">
+        <p>First Name: {{ userStore.currentUser[0].firstName }} </p>
+        <p>Last Name: {{ userStore.currentUser[0].lastName }} </p>
+        <p>Email: {{ userStore.currentUser[0].email }}</p>
+        <p>ZipCode: {{ userStore.currentUser[0].zipCode }}</p>
       </div>
     </div>
+    <!-- TODO HTML img tag of profile pic -->
+
+    <!-- This button (and pop up) lets user edit their account. -->
+    <v-btn class="editAccBtn" id="editAccount" @click="openEditAccountDialog">Edit Account</v-btn>
+          <v-dialog v-model="state.showEditAccountDialog"  width="400">
+            <v-card>
+              <v-card-text>
+                <v-form class="mt-2">
+                  <v-text-field label="First Name" type="firstName" v-model="state.firstName"></v-text-field>
+                  <v-text-field label="Last Name" type="lastName" v-model="state.lastName"></v-text-field>
+                  <v-text-field label="Email address" type="email" v-model="state.email"></v-text-field>
+                  <v-text-field label="ZipCode" type="zipcode" v-model="state.zipCode"></v-text-field>
+                  <p>Delete my account.</p> 
+                  <!-- This button (and pop up) gives user a chance to confirm account deletion. -->
+                  <v-btn @click="askConfirmationToDeleteAccount">Delete
+                    <v-dialog v-model="state.showConfirmDeleteDialog" width="400">
+                      <v-card>
+                        <v-card-text>
+                          <v-form class="mt-2">
+                            <p>Are you sure you want to delete your account?</p>
+                            <v-btn @click="deleteAccount">Delete</v-btn>
+                            <v-btn @click="abortDelete">NOOOOOO</v-btn>
+                          </v-form>
+                        </v-card-text>
+                      </v-card>
+                    </v-dialog>
+                  </v-btn> 
+                </v-form>
+              </v-card-text>
+              <v-card-actions class="d-flex flex-row-reverse ma-2">
+                <!-- This button lets user save changes. -->
+                <v-btn color="primary" @click="saveAccountInfo()">Save</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+    
+
+    <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="recipe in recipesStore.recipes" :key="recipe.recipe_id">
+        <v-alert density="compact" type="warning" icon="$warning" title="There was an issue getting your recipes" v-if="recipesStore.hasError">{{ recipesStore.error }}</v-alert>
+        <v-card-item>
+          <div>
+            <div class="text-overline mb-1">
+              <h1> {{ recipe.recipe_title }} </h1>
+            </div>
+            <div class="text-h6 mb-1">
+              Description: {{recipe.recipe_description}}
+            </div>
+            <div class="text-h6 mb-1" v-if="recipe.recipe_videoLink">
+              Video Link: {{recipe.recipe_videoLink}}
+            </div>
+            <div class="text-h6 mb-1" v-if="recipe.avgScore">
+              Score: {{recipe.avgScore}}
+            </div>
+            <img :src="recipe.recipe_fileName" alt="No Image" style="object-fit: contain;" width="500" height="500"/>
+            <v-card class="mx-auto" min-width="1200" variant="outlined" v-if="state.loading" v-for="rating in ratingsStore.ratings[recipe.recipe_id]" :key="rating.id">
+              <div class="text-h6 mb-1">
+                Rating Score: {{rating.score}}
+              </div>
+              <div class="test-h6 mb-1">
+                Description: {{rating.description}}
+              </div>
+            </v-card>
+            <v-btn @click="deleteRecipe(recipe, recipe.recipe_id)">Delete Recipe</v-btn>
+            <div>
+              <v-btn>Post Review
+                <v-dialog activator="parent" width="400">
+                  <v-card>
+                    <v-card-text>
+                      <v-form class="mt-2">
+                        <v-text-field
+                          label="Score (0-5)"
+                          type="number"
+                          min="0"
+                          max="5"
+                          step="0.5"
+                          v-model="state.score"
+                        ></v-text-field>
+                        <v-text-field
+                          label="Description"
+                          type="text"
+                          v-model="state.description">
+                        </v-text-field>
+                      </v-form>
+                    </v-card-text>
+                    <v-card-actions class="d-flex flex-row-reverse ma-2">
+                      <v-btn color="primary" @click="postReview(recipe.recipe_id)">Post Review</v-btn>
+                        <v-dialog v-if="state.invalidScore" activator="parent" @close="closeScoreChecker()" width="400">
+                          <v-card>
+                            <v-card-text>
+                              There was an issue with your submission. Make sure the score is between 0 and 5.
+                            </v-card-text>
+                          </v-card>
+                        </v-dialog>
+                        <v-dialog v-if="state.reviewPosted" activator="parent" @close="closeReviewPosted()" width="400">
+                          <v-card>
+                            <v-card-text >
+                              Review Posted!
+                            </v-card-text>
+                          </v-card>
+                        </v-dialog>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-btn>
+            </div>
+          </div>
+        </v-card-item>
+    </v-card>
   </main>
-</body>
 </template>
 
-<style scoped>
-/* Global styles */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+<style>
 
-body {
-  font-family: sans-serif;
+.editAccountBtn {
+  margin-left: 20px;
+  width: 100px;
+  height: 40px;
   font-size: 16px;
-}
-
-header {
-  background-color: #ffffff;
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
-
-#hamburger-btn {
-  margin-right: 20px;
-}
-
-#logout-btn {
-  width: 165px;
-  margin-right: 20px;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-  margin: 10px;
 }
 
 .header-left img {
@@ -102,7 +244,6 @@ header {
 h2 {
   margin-right: 20px;
 }
-
 
 .profile-info {
   display: flex;
@@ -126,12 +267,10 @@ h2 {
   padding: 20px 40px;
   border-radius: 20px;
   border: none;
-  background-color: lightgrey;
+  background-color: white;
   margin: 20px;
   margin-bottom: 60px;
 }
-
-
 
 /* Layout for profile page */
 .container {
@@ -143,24 +282,21 @@ h2 {
 .posts-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   align-items: center;
-  max-width: 90%;  
+  max-width: 90%;
   margin: 0 auto;
-}
-
-.posts-container .post {
-  width: calc(33.33% - 20px);
-  margin: 10px;
-  box-sizing: border-box;
 }
 
 .posts-container img {
   width: 100%;
+  height: 100%;
 }
 
 /* Layout for posts */
 .post {
+  width: calc(33.33% - 20px);
+  margin: 10px;
+  box-sizing: border-box;
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
@@ -194,6 +330,7 @@ h2 {
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
 }
+
 nav {
   position: relative;
   background-color: white;
@@ -212,35 +349,6 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.menu-left {
-  display: flex;
-  align-items: center;
-}
-
-.menu-left a {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-decoration: none;
-  color: black;
-  padding: 0.5rem;
-  background-color: lightgrey;
-  border-radius: 8px;
-}
-
-.hamburger-line {
-  width: 100%;
-  height: 4px;
-  background-color: black;
-}
-
-.menu-center>* {
-  margin-right: 12px;
-}
-
-.menu-center>*:last-child {
-  margin-right: 0;
 }
 
 .menu-center a svg {
