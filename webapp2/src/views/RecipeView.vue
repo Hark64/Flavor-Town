@@ -9,7 +9,8 @@
         score: 0,
         description: '',
         loading: false,
-        validScore: true
+        invalidScore: false,
+        reviewPosted: false
     })
 
     onMounted(() => {
@@ -24,11 +25,17 @@
 
     function postReview(recipeID) {
       const {score, description} = state;
-      ratingsStore.postRating({score, description, recipeID}).then((error) => {
-        if (!error) {
-          console.log("Review Posted");
-        }
-      });
+      if (score > 5 || score < 0) {
+        state.invalidScore = true;
+      }
+      else {
+        ratingsStore.postRating({score, description, recipeID}).then((error) => {
+          if (!error) {
+            console.log("Review Posted");
+            state.reviewPosted = true;
+          }
+        });
+      }
     }
 
     function deleteRecipe(recipe, recipeID) {
@@ -48,12 +55,14 @@
       })
     }
 
-    function checkScore() {
-      if (state.score > 5 || state.score < 0) {
-        state.validScore = false;
-      }
+  
+    function closeScoreChecker() {
+      state.invalidScore = false;
     }
 
+    function closeReviewPosted() {
+      state.reviewPosted = false;
+    }
 
 </script>
     
@@ -97,7 +106,6 @@
                         min="0"
                         max="5"
                         step="0.5"
-                        @input="checkScore"
                         v-model="state.score"
                       ></v-text-field>
                       <v-text-field
@@ -109,14 +117,21 @@
                   </v-card-text>
                   <v-card-actions class="d-flex flex-row-reverse ma-2">
                     <v-btn color="primary" @click="postReview(recipe.recipe_id)">Post Review</v-btn>
+                      <v-dialog v-if="state.invalidScore" activator="parent" @close="closeScoreChecker()" width="400">
+                        <v-card>
+                          <v-card-text>
+                            There was an issue with your submission. Make sure the score is between 0 and 5.
+                          </v-card-text>
+                        </v-card>
+                      </v-dialog>
+                      <v-dialog v-if="state.reviewPosted" activator="parent" @close="closeReviewPosted()" width="400">
+                        <v-card>
+                          <v-card-text >
+                            Review Posted!
+                          </v-card-text>
+                        </v-card>
+                      </v-dialog>
                   </v-card-actions>
-                  <!-- <v-dialog v-if="!state.validScore" activator="parent" width="400">
-                    <v-card>
-                      <v-card-text >
-                        There was an issue with your submission. Make sure the score is between 0 and 5.
-                      </v-card-text>
-                    </v-card>
-                  </v-dialog> -->
                 </v-card>
               </v-dialog>
             </v-btn>
