@@ -45,6 +45,13 @@ export const useUserStore = defineStore('user', () => {
         });
     }
 
+    function deleteAccount() {
+        return axios.get("/api/logout").then(() => {
+            loggedIn.value = false;
+        });
+    }
+
+
     function ping() {
         return axios.get("/api/ping").then(() => {
             loggedIn.value = true;
@@ -66,6 +73,6 @@ export const useUserStore = defineStore('user', () => {
     }
 
 
-    return { loggedIn, error, hasError, currentUser, login, signup, logout, ping, getUser};
+    return { loggedIn, error, hasError, currentUser, login, signup, logout, ping, getUser, deleteAccount};
 
 });

@@ -3,6 +3,7 @@
     import { useRecipesStore } from '@/stores/recipes';
     import { useRatingsStore } from '@/stores/ratings';
     import { useUserStore } from '@/stores/user';
+import { storeToRefs } from 'pinia';
     //import { SvgIcon } from '@jamescoyle/vue-icon';
     //import { mdiDotsVertical } from '@mdi/js';
 
@@ -46,14 +47,18 @@
     function saveAccountInfo() {
       console.log("Changes to account information saved.")
       // TODO need to tie to backend. Will be a put instead of a post.
-      state.showEditAccountDialog = false;
+      //userStore.currentUser[0].firstName
+      //userStore.currentUser[0] = firstName;
     }
 
-    function logOut() {
-      // TODO not tied to backend
-        userStore.logout().then((error) => {
-        console.log("Error during logout", error)
-      });
+    function logout() {
+      // TODO sign out and delete
+      // TODO not sure why the logout button
+        userStore.deleteAccount().then((error) => {
+          //this.$root.logout();
+          console.log("Error during logout", error)
+        });
+     
       
     }
 
@@ -63,12 +68,11 @@
     }
 
     function deleteAccount(){
-      console.log()
       // TODO Actually Delete Account (api call)
       // TODO Actually remove popups and logout
       state.showConfirmDeleteDialog = false;
       state.showEditAccountDialog = false;
-      logOut();
+      logout();
       alert("Account successfully deleted.");
     }
 
@@ -93,6 +97,7 @@
       console.log("Post not deleted.")
       state.showDeletePostDialog = false;
     }
+
 
 
 </script>
@@ -140,7 +145,7 @@
               </v-card-text>
               <v-card-actions class="d-flex flex-row-reverse ma-2">
                 <!-- This button lets user save changes. -->
-                <v-btn color="primary" @click="saveAccountInfo">Save</v-btn>
+                <v-btn color="primary" @click="saveAccountInfo()">Save</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
