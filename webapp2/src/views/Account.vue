@@ -94,14 +94,6 @@
       state.showDeletePostDialog = false;
     }
 
-    function consoleLog() {
-      console.log(userStore.currentUser);
-      console.log(userStore.currentUser[0]);
-      console.log(userStore.currentUser[0].firstName);
-      console.log(userStore.currentUser[0].lastName);
-      console.log(userStore.currentUser[0].email);
-      console.log(userStore.currentUser[0].zipCode);
-    }
 
 </script>
     
@@ -109,7 +101,6 @@
   <main>
     <div>
       <!--<img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600"></img>-->
-      <v-btn @click="consoleLog()"></v-btn>
       <h1>PROFILE</h1>
       <div v-if="userStore.currentUser">
         <p>First Name: {{ userStore.currentUser[0].firstName }} </p>
