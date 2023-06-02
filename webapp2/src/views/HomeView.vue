@@ -12,7 +12,7 @@
 
   params.count=10;
 
-onMounted(() => {
+  onMounted(() => {
     if (store.loggedIn==true) {
       store.getUser({}).then((error) => {
         if(!error){
@@ -34,28 +34,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="background"></div>
+  <main>
+    <div id="background"></div>
   
-  
-  <div class="search">
-    <SearchBar />
-  </div>
+    <div class="search">
+      <SearchBar />
+    </div>
 
-  <div class="content">
-    <h1>For you</h1>
-    <div class="post">
-        <img src="../assets/post.png" alt="Post 1">
-      </div>
-      <div class="post">
-        <img src="../assets/post.png" alt="Post 2">
-      </div>
-      <div class="post">
-        <img src="../assets/post.png" alt="Post 3">
-      </div>
-      <div class="post">
-        <img src="../assets/post.png" alt="Post 4">
-      </div>
-  </div>
 
     <div v-if="homeRecipes.length==0">
       <h1>Looks Like No Recipes Are Available</h1>
