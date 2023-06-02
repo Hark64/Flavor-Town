@@ -142,3 +142,6 @@
     </v-card>
   </main>
 </template>
+
+<style scoped>
+</style>

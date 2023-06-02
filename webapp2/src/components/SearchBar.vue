@@ -24,16 +24,16 @@
 <v-card
     class="pa-4"
     flat
-    height="200px"
+    height="134px"
     color="transparent"
     opacity=0.5
   >
-    <v-toolbar
-      round
+    <v-toolbar class="searchBar"
+      rounded="20%"
       floating
-      color="transparent"
+      color="white"
     >
-      <v-text-field
+      <v-text-field class="searchField"
         hide-details
         prepend-inner-icon="mdi-magnify"
         single-line
@@ -48,8 +48,7 @@
         @keydown.enter="goSearch"
       ></v-text-field>
 
-
-        <v-btn icon color="gray" dark to="/search" @click="goSearch">
+        <v-btn class="search" icon color="gray" dark to="/search" @click="goSearch">
           <v-icon>mdi-send-variant</v-icon>
         </v-btn>
 
@@ -78,8 +77,7 @@
         </v-dialog>
       </v-btn>
     </v-toolbar>
-
-        <v-text-field v-if="store.showZip" 
+        <v-text-field v-if="store.showZip"
           hide-details
           prepend-inner-icon="mdi-magnify"
           single-line
@@ -97,3 +95,20 @@
         ></v-text-field>
   </v-card>
 </template>
+
+<style>
+.search {
+  margin-left: 10px;
+}
+
+.searchBar {
+  background-color: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: none;
+}
+
+.searchField {
+  width: 700px;
+}
+</style>

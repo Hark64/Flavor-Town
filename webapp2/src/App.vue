@@ -88,17 +88,23 @@ function navigateTo(route) {
 <template>
   <head>
     <!-- Other meta tags, stylesheets, etc. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mandali&display=swap" rel="stylesheet">
   </head>
 
-  <div>
+  <div class="header">
     <div class="topBar">
       <div class="barLeft">
         <v-btn class="hamburger" @click="toggleMenu" icon>
           <v-icon>mdi-menu</v-icon>
         </v-btn>
 
-        <h1 class="logo" @click="navigateTo('/')">FlavorTown.com</h1>
+        <h1 class="logo" @click="navigateTo('home')">FlavorTown.com</h1>
       </div>
 
       <div class="menu" :class="{ 'menu-open': state.isMenuOpen }">
@@ -160,64 +166,53 @@ function navigateTo(route) {
         </v-btn>
       </div>
     </div>
-    <router-view></router-view>
+
+    <div class="router">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 
 
-<style>
-li{
+<style> 
+li {
   color: white;
 }
+
 .logo {
   font-family: 'Pacifico', cursive;
   color: rgb(245, 185, 113);
-  font-size: 42px;
-  margin-left: 8px;
+  font-size: 40px;
+  margin-left: 4px;
   cursor: pointer;
-}
-
-.topBar {
-  margin-bottom: 4rem;
 }
 
 .barLeft {
   display: flex;
-  align-items: center; /* Center the items vertically */
+  align-items: center;
+  /* Center the items vertically */
 }
 
 .hamburger {
-  width: 40px;
+  width: 20px;
   /* Adjust the width and height as needed */
-  height: 40px;
   /* Add padding and box-sizing to adjust the size of the lines */
   margin: 20px;
   /* Add background color and other styles as desired */
-  background-color: rgb(245, 185, 113);
-  color: white;
+  background-color: white;
+  color: black;
+  border: 2px solid rgb(200, 200, 200); /* Add this line to add a border */
   border-radius: 10%;
-
 }
-
-.hamburger-line {
-  /* Set the height, width, and background color of each line */
-  display: block;
-  height: 4px;
-  width: 100%;
-  background-color: black;
-  /* Add margin to separate the lines */
-  margin-bottom: 6px;
-}
-
 
 .menu {
-  position: absolute;
+  position:fixed;
   top: 0;
   left: 0;
-  width: 200px;
+  width: 20%;
   height: 100%;
-  background-color: lightgrey;
+  background-color: white;
   /* Adjust the background color as needed */
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
@@ -230,19 +225,17 @@ li{
 }
 
 .close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  margin-left: 20px;
   border: none;
   background-color: transparent;
-  font-size: 20px;
+  font-size: 40px;
   cursor: pointer;
 }
 
 .menuBtn {
-  margin: 10px;
-  margin-left: 20px;
+  margin: 16px 10px 20px 20%;
   cursor: pointer;
+  font-size: 28px;
 }
 
 .signLogBtn {
@@ -250,8 +243,10 @@ li{
   width: 100px;
   height: 40px;
   font-size: 16px;
-}
+  font-family: 'Mandali', sans-serif;
+  font-weight: bold;
 
+}
 
 #login {
   background-color: rgb(245, 185, 113);
@@ -261,6 +256,7 @@ li{
 
 #signup {
   height: 40px;
+  border: 2px solid rgb(200, 200, 200); /* Add this line to add a border */
 }
 
 .menu ul {
@@ -275,11 +271,10 @@ li{
 .menu a {
   text-decoration: none;
   color: black;
-  font-size: 18px;
 }
 
 .buttonsContainer {
-  position: fixed;
+  position: absolute;
   top: 20px;
   right: 20px;
 }
