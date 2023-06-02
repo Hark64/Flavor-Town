@@ -16,16 +16,6 @@ export default (DataSource) => {
       });
       
     const upload = multer({ storage: storage });
-    // router.get('/recipes', (request, response) => {
-    //     recipeResource.find({where: {
-    //         user: request.user
-    //     }}).then(
-    //         (recipes) => {
-    //             response.send({recipes})
-    //         }, 
-    //         () => response.send({recipes: []})
-    //     );
-    // });
 
 
     router.get('/recipes', (request, response) => {

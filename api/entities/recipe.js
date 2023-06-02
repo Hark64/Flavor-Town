@@ -13,10 +13,10 @@ export class Recipe {
     @Column({type: 'varchar', nullable: false})
     description
 
-    @Column({type: 'varchar'})
+    @Column({type: 'varchar', nullable: false})
     videoLink
 
-    @Column({type: 'varchar'})
+    @Column({type: 'varchar', nullable: false})
     fileName
 
     @Column({type: 'numeric', default: 0})

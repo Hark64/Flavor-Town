@@ -7,14 +7,17 @@ export default (DataSource) => {
    
 
 
-    router.get('/ratings', (request, response) => {
-        recipeResource.find({where: {
-            recipe: request.user.recipe
+    router.get('/recipes/:id/ratings', (req, res) => {
+        ratingResource.find({where: {
+            recipe: {id: req.params.id}
         }}).then(
             (ratings) => {
-                response.send({ratings})
+                console.log("Hey it's me Shayan");
+                console.log(req.params.id);
+                console.log(ratings);
+                res.send({ratings})
             }, 
-            () => response.send({ratings: []})
+            () => res.send({ratings: []})
         );
     });
 

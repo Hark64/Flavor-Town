@@ -6,12 +6,10 @@ import axios from 'axios';
 export const useRecipesStore = defineStore('recipes', () => {
     const hasError = ref(false);
     const error = ref("");
-    const loading = ref(false);
     const recipes = ref([]);
     
 
     function loadRecipes() {
-        loading.value = true;
         return axios.get("/api/recipes").then(
             (response) => {
                 recipes.value = response.data.recipes;
@@ -49,10 +47,10 @@ export const useRecipesStore = defineStore('recipes', () => {
 
     function deleteRecipe(recipe) {
         const idx = recipes.value.indexOf(recipe);
-        return axios.delete(`/api/recipes/${recipe.id}`).then(() => {
+        return axios.delete(`/api/recipes/${recipe.recipe_id}`).then(() => {
             recipes.value.splice(idx, 1);
         })
     }
 
-    return { error, hasError, loading, recipes, loadRecipes, postRecipe, deleteRecipe };
+    return { error, hasError, recipes, loadRecipes, postRecipe, deleteRecipe };
 });
