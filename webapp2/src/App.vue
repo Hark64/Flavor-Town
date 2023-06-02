@@ -1,10 +1,14 @@
 <script setup>
-import router from './router/index.js'
+// original
+// import router from './router/index.js'
+import { useRouter, useRoute } from 'vue-router'
 import { RouterLink, RouterView } from 'vue-router'
 import { reactive, onMounted } from 'vue';
 import { useUserStore } from '@/stores/user';
 
+const routing = useRouter()
 const store = useUserStore();
+// new line
 
 const state = reactive({    // Kind of like a class- info we want to keep around.
   loginDialog: false,
@@ -74,7 +78,10 @@ function navigateTo(route) {
     state.loginDialog = true;
     return;
   }
-  router.push(route);
+  // original
+  // router.push(route);
+  console.log(route);
+  routing.push(route);
   toggleMenu(); 
 }
 

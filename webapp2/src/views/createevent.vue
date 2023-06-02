@@ -43,8 +43,8 @@ function handleEvent() {
       <v-form class="form">
     <v-text-field label="Enter Title (Required)" type="title" v-model="state.title"></v-text-field>
     <v-text-field label="Enter Location (Required)" type="location" v-model="state.location"></v-text-field>
-    <v-text-field label="Enter Zip Code" type="zipCode" v-model="state.zipCode"></v-text-field>
-    <v-text-field label="Enter Description" type="description" v-model="state.description"></v-text-field>
+    <v-text-field label="Enter Zip Code (Required)" type="zipCode" v-model="state.zipCode"></v-text-field>
+    <v-text-field label="Enter Description (Required)" type="description" v-model="state.description"></v-text-field>
     <router-link tag="v-btn" to="events" @click="handleEvent">Post Event</router-link>
   </v-form>
       

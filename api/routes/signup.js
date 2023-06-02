@@ -18,5 +18,6 @@ export default (DataSource) => {
       response.send();
     });
   });
+
   return router;
 }
