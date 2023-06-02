@@ -57,6 +57,7 @@ export const useUserStore = defineStore('user', () => {
         return axios.get("/api/user").then(
         (response) => {
             currentUser.value=response.data.user;
+            console.log(currentUser.value);
         }, (response) => {
             hasError.value = true;
             error.value = response.response.data.msg;
@@ -65,6 +66,6 @@ export const useUserStore = defineStore('user', () => {
     }
 
 
-    return { loggedIn, error, hasError, currentUser, login, signup, logout, ping, getUser };
+    return { loggedIn, error, hasError, currentUser, login, signup, logout, ping, getUser};
 
 });

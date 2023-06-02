@@ -1,1 +1,1 @@
-select * from recipes
+DELETE from recipe

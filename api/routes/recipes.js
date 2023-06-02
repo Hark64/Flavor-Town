@@ -21,6 +21,23 @@ export default (DataSource) => {
     const upload = multer({ storage: storage });
 
 
+    router.get('/recipes', (request, response) => {
+        recipeResource.createQueryBuilder("recipe")
+        .leftJoin("recipe.ratings", "rating")
+        .addSelect("AVG(rating.score)", "avgScore")
+        .where("recipe.user = :userID", { userID: request.user.id })
+        .groupBy("recipe.id")
+        .getRawMany()
+        .then(
+            (recipes) => {
+                response.send({recipes});
+            }, 
+            () => {
+                response.send({recipes: []});
+            }
+        );
+    });
+
     router.get('/search', (request, response) => {
         let myQuery = recipeResource.createQueryBuilder("recipes")
             .leftJoinAndSelect("recipes.user", "user")
