@@ -4,7 +4,7 @@
 -->
 <script>
   export default {
-  props: ['obj']
+  props: ['obj', 'width', 'height']
   }
 </script>
 
@@ -20,21 +20,22 @@
       <v-card
         class="pa-4"
         flat
-        height="200px"
-        width="1200px"
-        color="white"
+        :height=height
+        :width=width
+        color="black"
         opacity=0.5
       >
-          <div>
-            <!-- <h1> User: </h1>
-            {{obj.user}}
-            seems to crash when user is null =( -->
-          </div>
           <div>
             {{obj.title}}
           </div>
           <div class="text-caption"> {{obj.description}} </div>
           <img :src="obj.fileName" alt="No Image" style="object-fit: contain;" width="250" height="250"/>
+          <div>
+            {{obj.user.zipCode}}
+          </div>
+          <div>
+            By: {{obj.user.firstName}} {{obj.user.lastName}}
+          </div>
       </v-card>
     </router-link>
 </template>

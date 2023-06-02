@@ -22,7 +22,6 @@ export const useRecipesStore = defineStore('recipes', () => {
                 return hasError;
             }
         )
-
     }
 
     function loadScores() {

@@ -45,6 +45,7 @@
         label="Search"
         type="text"
         @click:clear="clearMessage"
+        @keydown.enter="goSearch"
       ></v-text-field>
 
 
@@ -92,6 +93,7 @@
           maxlength="5"
           type="number"
           @click:clear="clearMessage"
+          @keydown.enter="goSearch"
         ></v-text-field>
   </v-card>
 </template>

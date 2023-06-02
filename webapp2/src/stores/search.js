@@ -28,20 +28,32 @@ export const useSearchStore = defineStore('search', () => {
 
 
     function loadResults() {
+        const params = {};
 
-        return axios.get("/api/search").then((_recipes) => {
-            var temp = _recipes.data.recipes;
-            temp.sort(compareArrays);
+        if (showZip.value==true) {
+          params.showZip = showZip.value;
+          params.zip = zip.value;
+        }
 
-            for (var i = temp.length - 1; i >= 0; --i) {
-                if (temp[i].user == -1) {
-                    temp.splice(i,1);
+        return axios.get("/api/search", { params }).then((_recipes) => {
+            message.value = message.value.trim();
+            zip.value = zip.value.trim();
+
+            if(message.value=="" && (showZip.value==false || zip.value=='')){
+                results.value=[];
+            } else {
+                var temp = _recipes.data.recipes;
+                temp.sort(compareArrays);
+
+                for (var i = temp.length - 1; i >= 0; --i) {
+                    if (temp[i].user == -1 || temp[i].user===null) {
+                        temp.splice(i,1);
+                    }
                 }
-            }
 
-            console.log(temp);
-            results.value = temp;
-            //loading.value = false;
+                console.log(temp);
+                results.value = temp;
+            }
         });
     }
 
@@ -98,34 +110,6 @@ export const useSearchStore = defineStore('search', () => {
 
         return count;
     }
-
-    // function loadTodos() {
-    //     loading.value = true;
-    //     return axios.get("/api/todos").then((_todos) => {
-    //         todos.value = _todos.data.todos;
-    //         loading.value = false;
-    //     });
-    // }
-
-    // function updateTodo(todo) {
-    //     const idx = todos.value.indexOf(todo);
-    //     return axios.put(`/api/todos/${todo.id}`, todo).then((updatedTodo) => {
-    //         todos.value[idx] = updatedTodo.data;
-    //     });
-    // }
-
-    // function deleteTodo(todo) {
-    //     const idx = todos.value.indexOf(todo);
-    //     return axios.delete(`/api/todos/${todo.id}`).then(() => {
-    //         todos.value.splice(idx, 1);
-    //     });
-    // }
-
-    // function createTodo(todo) {
-    //     return axios.post("/api/todos", todo).then((newTodo) => {
-    //         todos.value.push(newTodo.data);
-    //     });
-    // }
     
     return { hasError, error, showZip, results, message, tags, zip, $reset, loadResults };
 });

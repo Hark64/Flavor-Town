@@ -22,19 +22,30 @@ export default (DataSource) => {
 
 
     router.get('/search', (request, response) => {
-        recipeResource.createQueryBuilder("recipes")
+        let myQuery = recipeResource.createQueryBuilder("recipes")
             .leftJoinAndSelect("recipes.user", "user")
-            .getMany()
+        
+        if (request.query.showZip) {
+            const zip = request.query.zip;
+            myQuery.where("user.zipCode = :zip", { zip });
+        }
+
+        if (request.query.count) {
+            myQuery.limit(request.query.count);
+        }
+            
+        //myQuery.orderBy("recipes.score", "DESC").getMany()
+        myQuery.getMany()
             .then(
                 (recipes) => {
                     response.send({recipes})
                 }, 
                 () => response.send({recipes: []})
             );
-
-             //.where("recipes.zipcode = :zip", { zip: "idk how to get this from frontend search.js store" })
-             //put after leftjoin
     });
+
+                 //.where("recipes.zipcode = :zip", { zip: "idk how to get this from frontend search.js store" })
+             //put after leftjoin
 
     router.post('/recipes', upload.single('uploaded_file'), (request, response) => {
         const {title, description, videoLink} = request.body;

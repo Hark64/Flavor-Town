@@ -1,2 +1,1 @@
-DELETE from user
-select * from recipe
+select * from recipes
