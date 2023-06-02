@@ -9,7 +9,7 @@ export default (DataSource) => {
 
   router.use('/user', isAuthenticated).get('/user', (request, response) => {
       userRepo.find({where: {
-        id: Not(request.user.id)
+        id: request.user.id
       }}).then(
             (user) => {
                 response.send({ user })

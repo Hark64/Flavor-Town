@@ -21,6 +21,11 @@ const state = reactive({    // Kind of like a class- info we want to keep around
   isButtonDisabled: false,
   searchQuery: '',
   isMenuOpen: false,
+
+  methods: {
+    // TO DO make method in app.vue to export. something like login state.
+  }
+
 });
 
 function login() {
@@ -77,7 +82,6 @@ function navigateTo(route) {
   router.push(route);
   toggleMenu(); 
 }
-
 </script>
 
 
@@ -102,7 +106,7 @@ function navigateTo(route) {
         <ul>
           <h1 class="menuBtn" @click="navigateTo('/')"><a>Home</a></h1>
           <h1 class="menuBtn" @click="navigateTo('/events')"><a>Events</a></h1>
-          <h1 class="menuBtn" @click="navigateTo('/account')"><a>Account</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/account')"><a>My Account</a></h1>
           <h1 class="menuBtn" @click="navigateTo('/postrecipes')"><a>Post Recipes</a></h1>
           <h1 class="menuBtn" @click="navigateTo('/recipes')"><a>My Recipes</a></h1>
         </ul>
@@ -136,6 +140,8 @@ function navigateTo(route) {
                 <v-alert density="compact" type="warning" icon="$warning" title="There was an issue signing up."
                   v-if="store.hasError">{{ store.error }}</v-alert>
                 <v-form class="mt-2">
+                  <!-- Make a checkbox. -->
+                  <p>By signing up for FlavorTown.com, you are consenting to us using your location.</p> 
                   <v-text-field label="First Name" type="firstName" v-model="state.firstName"></v-text-field>
                   <v-text-field label="Last Name" type="lastName" v-model="state.lastName"></v-text-field>
                   <v-text-field label="Email address" type="email" v-model="state.email"></v-text-field>

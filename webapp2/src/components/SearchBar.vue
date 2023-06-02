@@ -13,6 +13,10 @@
     store.$reset();
   }
 
+  function goSearch () {
+    store.loadResults();
+  }
+
 </script>
 
 
@@ -41,10 +45,11 @@
         label="Search"
         type="text"
         @click:clear="clearMessage"
+        @keydown.enter="goSearch"
       ></v-text-field>
 
 
-        <v-btn icon color="gray" dark to="/search">
+        <v-btn icon color="gray" dark to="/search" @click="goSearch">
           <v-icon>mdi-send-variant</v-icon>
         </v-btn>
 
@@ -74,7 +79,7 @@
       </v-btn>
     </v-toolbar>
 
-        <v-text-field v-if="store.showZip"
+        <v-text-field v-if="store.showZip" 
           hide-details
           prepend-inner-icon="mdi-magnify"
           single-line
@@ -88,6 +93,7 @@
           maxlength="5"
           type="number"
           @click:clear="clearMessage"
+          @keydown.enter="goSearch"
         ></v-text-field>
   </v-card>
 </template>

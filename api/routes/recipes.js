@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { Recipe } from '../entities/recipe';
+import { User } from '../entities/user';
+
 
 export default (DataSource) => {
     const router = Router();
     const recipeResource = DataSource.getRepository(Recipe);
+    const userResource = DataSource.getRepository(User);
    
     const multer = require('multer');
 
@@ -34,6 +37,32 @@ export default (DataSource) => {
             }
         );
     });
+
+    router.get('/search', (request, response) => {
+        let myQuery = recipeResource.createQueryBuilder("recipes")
+            .leftJoinAndSelect("recipes.user", "user")
+        
+        if (request.query.showZip) {
+            const zip = request.query.zip;
+            myQuery.where("user.zipCode = :zip", { zip });
+        }
+
+        if (request.query.count) {
+            myQuery.limit(request.query.count);
+        }
+            
+        //myQuery.orderBy("recipes.score", "DESC").getMany()
+        myQuery.getMany()
+            .then(
+                (recipes) => {
+                    response.send({recipes})
+                }, 
+                () => response.send({recipes: []})
+            );
+    });
+
+                 //.where("recipes.zipcode = :zip", { zip: "idk how to get this from frontend search.js store" })
+             //put after leftjoin
 
     router.post('/recipes', upload.single('uploaded_file'), (request, response) => {
         const {title, description, videoLink} = request.body;

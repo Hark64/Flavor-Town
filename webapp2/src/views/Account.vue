@@ -20,9 +20,13 @@
     })
 
     onMounted(() => {
-        recipesStore.loadScores();
-        recipesStore.loadRecipes();
-        userStore.getUser();
+      state.loading=false;
+      recipesStore.loadRecipes();
+      recipesStore.recipes.forEach((recipe) => {
+        ratingsStore.getRatings(recipe.recipe_id);
+      });
+      state.loading = true;
+      userStore.getUser();
     });
 
     function openEditAccountDialog() {
@@ -90,6 +94,14 @@
       state.showDeletePostDialog = false;
     }
 
+    function consoleLog() {
+      console.log(userStore.currentUser);
+      console.log(userStore.currentUser[0]);
+      console.log(userStore.currentUser[0].firstName);
+      console.log(userStore.currentUser[0].lastName);
+      console.log(userStore.currentUser[0].email);
+      console.log(userStore.currentUser[0].zipCode);
+    }
 
 </script>
     
@@ -97,6 +109,7 @@
   <main>
     <div>
       <!--<img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600"></img>-->
+      <v-btn @click="consoleLog()"></v-btn>
       <h1>PROFILE</h1>
       <div v-if="userStore.currentUser">
         <p>First Name: {{ userStore.currentUser[0].firstName }} </p>
@@ -142,42 +155,76 @@
           </v-dialog>
     
 
-    <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="recipe in recipesStore.recipes" :key="recipe.id">
-      <v-card-item>
-        <div>
-          <div class="text-overline mb-1">
-            <h1> {{ recipe.title }} </h1>
-          </div>
-          <div class="text-h6 mb-1">
-            {{recipe.description}}
-          </div>
-          <div class="text-h6 mb-1">
-            {{recipe.videoLink}}
-          </div>
-          <div class="text-h6 mb-1">
-            {{recipe.score}}
-          </div>
-          <img :src="recipe.fileName" alt="No Image" style="object-fit: contain;" width="500" height="500"/>
+    <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="recipe in recipesStore.recipes" :key="recipe.recipe_id">
+        <v-alert density="compact" type="warning" icon="$warning" title="There was an issue getting your recipes" v-if="recipesStore.hasError">{{ recipesStore.error }}</v-alert>
+        <v-card-item>
           <div>
-            <!-- Deleted Post Review Button because user does not need to comment on their own recipes. -->
-            <!-- TODO I don't know why it blacks out the whole screen. -->
-            <!-- TODO make the button an ellipses. <svg-icon type="mdi" :path="path"></svg-icon> -->
-            <v-btn @click="openDeletePostDialog">Delete Post
-              <v-dialog v-model="state.showDeletePostDialog" width="400">
-                <v-card>
-                  <v-card-text>
-                    <v-form class="mt-2">
-                      <p>Are you sure you want to delete this yummy post?</p>
-                      <v-btn @click="deletePost">Delete</v-btn>
-                      <v-btn @click="abortDeletePost">NOOOOOO</v-btn>
-                    </v-form>
-                  </v-card-text>
-                </v-card>
-              </v-dialog>
-            </v-btn>
+            <div class="text-overline mb-1">
+              <h1> {{ recipe.recipe_title }} </h1>
+            </div>
+            <div class="text-h6 mb-1">
+              Description: {{recipe.recipe_description}}
+            </div>
+            <div class="text-h6 mb-1" v-if="recipe.recipe_videoLink">
+              Video Link: {{recipe.recipe_videoLink}}
+            </div>
+            <div class="text-h6 mb-1" v-if="recipe.avgScore">
+              Score: {{recipe.avgScore}}
+            </div>
+            <img :src="recipe.recipe_fileName" alt="No Image" style="object-fit: contain;" width="500" height="500"/>
+            <v-card class="mx-auto" min-width="1200" variant="outlined" v-if="state.loading" v-for="rating in ratingsStore.ratings[recipe.recipe_id]" :key="rating.id">
+              <div class="text-h6 mb-1">
+                Rating Score: {{rating.score}}
+              </div>
+              <div class="test-h6 mb-1">
+                Description: {{rating.description}}
+              </div>
+            </v-card>
+            <v-btn @click="deleteRecipe(recipe, recipe.recipe_id)">Delete Recipe</v-btn>
+            <div>
+              <v-btn>Post Review
+                <v-dialog activator="parent" width="400">
+                  <v-card>
+                    <v-card-text>
+                      <v-form class="mt-2">
+                        <v-text-field
+                          label="Score (0-5)"
+                          type="number"
+                          min="0"
+                          max="5"
+                          step="0.5"
+                          v-model="state.score"
+                        ></v-text-field>
+                        <v-text-field
+                          label="Description"
+                          type="text"
+                          v-model="state.description">
+                        </v-text-field>
+                      </v-form>
+                    </v-card-text>
+                    <v-card-actions class="d-flex flex-row-reverse ma-2">
+                      <v-btn color="primary" @click="postReview(recipe.recipe_id)">Post Review</v-btn>
+                        <v-dialog v-if="state.invalidScore" activator="parent" @close="closeScoreChecker()" width="400">
+                          <v-card>
+                            <v-card-text>
+                              There was an issue with your submission. Make sure the score is between 0 and 5.
+                            </v-card-text>
+                          </v-card>
+                        </v-dialog>
+                        <v-dialog v-if="state.reviewPosted" activator="parent" @close="closeReviewPosted()" width="400">
+                          <v-card>
+                            <v-card-text >
+                              Review Posted!
+                            </v-card-text>
+                          </v-card>
+                        </v-dialog>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-btn>
+            </div>
           </div>
-        </div>
-      </v-card-item>
+        </v-card-item>
     </v-card>
   </main>
 </template>

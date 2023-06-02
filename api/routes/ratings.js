@@ -12,9 +12,6 @@ export default (DataSource) => {
             recipe: {id: req.params.id}
         }}).then(
             (ratings) => {
-                console.log("Hey it's me Shayan");
-                console.log(req.params.id);
-                console.log(ratings);
                 res.send({ratings})
             }, 
             () => res.send({ratings: []})
