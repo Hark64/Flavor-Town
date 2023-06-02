@@ -2,11 +2,14 @@ import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
+// Store goes to API, gets current user, then sticks it to a variable. 
+
 export const useUserStore = defineStore('user', () => {
 
     const loggedIn = ref(false);
     const hasError = ref(false);
     const error = ref("");
+    const currentUser = ref();
     
 
     
@@ -50,7 +53,20 @@ export const useUserStore = defineStore('user', () => {
         });
     }
 
+    function getUser() {
+        return axios.get("/api/user").then(
+        (response) => {
+            console.log(response);
+            currentUser.value=response;
+            console.log(currentUser.value);
+        }, (response) => {
+            hasError.value = true;
+            error.value = response.response.data.msg;
+            return hasError;
+        });
+    }
 
-    return { loggedIn, error, hasError, login, signup, logout, ping };
+
+    return { loggedIn, error, hasError, login, signup, logout, ping, getUser };
 
 });

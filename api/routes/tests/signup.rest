@@ -1,12 +1,14 @@
-###
+### signup
 
 POST http://localhost:3000/signup HTTP/1.1
 Content-Type: application/json
 
     {
-        "firstName": "bob",
-        "lastName": "john",
-        "email": "test@das.com",
-        "password": "abc123"
+        "email": "anthlee494@gmail.com",
+        "password": "123",
+        "firstName": "anthony",
+        "lastName": "lee",
+        "zipCode": 91803
+        
         
     }

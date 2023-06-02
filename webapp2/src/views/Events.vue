@@ -20,7 +20,7 @@ onMounted(() => {
     min-width="1200"
     min-height="210"
     variant="outlined"
-    v-for="event in store.eventsListZip" :key="event.title"
+    v-for="event in store.eventsListZip" :key="event.id"
     >
     <v-card-item>
       <div>
@@ -42,7 +42,7 @@ onMounted(() => {
     min-width="1200"
     min-height="210"
     variant="outlined"
-    v-for="event in store.eventsList" :key="event.title"
+    v-for="event in store.eventsList" :key="event.id"
     >
     <v-card-item>
       <div>

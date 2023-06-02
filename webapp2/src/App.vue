@@ -1,4 +1,5 @@
 <script setup>
+import router from './router/index.js'
 import { RouterLink, RouterView } from 'vue-router'
 import { reactive, onMounted } from 'vue';
 import { useUserStore } from '@/stores/user';
@@ -17,7 +18,9 @@ const state = reactive({    // Kind of like a class- info we want to keep around
   password: '',
   showLogin: true,
   loggedIn: false,
-  isButtonDisabled: false
+  isButtonDisabled: false,
+  searchQuery: '',
+  isMenuOpen: false,
 });
 
 function login() {
@@ -38,6 +41,7 @@ function signup() {
       state.signupDialog = false;
       state.loggedIn = true;
       console.log('Signed up');
+      store.login({email, password});
     }
   });
 }
@@ -59,6 +63,19 @@ function logOut() {
       console.log('Logged out');
     }
   });
+}
+
+function toggleMenu(){
+  state.isMenuOpen = !state.isMenuOpen;
+}
+
+function navigateTo(route) {
+  if (!state.loggedIn && (route  != '/') && (route != '/recipes')){
+    state.loginDialog = true;
+    return;
+  }
+  router.push(route);
+  toggleMenu(); 
 }
 
 </script>
@@ -86,14 +103,14 @@ function logOut() {
         <h1 class="logo" @click="navigateTo('home')">FlavorTown.com</h1>
       </div>
 
-      <div class="menu" :class="{ 'menu-open': isMenuOpen }">
+      <div class="menu" :class="{ 'menu-open': state.isMenuOpen }">
         <button class="close-button" @click="toggleMenu">&times;</button>
         <ul>
-          <h1 class="menuBtn" @click="navigateTo('home')"><a>Home</a></h1>
-          <h1 class="menuBtn" @click="navigateTo('events')"><a>Events</a></h1>
-          <h1 class="menuBtn" @click="navigateTo('account')"><a>Account</a></h1>
-          <h1 class="menuBtn" @click="navigateTo('postrecipes')"><a>Post Recipes</a></h1>
-          <h1 class="menuBtn" @click="navigateTo('recipes')"><a>Recipes</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/')"><a>Home</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/events')"><a>Events</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/account')"><a>Account</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/postrecipes')"><a>Post Recipes</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/recipes')"><a>Recipes</a></h1>
         </ul>
       </div>
 
@@ -151,25 +168,7 @@ function logOut() {
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      searchQuery: '',
-      isMenuOpen: false
-    };
-  },
-  methods: {
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen;
-    },
-    navigateTo(route) {
-      this.$router.push({ name: route });
-      this.isMenuOpen = false;
-    }
-  }
-};
-</script>
+
 
 <style> 
 li {
