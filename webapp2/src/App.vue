@@ -76,14 +76,14 @@ function logOut() {
     <link href="https://fonts.googleapis.com/css2?family=Mandali&display=swap" rel="stylesheet">
   </head>
 
-  <div>
+  <div class="header">
     <div class="topBar">
       <div class="barLeft">
         <v-btn class="hamburger" @click="toggleMenu" icon>
           <v-icon>mdi-menu</v-icon>
         </v-btn>
 
-        <h1 class="logo" @click="navigateTo('home')">Recipes.com</h1>
+        <h1 class="logo" @click="navigateTo('home')">FlavorTown.com</h1>
       </div>
 
       <div class="menu" :class="{ 'menu-open': isMenuOpen }">
@@ -145,8 +145,9 @@ function logOut() {
       </div>
     </div>
 
-
-    <router-view></router-view>
+    <div class="router">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -170,7 +171,7 @@ export default {
 };
 </script>
 
-<style>
+<style> 
 li {
   color: white;
 }
@@ -178,13 +179,9 @@ li {
 .logo {
   font-family: 'Pacifico', cursive;
   color: rgb(245, 185, 113);
-  font-size: 42px;
-  margin-left: 8px;
+  font-size: 40px;
+  margin-left: 4px;
   cursor: pointer;
-}
-
-.topBar {
-  margin-bottom: 4rem;
 }
 
 .barLeft {
@@ -194,34 +191,22 @@ li {
 }
 
 .hamburger {
-  width: 40px;
+  width: 20px;
   /* Adjust the width and height as needed */
-  height: 40px;
   /* Add padding and box-sizing to adjust the size of the lines */
   margin: 20px;
   /* Add background color and other styles as desired */
-  background-color: rgb(245, 185, 113);
-  color: white;
+  background-color: white;
+  color: black;
+  border: 2px solid rgb(200, 200, 200); /* Add this line to add a border */
   border-radius: 10%;
-
 }
-
-.hamburger-line {
-  /* Set the height, width, and background color of each line */
-  display: block;
-  height: 4px;
-  width: 100%;
-  background-color: black;
-  /* Add margin to separate the lines */
-  margin-bottom: 6px;
-}
-
 
 .menu {
   position:fixed;
   top: 0;
   left: 0;
-  width: 300px;
+  width: 20%;
   height: 100%;
   background-color: white;
   /* Adjust the background color as needed */
@@ -244,7 +229,7 @@ li {
 }
 
 .menuBtn {
-  margin: 16px 10px 20px 48px;
+  margin: 16px 10px 20px 20%;
   cursor: pointer;
   font-size: 28px;
 }
@@ -258,7 +243,6 @@ li {
   font-weight: bold;
 
 }
-
 
 #login {
   background-color: rgb(245, 185, 113);
@@ -289,4 +273,5 @@ li {
   position: absolute;
   top: 20px;
   right: 20px;
-}</style>
+}
+</style>

@@ -3,9 +3,6 @@
 </script>
 
 <template>
-
-
-
     <div class="preview">
       <img src="https://i.pinimg.com/736x/3f/94/70/3f9470b34a8e3f526dbdb022f9f19cf7.jpg" class="pfp" id="prev">
       <div class="text">
@@ -13,7 +10,6 @@
         <p>San Luis Obispo, CA</p>
       </div>
     </div>
-
 
 <body>
   <main>
@@ -66,23 +62,6 @@ body {
   font-size: 16px;
 }
 
-
-#hamburger-btn {
-  margin-right: 20px;
-}
-
-#logout-btn {
-  width: 165px;
-  margin-right: 20px;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-  margin: 10px;
-}
-
 .header-left img {
   width: 80px;
   height: 80px;
@@ -93,7 +72,6 @@ body {
 h2 {
   margin-right: 20px;
 }
-
 
 .profile-info {
   display: flex;
@@ -122,8 +100,6 @@ h2 {
   margin-bottom: 60px;
 }
 
-
-
 /* Layout for profile page */
 .container {
   max-width: 800px;
@@ -134,24 +110,21 @@ h2 {
 .posts-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   align-items: center;
-  max-width: 90%;  
+  max-width: 90%;
   margin: 0 auto;
-}
-
-.posts-container .post {
-  width: calc(33.33% - 20px);
-  margin: 10px;
-  box-sizing: border-box;
 }
 
 .posts-container img {
   width: 100%;
+  height: 100%;
 }
 
 /* Layout for posts */
 .post {
+  width: calc(33.33% - 20px);
+  margin: 10px;
+  box-sizing: border-box;
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
@@ -185,6 +158,7 @@ h2 {
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
 }
+
 nav {
   position: relative;
   background-color: white;
@@ -203,35 +177,6 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.menu-left {
-  display: flex;
-  align-items: center;
-}
-
-.menu-left a {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-decoration: none;
-  color: black;
-  padding: 0.5rem;
-  background-color: lightgrey;
-  border-radius: 8px;
-}
-
-.hamburger-line {
-  width: 100%;
-  height: 4px;
-  background-color: black;
-}
-
-.menu-center>* {
-  margin-right: 12px;
-}
-
-.menu-center>*:last-child {
-  margin-right: 0;
 }
 
 .menu-center a svg {
