@@ -29,7 +29,9 @@
 </script>
     
 <template>
+  
   <main>
+    
     <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="recipe in recipesStore.recipes" :key="recipe.id">
       <v-card-item>
         <div>
