@@ -16,7 +16,19 @@ export default (DataSource) => {
             },
             () => response.status(500).send({ user, msg: 'Cannot find user'})
         );
-    })
+  })
+
+  router.use('/user', isAuthenticated).put('/user', (request, response) => {
+    const { firstName, lastName, email, zipCode, id } = request.body;
+    userRepo.find({where: {
+      id: request.user.id
+    }}).then(
+          (user) => {
+              response.send({ user })
+          },
+          () => response.status(500).send({ user, msg: 'Cannot find user'})
+      );
+  })
 
   return router;
 }

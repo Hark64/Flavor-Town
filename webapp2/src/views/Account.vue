@@ -42,14 +42,18 @@
     function saveAccountInfo() {
       console.log("Changes to account information saved.")
       // TODO need to tie to backend. Will be a put instead of a post.
+
       state.showEditAccountDialog = false;
     }
 
-    function logOut() {
-      // TODO not tied to backend
+    function logout() {
+      // TODO sign out and delete
+      // TODO not sure why the logout button
         userStore.logout().then((error) => {
-        console.log("Error during logout", error)
-      });
+          //this.$root.logout();
+          console.log("Error during logout", error)
+        });
+      userStore.logOut();
       
     }
 
@@ -59,12 +63,11 @@
     }
 
     function deleteAccount(){
-      console.log()
       // TODO Actually Delete Account (api call)
       // TODO Actually remove popups and logout
       state.showConfirmDeleteDialog = false;
       state.showEditAccountDialog = false;
-      logOut();
+      logout();
       alert("Account successfully deleted.");
     }
 
@@ -99,13 +102,13 @@
       console.log(userStore.currentUser[0].zipCode);
     }
 
+
 </script>
     
 <template>   
   <main>
     <div>
       <!--<img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600"></img>-->
-      <v-btn @click="consoleLog()"></v-btn>
       <h1>PROFILE</h1>
       <div v-if="userStore.currentUser">
         <p>First Name: {{ userStore.currentUser[0].firstName }} </p>

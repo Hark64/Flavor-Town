@@ -21,11 +21,6 @@ const state = reactive({    // Kind of like a class- info we want to keep around
   isButtonDisabled: false,
   searchQuery: '',
   isMenuOpen: false,
-
-  methods: {
-    // TO DO make method in app.vue to export. something like login state.
-  }
-
 });
 
 function login() {
@@ -82,6 +77,7 @@ function navigateTo(route) {
   router.push(route);
   toggleMenu(); 
 }
+
 </script>
 
 

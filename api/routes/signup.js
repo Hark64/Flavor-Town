@@ -17,6 +17,7 @@ export default (DataSource) => {
     userRepo.save(newUser).then(() => {
       response.send();
     });
-  });
+    });
+    
   return router;
 }
