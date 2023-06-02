@@ -13,6 +13,10 @@
     store.$reset();
   }
 
+  function goSearch () {
+    store.loadResults();
+  }
+
 </script>
 
 
@@ -41,9 +45,10 @@
         label="Search"
         type="text"
         @click:clear="clearMessage"
+        @keydown.enter="goSearch"
       ></v-text-field>
 
-        <v-btn class="search" icon color="gray" dark to="/search">
+        <v-btn class="search" icon color="gray" dark to="/search" @click="goSearch">
           <v-icon>mdi-send-variant</v-icon>
         </v-btn>
 
@@ -86,6 +91,7 @@
           maxlength="5"
           type="number"
           @click:clear="clearMessage"
+          @keydown.enter="goSearch"
         ></v-text-field>
   </v-card>
 </template>
