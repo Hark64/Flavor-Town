@@ -78,10 +78,7 @@ function navigateTo(route) {
   toggleMenu(); 
 }
 
-  onMounted(async () => {
-    // if (store.isAuthenticated()) {
-    //   await store.getUser();
-    // }
+  onMounted(() => {
     store.getUser();
   });
 
