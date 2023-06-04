@@ -31,10 +31,10 @@
           <div class="text-caption"> {{obj.description}} </div>
           <img :src="obj.fileName" alt="No Image" style="object-fit: contain;" width="250" height="250"/>
           <div>
-            {{obj.user.zipCode}}
+            {{obj.user?.zipCode}}
           </div>
           <div>
-            By: {{obj.user.firstName}} {{obj.user.lastName}}
+            By: {{obj.user?.firstName}} {{obj.user?.lastName}}
           </div>
       </v-card>
     </router-link>
