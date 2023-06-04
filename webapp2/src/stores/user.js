@@ -72,7 +72,12 @@ export const useUserStore = defineStore('user', () => {
         });
     }
 
-
-    return { loggedIn, error, hasError, currentUser, login, signup, logout, ping, getUser, deleteAccount};
+    function isEmailRegistered(email) {
+        return axios.get(`/api/check-email?email=${email}`).then((response) => {
+          const { emailRegistered } = response.data;
+          return emailRegistered;
+        });
+      }
+    return { loggedIn, error, hasError, currentUser, login, signup, isEmailRegistered, logout, ping, getUser, deleteAccount};
 
 });

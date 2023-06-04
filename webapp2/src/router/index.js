@@ -67,9 +67,11 @@ function buildRouter (){
 })
 
 router.beforeEach(async (to, from) => {
+  const isLoggedIn = store.loggedIn
+  console.log(isLoggedIn)
   if (
     // make sure the user is authenticated
-    !store.loggedIn &&
+    !isLoggedIn &&
     // ❗️ Avoid an infinite redirect
     to.name !== 'home'
   ) {

@@ -39,8 +39,42 @@ function login() {
   });
 }
 
+function validateEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
 function signup() {
   const { firstName, lastName, email, zipCode, password } = state;
+  if (firstName.trim() === '' || lastName.trim() === '') {
+    alert('Please enter a valid first name and last name.');
+    return;
+  }
+
+  if (!validateEmail(email)) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  if (password.length < 8) {
+    alert('Please enter a password with at least 8 characters.');
+    return;
+  }
+
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
+
+  if (!hasLowerCase || !hasUpperCase || !hasNumber) {
+    alert('Password should contain at least one lowercase letter, one uppercase letter, and one number.');
+    return;
+  }
+
+  if (store.isEmailRegistered(email)) {
+    alert('Email already registered.');
+    return;
+  }
+
   store.signup({ firstName, lastName, email, zipCode, password }).then((error) => {
     if (!error) {
       state.signupDialog = false;

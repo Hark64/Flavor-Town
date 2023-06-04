@@ -38,5 +38,16 @@ export default (DataSource) => {
       );
   })
 
+  router.get('/check-email', (request, response) => {
+    const { email } = request.query;
+    userRepo.findOne({ where: { email } }).then(
+      (user) => {
+        const emailRegistered = !!user;
+        response.send({ emailRegistered });
+      },
+      () => response.status(500).send({ msg: 'Cannot check email' })
+    );
+  });
+
   return router;
 }
