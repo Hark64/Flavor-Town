@@ -78,7 +78,10 @@ function navigateTo(route) {
   toggleMenu(); 
 }
 
-  onMounted(() => {
+  onMounted(async () => {
+    // if (store.isAuthenticated()) {
+    //   await store.getUser();
+    // }
     store.getUser();
   });
 

@@ -1,26 +1,29 @@
 import { Router } from 'express';
 import { User } from '../entities/user';
 import isAuthenticated from '../middleware/isAuthenticated';
-import { Not } from "typeorm"
 
 export default (DataSource) => {
   const router = Router();
   const userRepo = DataSource.getRepository(User);
 
-  router.use('/user', isAuthenticated).get('/user', (request, response) => {
-      userRepo.find({where: {
-        id: request.user.id
-      }}).then(
-            (user) => {
-                response.send({ user })
-            },
-            () => response.status(500).send({ user, msg: 'Cannot find user'})
-        );
+  router.use('/user', (request, response, next) => {
+    if (request.user) {
+      isAuthenticated(request, response, next);
+    }
+  })
+  .get('/user', (request, response) => {
+    if (request.user) {
+        userRepo.find({where: {
+          id: request.user.id
+        }}).then(
+              (user) => {
+                  response.send({ user })
+              },
+              () => response.status(500).send({ msg: 'Cannot find user'})
+          );
+    }
   })
 
-  router.use('/user/getCurrentUser', isAuthenticated).get('/user/getCurrentUser', (request, response) => {
-    response.send(request.user);
-  })
 
 
   router.use('/user', isAuthenticated).put('/user', (request, response) => {
