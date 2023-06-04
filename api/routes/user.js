@@ -18,6 +18,11 @@ export default (DataSource) => {
         );
   })
 
+  router.use('/user/getCurrentUser', isAuthenticated).get('/user/getCurrentUser', (request, response) => {
+    response.send(request.user);
+  })
+
+
   router.use('/user', isAuthenticated).put('/user', (request, response) => {
     const { firstName, lastName, email, zipCode, id } = request.body;
     userRepo.find({where: {

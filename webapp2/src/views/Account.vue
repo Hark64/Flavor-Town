@@ -3,7 +3,7 @@
     import { useRecipesStore } from '@/stores/recipes';
     import { useRatingsStore } from '@/stores/ratings';
     import { useUserStore } from '@/stores/user';
-import { storeToRefs } from 'pinia';
+    import { storeToRefs } from 'pinia';
     //import { SvgIcon } from '@jamescoyle/vue-icon';
     //import { mdiDotsVertical } from '@mdi/js';
 
@@ -20,14 +20,14 @@ import { storeToRefs } from 'pinia';
         showDeletePostDialog: false,
     })
 
-    onMounted(() => {
-      state.loading=false;
-      recipesStore.loadRecipes();
-      recipesStore.recipes.forEach((recipe) => {
-        ratingsStore.getRatings(recipe.recipe_id);
-      });
-      state.loading = true;
-      userStore.getUser();
+    onMounted(async () => {
+      await recipesStore.loadRecipes();
+
+      for (const recipe of recipesStore.recipes) {
+        await ratingsStore.getRatings(recipe.recipe_id);
+      }
+      
+      await userStore.getUser();
     });
 
     function openEditAccountDialog() {
@@ -35,14 +35,6 @@ import { storeToRefs } from 'pinia';
       state.showEditAccountDialog = true;
     }
 
-    function postReview(recipeID) {
-      const {score, description} = state;
-      ratingsStore.postRating({score, description, recipeID}).then((error) => {
-        if (!error) {
-          console.log("Review posted.");
-        }
-      });
-    }
 
     function saveAccountInfo() {
       console.log("Changes to account information saved.")
@@ -99,6 +91,50 @@ import { storeToRefs } from 'pinia';
     }
 
 
+    function postReview(recipeID) {
+      const {score, description} = state;
+      if (isNaN(score) || score > 5 || score < 0) {
+        alert("Score Value Invalid, Try Again. 0-5 only.");
+      }
+      else {
+        ratingsStore.postRating({score, description, recipeID}).then((error) => {
+          if (!error) {
+            console.log("Review Posted");
+            alert("Review Posted, Refresh Page to See");
+          }
+        });
+      }
+    }
+
+    function deleteRecipe(recipe, recipeID) {
+      deleteRatings(recipeID);
+      recipesStore.deleteRecipe(recipe).then((error) => {
+        if (!error) {
+          console.log("Recipe Deleted");
+          alert("Recipe Deleted Successfully");
+        }
+        else {
+          alert("Failed to Delete Recipe");
+        }
+      })
+    }
+
+    function deleteRatings(recipeID) {
+      ratingsStore.deleteRatings(recipeID).then((error) => {
+        if (!error) {
+          console.log("Ratings Deleted");
+        }
+      })
+    }
+
+  
+    function closeScoreChecker() {
+      state.invalidScore = false;
+    }
+
+    function closeReviewPosted() {
+      state.reviewPosted = false;
+    }
 
 </script>
     
@@ -168,11 +204,11 @@ import { storeToRefs } from 'pinia';
               Score: {{recipe.avgScore}}
             </div>
             <img :src="recipe.recipe_fileName" alt="No Image" style="object-fit: contain;" width="500" height="500"/>
-            <v-card class="mx-auto" min-width="1200" variant="outlined" v-if="state.loading" v-for="rating in ratingsStore.ratings[recipe.recipe_id]" :key="rating.id">
+            <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="rating in ratingsStore.ratings[recipe.recipe_id]" :key="rating.id">
               <div class="text-h6 mb-1">
                 Rating Score: {{rating.score}}
               </div>
-              <div class="test-h6 mb-1">
+              <div class="test-h6 mb-1" v-if="rating.description">
                 Description: {{rating.description}}
               </div>
             </v-card>
@@ -200,20 +236,6 @@ import { storeToRefs } from 'pinia';
                     </v-card-text>
                     <v-card-actions class="d-flex flex-row-reverse ma-2">
                       <v-btn color="primary" @click="postReview(recipe.recipe_id)">Post Review</v-btn>
-                        <v-dialog v-if="state.invalidScore" activator="parent" @close="closeScoreChecker()" width="400">
-                          <v-card>
-                            <v-card-text>
-                              There was an issue with your submission. Make sure the score is between 0 and 5.
-                            </v-card-text>
-                          </v-card>
-                        </v-dialog>
-                        <v-dialog v-if="state.reviewPosted" activator="parent" @close="closeReviewPosted()" width="400">
-                          <v-card>
-                            <v-card-text >
-                              Review Posted!
-                            </v-card-text>
-                          </v-card>
-                        </v-dialog>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
