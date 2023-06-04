@@ -18,6 +18,6 @@ Content-Type: application/json
         "title": "chicken",
         "description": "make it",
         "videoLink": "none",
-        "fileName": ?
+        "filename": "../../uploads/1685246627223-110534913-CSC_365___Homework_4___Bands_RA (4).pdf"
     
     }

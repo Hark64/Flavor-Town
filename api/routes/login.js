@@ -14,6 +14,7 @@ export default (passport) => {
       return req.login(user, () => res.send({ success: true }));
     })(req, res, next);
   });
+
   router.get('/logout', (req, res) => {
     req.logout('local', () => res.send());
   });
@@ -21,5 +22,17 @@ export default (passport) => {
   router.get('/ping', (req, res) => {
     res.send();
   });
+
+  router.get('/getUser', (request, response) => {
+    userRepo.find({where: {
+        user: request.user
+    }}).then(
+        (user) => {
+            response.send({user})
+        }, 
+        () => response.send({user: []})
+    );
+});
+
   return router;
 };
