@@ -26,17 +26,17 @@
     })
 
     onMounted(async () => {
+      await userStore.getUser(); // show user first while loading recipes
+
+      state.firstName = userStore.currentUser[0].firstName;
+      state.lastName = userStore.currentUser[0].lastName;
+      state.zipCode = userStore.currentUser[0].zipCode;
+      state.email = userStore.currentUser[0].email;
       await recipesStore.loadRecipes();
 
       for (const recipe of recipesStore.recipes) {
         await ratingsStore.getRatings(recipe.recipe_id);
       }
-      
-      await userStore.getUser();
-      state.firstName = userStore.currentUser[0].firstName;
-      state.lastName = userStore.currentUser[0].lastName;
-      state.zipCode = userStore.currentUser[0].zipCode;
-      state.email = userStore.currentUser[0].email;
     });
 
     function openEditAccountDialog() {
@@ -52,19 +52,15 @@
       userStore.currentUser[0].zipCode = state.zipCode;
       userStore.currentUser[0].email = state.email;
       userStore.saveEdit(userStore.currentUser[0]); // May not be right
-
+      state.showEditAccountDialog = false;
       // TODO need to tie to backend. Will be a put instead of a post.
     }
 
     function logout() {
-      // TODO sign out and delete
-      // TODO not sure why the logout button
+      // TODO delete
         userStore.deleteAccount().then((error) => {
-          //this.$root.logout();
           console.log("Error during logout", error)
         });
-     
-      
     }
 
     function askConfirmationToDeleteAccount(){

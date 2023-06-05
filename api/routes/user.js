@@ -29,11 +29,12 @@ export default (DataSource) => {
   router.use('/user', isAuthenticated).put('/user', (request, response) => {
     const { firstName, lastName, email, zipCode, id } = request.body;
     console.log("In put user, id is ", id)
-    userRepo.find({where: {
-      id: id
+    userRepo.findOne( {where:  { // Trying changes
+      id
     }}).then(
           (user) => {
             console.log("found user about to edit in user.js");
+            //userRepo.updateById(id, {firstName, lastName, email, zipCode});
             user.firstName = firstName
             user.lastName = lastName
             user.zipCode = zipCode
