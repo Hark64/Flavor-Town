@@ -72,7 +72,20 @@ export const useUserStore = defineStore('user', () => {
         });
     }
 
+    function saveEdit({id, firstName, lastName, email, zipCode}) {
+        console.log("in save edit, id is:", id);
+        return axios.put("/api/user", {id, firstName, lastName, email, zipCode}).then(
+        (response) => {
+            console.log(response);
+            loggedIn.value = true;
+        }, (response) => {
+            hasError.value = true;
+            error.value = response.response.data.msg;
+            return hasError;
+        });
+    }
 
-    return { loggedIn, error, hasError, currentUser, login, signup, logout, ping, getUser, deleteAccount};
+
+    return { loggedIn, error, hasError, currentUser, login, signup, logout, ping, getUser, deleteAccount, saveEdit};
 
 });

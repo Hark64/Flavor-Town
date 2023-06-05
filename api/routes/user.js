@@ -25,14 +25,23 @@ export default (DataSource) => {
 
   router.use('/user', isAuthenticated).put('/user', (request, response) => {
     const { firstName, lastName, email, zipCode, id } = request.body;
+    console.log("In put user, id is ", id)
     userRepo.find({where: {
-      id: request.user.id
+      id: id
     }}).then(
           (user) => {
-              response.send({ user })
+            console.log("found user about to edit in user.js");
+            user.firstName = firstName
+            user.lastName = lastName
+            user.zipCode = zipCode
+            user.email = email
+            userRepo.save(user).then(() => {  //copied from signup
+              response.send({ user });
+            })
           },
           () => response.status(500).send({ user, msg: 'Cannot find user'})
-      );
+    );
+
   })
 
   return router;

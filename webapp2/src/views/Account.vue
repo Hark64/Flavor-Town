@@ -18,6 +18,11 @@
         showEditAccountDialog: false, // Popup for Editing Account details.
         showConfirmDeleteDialog: false, // Popup for confirming delete Account request. 
         showDeletePostDialog: false,
+        firstName: '',
+        lastName: '',
+        zipCode: '',
+        email: '',
+
     })
 
     onMounted(async () => {
@@ -28,6 +33,10 @@
       }
       
       await userStore.getUser();
+      state.firstName = userStore.currentUser[0].firstName;
+      state.lastName = userStore.currentUser[0].lastName;
+      state.zipCode = userStore.currentUser[0].zipCode;
+      state.email = userStore.currentUser[0].email;
     });
 
     function openEditAccountDialog() {
@@ -38,9 +47,13 @@
 
     function saveAccountInfo() {
       console.log("Changes to account information saved.")
+      userStore.currentUser[0].firstName = state.firstName;
+      userStore.currentUser[0].lastName = state.lastName;
+      userStore.currentUser[0].zipCode = state.zipCode;
+      userStore.currentUser[0].email = state.email;
+      userStore.saveEdit(userStore.currentUser[0]); // May not be right
+
       // TODO need to tie to backend. Will be a put instead of a post.
-      //userStore.currentUser[0].firstName
-      //userStore.currentUser[0] = firstName;
     }
 
     function logout() {
