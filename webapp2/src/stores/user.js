@@ -74,8 +74,8 @@ export const useUserStore = defineStore('user', () => {
 
     function isEmailRegistered(email) {
         return axios.get(`/api/check-email?email=${email}`).then((response) => {
-          const { emailRegistered } = response.data;
-          return emailRegistered;
+          const emailRegistered  = response.data;
+          return emailRegistered.emailRegistered;
         });
       }
     return { loggedIn, error, hasError, currentUser, login, signup, isEmailRegistered, logout, ping, getUser, deleteAccount};

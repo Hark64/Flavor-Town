@@ -44,7 +44,7 @@ function validateEmail(email) {
   return regex.test(email);
 }
 
-function signup() {
+async function signup() {
   const { firstName, lastName, email, zipCode, password } = state;
   if (firstName.trim() === '' || lastName.trim() === '') {
     alert('Please enter a valid first name and last name.');
@@ -70,18 +70,21 @@ function signup() {
     return;
   }
 
-  if (store.isEmailRegistered(email)) {
-    alert('Email already registered.');
-    return;
-  }
-
-  store.signup({ firstName, lastName, email, zipCode, password }).then((error) => {
-    if (!error) {
-      state.signupDialog = false;
-      console.log('Signed up');
-      store.login({email, password});
+  try {
+    const isEmailRegistered = await store.isEmailRegistered(email);
+    if (isEmailRegistered) {
+      alert('Email already registered.');
+      return;
     }
-  });
+
+    await store.signup({ firstName, lastName, email, zipCode, password });
+    state.signupDialog = false;
+    console.log('Signed up');
+    await store.login({ email, password });
+  } catch (error) {
+    // Handle error from API call
+    console.error(error);
+  }
 }
 
 function switchToSignup() {

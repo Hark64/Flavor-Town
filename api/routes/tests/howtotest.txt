@@ -1,2 +1,0 @@
-When testing from scratch with no data in the database, start with signup
-to put a user in the database. 
