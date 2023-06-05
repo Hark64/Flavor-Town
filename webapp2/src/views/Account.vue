@@ -22,6 +22,7 @@
         lastName: '',
         zipCode: '',
         email: '',
+        id: 0,
 
     })
 
@@ -32,6 +33,7 @@
       state.lastName = userStore.currentUser[0].lastName;
       state.zipCode = userStore.currentUser[0].zipCode;
       state.email = userStore.currentUser[0].email;
+      state.id = userStore.currentUser[0].id;
       await recipesStore.loadRecipes();
 
       for (const recipe of recipesStore.recipes) {
@@ -56,12 +58,7 @@
       // TODO need to tie to backend. Will be a put instead of a post.
     }
 
-    function logout() {
-      // TODO delete
-        userStore.deleteAccount().then((error) => {
-          console.log("Error during logout", error)
-        });
-    }
+
 
     function askConfirmationToDeleteAccount(){
       console.log("Popup opened: asking confirmation to delete account.")
@@ -70,10 +67,10 @@
 
     function deleteAccount(){
       // TODO Actually Delete Account (api call)
-      // TODO Actually remove popups and logout
       state.showConfirmDeleteDialog = false;
       state.showEditAccountDialog = false;
-      logout();
+      userStore.deleteUser(state.id);
+      userStore.loggedIn = false;
       alert("Account successfully deleted.");
     }
 
@@ -87,12 +84,6 @@
       state.showDeletePostDialog = true;
     }
 
-    function deletePost(){
-      // TODO Actually delete the post from front end and back end?? 
-      console.log("Post deleted.")
-      state.showDeletePostDialog = false;
-      alert("Your delicious post has been deleted.")  // TODO It would be nice to have the alert appear AFTER popup goes away.
-    }
 
     function abortDeletePost(){
       console.log("Post not deleted.")

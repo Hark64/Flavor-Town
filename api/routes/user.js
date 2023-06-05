@@ -52,12 +52,20 @@ export default (DataSource) => {
     const { email } = request.query;
     userRepo.findOne({ where: { email } }).then(
       (user) => {
+        console.log("email registered ", user, !!user)
         const emailRegistered = !!user;
         response.send({ emailRegistered });
       },
       () => response.status(500).send({ msg: 'Cannot check email' })
     );
   });
+
+  router.delete('/user/:id', (request, response) => {
+    console.log("deleting user in user.js api routes")
+    userRepo.delete(request.user.id).then((result) => {
+        response.send(result);
+    });
+});
 
   return router;
 }
