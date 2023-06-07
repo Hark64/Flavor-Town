@@ -7,6 +7,7 @@ export const useRecipesStore = defineStore('recipes', () => {
     const hasError = ref(false);
     const error = ref("");
     const recipes = ref([]);
+    const recipe = ref();
     
 
     function loadRecipes() {
@@ -19,6 +20,21 @@ export const useRecipesStore = defineStore('recipes', () => {
                 error.value = response.response.data.msg;
                 return hasError;
             }
+        )
+    }
+
+
+    function getOneRecipe(recipeID) {
+        return axios.get(`/api/recipes/${recipeID}`).then(
+            (response) => {
+                recipe.value = response.data.recipe;
+            },
+            (response) => {
+                hasError.value = true;
+                error.value = response.response.data.msg;
+                return hasError;
+            }
+
         )
     }
 
@@ -52,5 +68,5 @@ export const useRecipesStore = defineStore('recipes', () => {
         })
     }
 
-    return { error, hasError, recipes, loadRecipes, postRecipe, deleteRecipe };
+    return { error, hasError, recipes, recipe, loadRecipes, getOneRecipe, postRecipe, deleteRecipe };
 });

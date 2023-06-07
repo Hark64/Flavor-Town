@@ -19,9 +19,6 @@ export class Recipe {
     @Column({type: 'varchar', nullable: false})
     fileName
 
-    @Column({type: 'numeric', default: 0})
-    avgScore
-
     @ManyToOne(() => User, (user) => user.recipes)
     user
 

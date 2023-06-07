@@ -58,6 +58,7 @@
                     type="text"
                     v-model="state.videoLink">
                   </v-text-field>
+                  <v-card></v-card>
                   <v-card-text>Upload Photo (required, jpg only)</v-card-text>
                   <input type="file" name="uploaded_file" accept="image/jpeg" @change="state.file = $event.target.files[0]"/>
                 </v-form>

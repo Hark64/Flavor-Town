@@ -1,1 +1,1 @@
-DELETE from recipe
+DELETE from rating
