@@ -21,6 +21,8 @@ export default (DataSource) => {
     const upload = multer({ storage: storage });
 
 
+    
+
     router.get('/recipes', (request, response) => {
         recipeResource.createQueryBuilder("recipe")
         .leftJoin("recipe.ratings", "rating")
@@ -37,6 +39,23 @@ export default (DataSource) => {
             }
         );
     });
+
+    router.get('/recipes/:id', (request, response) => {
+        recipeResource.createQueryBuilder("recipe")
+        .leftJoin("recipe.ratings", "rating")
+        .addSelect("AVG(rating.score)", "avgScore")
+        .where("recipe.id = :recipeID", { recipeID: request.params.id})
+        .getRawOne()
+        .then(
+            (recipe) => {
+                response.send({recipe: recipe});
+            }, 
+            () => {
+                response.send();
+            }
+        );
+    });
+
 
     router.get('/search', (request, response) => {
         let myQuery = recipeResource.createQueryBuilder("recipes")
@@ -82,8 +101,8 @@ export default (DataSource) => {
     router.param('id', (req, res, next, id) => {
         const recipe = recipeResource.findOne({
             where: {
-                id,
-                user: req.user
+                id//,
+                //user: req.user
             }
         }).then((recipe) => {
             if (recipe) {
