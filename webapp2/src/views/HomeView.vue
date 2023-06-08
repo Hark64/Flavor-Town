@@ -4,15 +4,16 @@ import SearchBar from '../components/SearchBar.vue'
 
 <template>
   <div id="background"></div>
-  
-  
+
+
   <div class="search">
-    <SearchBar />
+    <SearchBar/>
   </div>
 
   <div class="content">
-    <h1>For you</h1>
-    <div class="post">
+    <h1 class="headers">For you</h1>
+    <div class="posts-container">
+      <div class="post">
         <img src="../assets/post.png" alt="Post 1">
       </div>
       <div class="post">
@@ -24,6 +25,13 @@ import SearchBar from '../components/SearchBar.vue'
       <div class="post">
         <img src="../assets/post.png" alt="Post 4">
       </div>
+      <div class="post">
+        <img src="../assets/post.png" alt="Post 5">
+      </div>
+      <div class="post">
+        <img src="../assets/post.png" alt="Post 6">
+      </div>
+    </div>
   </div>
 </template>
 
@@ -43,28 +51,38 @@ import SearchBar from '../components/SearchBar.vue'
 
 .search {
   display: flex;
-  justify-content: center; /* Align items horizontally in the center */
-  align-items: center; /* Align items vertically in the center */
+  justify-content: center;
+  /* Align items horizontally in the center */
+  align-items: center;
+  /* Align items vertically in the center */
   padding: 12rem 0 16rem 0;
 }
 
 .content {
   background-color: rgb(255, 217, 152);
+  margin: 3px;
   border-radius: 30px 30px 0 0;
   height: 800px;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  margin: 0 auto;
 }
 
-.post{
+.posts-container {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.headers {
+  margin: 1em;
+}
+
+.post {
   width: 20%;
   margin: 10px;
   box-sizing: border-box;
   background-color: #ffffff;
   border-radius: 10px;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   box-sizing: border-box;
 }
