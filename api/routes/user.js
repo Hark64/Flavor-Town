@@ -8,7 +8,11 @@ export default (DataSource) => {
 
   router.use('/user', (request, response, next) => {
     if (request.user) {
+      console.log(request.user);
       isAuthenticated(request, response, next);
+    }
+    else {
+      console.log("No User");
     }
   })
   .get('/user', (request, response) => {
@@ -22,8 +26,10 @@ export default (DataSource) => {
               () => response.status(500).send({ msg: 'Cannot find user'})
           );
     }
+    else {
+      console.log("No User 2");
+    }
   })
-
 
 
   router.use('/user', isAuthenticated).put('/user', (request, response) => {

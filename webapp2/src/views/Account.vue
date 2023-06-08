@@ -27,6 +27,8 @@
     })
 
     onMounted(async () => {
+      console.log("Are you logged in?");
+      console.log(userStore.loggedIn);
       await userStore.getUser(); // show user first while loading recipes
 
       state.firstName = userStore.currentUser[0].firstName;

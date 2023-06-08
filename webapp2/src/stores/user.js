@@ -60,6 +60,7 @@ export const useUserStore = defineStore('user', () => {
         return axios.get("/api/user").then(
         (response) => {
             currentUser.value=response.data.user;
+            console.log(currentUser.value);
             loggedIn.value = true;
         }, (response) => {
             hasError.value = true;

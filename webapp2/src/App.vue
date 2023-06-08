@@ -120,7 +120,10 @@ function navigateTo(route) {
 }
 
   onMounted(() => {
+    console.log("Before Getting User");
     store.getUser();
+    console.log(store.currentUser);
+    console.log("After Getting User");
   });
 
 </script>
