@@ -25,6 +25,8 @@
         id: 0,
         showFollowersDialog: false,
         showFollowingDialog: false,
+        followerCount: 8, // TODO Change this number
+        followingCount: 20, // TODO Change this number
 
     })
 
@@ -130,11 +132,11 @@
     }
 
     function toggleFollowers(){
-      showFollowersDialog = true;
+      state.showFollowersDialog = true;
     }
 
     function toggleFollowing(){
-      showFollowingDialog = true;
+      state.showFollowingDialog = true;
     }
   
     function closeScoreChecker() {
@@ -196,15 +198,22 @@
           </v-dialog>
 
           <!-- TODO Implement Followers and Following PopUp-->
-          <v-btn @click="toggleFollowers">Followers</v-btn>
-            <v-dialog v-model="showFollowersDialog" max-width="500px">
+          <v-btn @click="toggleFollowers">{{ state.followerCount }} Followers</v-btn>
+            <v-dialog v-model="state.showFollowersDialog" max-width="500px">
               <v-card>
-
+                <v-card-text>
+                  <p>List my followers here. </p>
+                </v-card-text>
               </v-card>
-
             </v-dialog>
-          <v-btn @click="toggleFollowing">Following</v-btn>
-    
+          <v-btn @click="toggleFollowing">{{ state.followingCount }} Following</v-btn>
+            <v-dialog v-model="state.showFollowingDialog" max-width="500px">
+                <v-card>
+                  <v-card-text>
+                    <p>List accounts I follow here. </p>
+                  </v-card-text>
+                </v-card>
+            </v-dialog>
 
     <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="recipe in recipesStore.recipes" :key="recipe.recipe_id">
         <v-alert density="compact" type="warning" icon="$warning" title="There was an issue getting your recipes" v-if="recipesStore.hasError">{{ recipesStore.error }}</v-alert>
@@ -233,7 +242,7 @@
             </v-card>
 
 
-            <!-- SHOULD ASK CONFIRMATION TO DELETE RECIPE deleteRecipe(recipe, recipe.recipe_id)-->
+            <!-- ASKS CONFIRMATION TO DELETE RECIPE -->
             <v-btn @click="openDeletePostDialog">Delete Recipe</v-btn>
               <v-dialog v-model="state.showDeletePostDialog">
                 <v-card>
