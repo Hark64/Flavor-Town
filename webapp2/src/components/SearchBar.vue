@@ -10,7 +10,15 @@
   });
 
   function clearMessage () {
-    store.$reset();
+    store.message='';
+  }
+
+  function clearZip () {
+    store.zip='';
+  }
+
+  function clearTag () {
+    store.currentTag='';
   }
 
   function goSearch () {
@@ -24,16 +32,16 @@
 <v-card
     class="pa-4"
     flat
-    height="134px"
+    height="200px"
     color="transparent"
     opacity=0.5
   >
-    <v-toolbar class="searchBar"
-      rounded="20%"
+    <v-toolbar
+      round
       floating
-      color="white"
+      color="transparent"
     >
-      <v-text-field class="searchField"
+      <v-text-field
         hide-details
         prepend-inner-icon="mdi-magnify"
         single-line
@@ -48,7 +56,8 @@
         @keydown.enter="goSearch"
       ></v-text-field>
 
-        <v-btn class="search" icon color="gray" dark to="/search" @click="goSearch">
+
+        <v-btn icon color="gray" dark to="/search" @click="goSearch">
           <v-icon>mdi-send-variant</v-icon>
         </v-btn>
 
@@ -60,24 +69,35 @@
         <v-icon>mdi-tag</v-icon>
         <v-dialog
         v-model="state.dialog"
-        width="auto">
-          <v-card color="black">
-            <v-container fluid>
-              <v-col v-for="tag in store.tags" :key="tag.id">
-                      <v-checkbox
-                        v-model="tag.val"
-                        color="blue"
-                        :label="tag.label"
-                        value="blue"
-                        hide-details
-                      ></v-checkbox>
-              </v-col>
-            </v-container>
-          </v-card>
+        width="600">
+          <div>
+            <v-card color="black">
+              <v-text-field
+                v-model="store.currentTag"
+                label="Add a Tag"
+                @keyup.enter="store.addTag()"
+                dense
+                clearable
+                clear-icon="mdi-close-circle"
+                @click:clear="clearTag"
+              ></v-text-field>
+              <v-chip
+                v-for="(tag, index) in store.goodTags"
+                :key="index"
+                label
+                close
+                @click:close="store.removeTag(index)"
+              >
+                <strong>{{ tag }}</strong>&nbsp;
+                <v-icon small @click.stop="store.removeTag(index)">mdi-close</v-icon>
+              </v-chip>
+            </v-card>
+          </div>
         </v-dialog>
       </v-btn>
     </v-toolbar>
-        <v-text-field v-if="store.showZip"
+
+        <v-text-field v-if="store.showZip" 
           hide-details
           prepend-inner-icon="mdi-magnify"
           single-line
@@ -90,25 +110,8 @@
           counter
           maxlength="5"
           type="number"
-          @click:clear="clearMessage"
-          @keydown.enter="goSearch"
+          @click:clear="clearZip"
+          @keyup.enter="goSearch"
         ></v-text-field>
   </v-card>
 </template>
-
-<style>
-.search {
-  margin-left: 10px;
-}
-
-.searchBar {
-  background-color: white;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: none;
-}
-
-.searchField {
-  width: 700px;
-}
-</style>

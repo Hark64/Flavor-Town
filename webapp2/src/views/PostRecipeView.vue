@@ -8,12 +8,29 @@
         description: '',
         videoLink: '',
         file: null,
+        tags: [],
+        CurrentTag: ''
     })
 
-    function postRecipe() {
-        const { title, description, videoLink, file} = state;
+    function addTag(){
+        if(state.tags.includes(state.CurrentTag.toLowerCase().trim())==false && state.CurrentTag.trim()!=''){
+            state.tags.push(state.CurrentTag.toLowerCase().trim());
+        }
+        state.CurrentTag = '';
+    }
 
-        recipesStore.postRecipe({title, description, videoLink, file}).then((error) => {
+    function removeTag(index) {
+        state.tags.splice(index, 1);
+    }
+
+    function clearTag () {
+      state.currentTag='';
+    }
+
+    function postRecipe() {
+        const { title, description, videoLink, file, tags} = state;
+
+        recipesStore.postRecipe({title, description, videoLink, file, tags}).then((error) => {
             if (!error) {
                 console.log("Recipe Posted");
                 alert('Recipe Posted Successfully!')
@@ -58,7 +75,27 @@
                     type="text"
                     v-model="state.videoLink">
                   </v-text-field>
-                  <v-card></v-card>
+
+                  <v-text-field
+                    v-model="state.CurrentTag"
+                    label="Add a Tag"
+                    @keyup.enter="addTag()"
+                    dense
+                    clearable
+                    clear-icon="mdi-close-circle"
+                    @click:clear="clearTag"
+                  ></v-text-field>
+                  <v-chip
+                    v-for="(tag, index) in state.tags"
+                    :key="index"
+                    label
+                    close
+                    @click:close="removeTag(index)"
+                  >
+                    <strong>{{ tag }}</strong>&nbsp;
+                    <v-icon small @click.stop="removeTag(index)">mdi-close</v-icon>
+                  </v-chip>
+
                   <v-card-text>Upload Photo (required, jpg only)</v-card-text>
                   <input type="file" name="uploaded_file" accept="image/jpeg" @change="state.file = $event.target.files[0]"/>
                 </v-form>
