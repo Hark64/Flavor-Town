@@ -27,10 +27,9 @@
     })
 
     onMounted(async () => {
-      console.log("Are you logged in?");
-      console.log(userStore.loggedIn);
-      await userStore.getUser(); // show user first while loading recipes
 
+      await userStore.getUser(); // show user first while loading recipes
+      
       state.firstName = userStore.currentUser[0].firstName;
       state.lastName = userStore.currentUser[0].lastName;
       state.zipCode = userStore.currentUser[0].zipCode;
