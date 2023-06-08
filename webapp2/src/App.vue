@@ -35,6 +35,7 @@ function login() {
       state.loginDialog = false;
       store.loggedIn = true;
       console.log('Logged in');
+      window.location.reload();
     }
   });
 }
@@ -80,6 +81,7 @@ function signup() {
       state.signupDialog = false;
       console.log('Signed up');
       store.login({email, password});
+      window.location.reload();
     }
   });
 }
@@ -120,10 +122,7 @@ function navigateTo(route) {
 }
 
   onMounted(() => {
-    console.log("Before Getting User");
     store.getUser();
-    console.log(store.currentUser);
-    console.log("After Getting User");
   });
 
 </script>
