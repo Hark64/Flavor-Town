@@ -1,1 +1,1 @@
-DELETE from recipe
+select * from tag

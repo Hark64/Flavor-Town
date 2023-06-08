@@ -145,7 +145,7 @@ function navigateTo(route) {
           <v-icon>mdi-menu</v-icon>
         </v-btn>
 
-        <h1 class="logo" @click="navigateTo('home')">FlavorTown.com</h1>
+        <h1 class="logo" @click="navigateTo('/')">FlavorTown.com</h1>
       </div>
 
       <div class="menu" :class="{ 'menu-open': state.isMenuOpen }">
