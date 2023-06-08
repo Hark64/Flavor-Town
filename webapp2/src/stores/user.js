@@ -27,13 +27,11 @@ export const useUserStore = defineStore('user', () => {
     }
 
     function signup({firstName, lastName, email, password, zipCode}) {
-        console.log("sign up email in user store", email);
         return axios.post("/api/signup", {firstName, lastName, email, password, zipCode}).then(
         (response) => {
             console.log(response);
             loggedIn.value = true;
         }, (response) => {
-            console.log("error signing up, ", response.response.data.msg);
             hasError.value = true;
             error.value = response.response.data.msg;
             return hasError;
@@ -42,6 +40,12 @@ export const useUserStore = defineStore('user', () => {
 
 
     function logout() {
+        return axios.get("/api/logout").then(() => {
+            loggedIn.value = false;
+        });
+    }
+
+    function deleteAccount() {
         return axios.get("/api/logout").then(() => {
             loggedIn.value = false;
         });
@@ -68,58 +72,12 @@ export const useUserStore = defineStore('user', () => {
         });
     }
 
-    function saveEdit({id, firstName, lastName, email, zipCode}) {
-        console.log("in save edit, id is:", id);
-        return axios.put("/api/user", {id, firstName, lastName, email, zipCode}).then(
-        (response) => {
-            console.log(response);
-            loggedIn.value = true;
-        }, (response) => {
-            hasError.value = true;
-            error.value = response.response.data.msg;
-            return hasError;
+    function isEmailRegistered(email) {
+        return axios.get(`/api/check-email?email=${email}`).then((response) => {
+          const emailRegistered  = response.data;
+          return emailRegistered.emailRegistered;
         });
-    }
-
-
-     function  isEmailRegistered(email) {
-        return false
-        // TODO - not waiting for the return. need to somehow wait. 
-          //return axios.get(`/api/check-email?email=${email}`).then((response) => {
-          //const { emailRegistered } = response.data;
-        //   console.log("email registered ", {emailRegistered}, {email});
-
-        //   return emailRegistered;
-        // });
       }
-
-    function deleteUser(id) {
-        return axios.delete(`/api/user/${id}`).then(() => {
-            console.log("user deleted in webapp2 user store")
-        })
-    }
-
-    function followUser(userId){
-        console.log("following user ", userId)
-        return axios.post(`/api/user/follow/${userId}`).then(() => {
-        })
-    }
-
-    function unfollowUser(userId){
-        console.log("unfollowing user ", userId)
-        return axios.delete(`/api/user/follow/${userId}`).then(() => {
-        })
-    }
-
-    function getIsFollowing(userId){
-        //return axios.get(`/api/user/follow/${userId}`).then(() => {
-            // TODO Return true or false if we are following this account
-            // TODO make API 
-        //})
-    }
-
-
-    return { loggedIn, error, hasError, currentUser, login, signup, isEmailRegistered, logout, ping, getUser, saveEdit, deleteUser, followUser, unfollowUser, getIsFollowing};
-
+    return { loggedIn, error, hasError, currentUser, login, signup, isEmailRegistered, logout, ping, getUser, deleteAccount};
 
 });
