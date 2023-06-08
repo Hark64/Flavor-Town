@@ -70,10 +70,20 @@ export const useSearchStore = defineStore('search', () => {
 
     function compareArrays(a, b){
         //cntTagsA = countMatches(a.tags, tags);
-        const cntKeyWordsA = countMatches(message.value, a.title, true)
+        let cntKeyWordsA = countMatches(message.value, a.title, true)
                     + countMatches(message.value, a.description, true);
-        const cntKeyWordsB = countMatches(message.value, b.title, true)
+        let cntKeyWordsB = countMatches(message.value, b.title, true)
                     + countMatches(message.value, b.description, true);
+        if(a.user !=null && a.user!=-1){
+            console.log(a);
+            cntKeyWordsA+=countMatches(message.value, a.user.firstName, true)
+                        +countMatches(message.value, a.user.lastName, true);
+        }
+        if(b.user !=null && b.user!=-1){
+            console.log(b);
+            cntKeyWordsB+=countMatches(message.value, b.user.firstName, true)
+                        +countMatches(message.value, b.user.lastName, true);
+        }
         if(cntKeyWordsA==0 && message.value!=''){
             a.user=-1;
         }
