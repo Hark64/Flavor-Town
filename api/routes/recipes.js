@@ -101,17 +101,19 @@ export default (DataSource) => {
     router.param('id', (req, res, next, id) => {
         const recipe = recipeResource.findOne({
             where: {
-                id,
-                user: req.user
+                id//,
+                //user: req.user
             }
         }).then((recipe) => {
             if (recipe) {
+                //TODO PLEASE FOR THE LOVE OF GOD HELP ME LOAD USER
                 req.recipe = recipe;
                 next();
             } else {
                 res.send(404);
             }
         });
+        
     });
 
 

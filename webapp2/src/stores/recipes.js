@@ -28,6 +28,7 @@ export const useRecipesStore = defineStore('recipes', () => {
         return axios.get(`/api/recipes/${recipeID}`).then(
             (response) => {
                 recipe.value = response.data.recipe;
+                console.log("return recipe", response.data.recipe);
             },
             (response) => {
                 hasError.value = true;

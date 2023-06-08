@@ -23,6 +23,10 @@
         zipCode: '',
         email: '',
         id: 0,
+        showFollowersDialog: false,
+        showFollowingDialog: false,
+        followerCount: 8, // TODO Change this number
+        followingCount: 20, // TODO Change this number
 
     })
 
@@ -139,6 +143,13 @@
       })
     }
 
+    function toggleFollowers(){
+      state.showFollowersDialog = true;
+    }
+
+    function toggleFollowing(){
+      state.showFollowingDialog = true;
+    }
   
     function closeScoreChecker() {
       state.invalidScore = false;
@@ -197,7 +208,24 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-    
+
+          <!-- TODO Implement Followers and Following PopUp-->
+          <v-btn @click="toggleFollowers">{{ state.followerCount }} Followers</v-btn>
+            <v-dialog v-model="state.showFollowersDialog" max-width="500px">
+              <v-card>
+                <v-card-text>
+                  <p>List my followers here. </p>
+                </v-card-text>
+              </v-card>
+            </v-dialog>
+          <v-btn @click="toggleFollowing">{{ state.followingCount }} Following</v-btn>
+            <v-dialog v-model="state.showFollowingDialog" max-width="500px">
+                <v-card>
+                  <v-card-text>
+                    <p>List accounts I follow here. </p>
+                  </v-card-text>
+                </v-card>
+            </v-dialog>
 
     <h1> Your Recipes </h1>
     <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="recipe in recipesStore.recipes" :key="recipe.recipe_id">
@@ -225,7 +253,23 @@
                 Description: {{rating.description}}
               </div>
             </v-card>
-            <v-btn @click="deleteRecipe(recipe, recipe.recipe_id)">Delete Recipe</v-btn>
+
+
+            <!-- ASKS CONFIRMATION TO DELETE RECIPE -->
+            <v-btn @click="openDeletePostDialog">Delete Recipe</v-btn>
+              <v-dialog v-model="state.showDeletePostDialog">
+                <v-card>
+                  <v-card-text>
+                    <v-form class="mt-2">
+                      <p>Are you sure you want to delete this post?</p>
+                      <v-btn @click="deleteRecipe(recipe, recipe.recipe_id)">Delete</v-btn>
+                      <v-btn @click="abortDeletePost">NOOOOOO</v-btn>
+                    </v-form>
+                  </v-card-text>
+                </v-card>
+              </v-dialog>
+            
+            
             <div>
               <v-btn>Post Review
                 <v-dialog activator="parent" width="400">

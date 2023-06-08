@@ -22,7 +22,6 @@ const state = reactive({    // Kind of like a class- info we want to keep around
   zipCode: '',
   password: '',
   showLogin: true,
-  //loggedIn: false,
   isButtonDisabled: false,
   searchQuery: '',
   isMenuOpen: false,
