@@ -10,6 +10,7 @@ export const useUserStore = defineStore('user', () => {
     const hasError = ref(false);
     const error = ref("");
     const currentUser = ref();
+    const followers = ref([]);
     
 
     
@@ -111,6 +112,7 @@ export const useUserStore = defineStore('user', () => {
         })
     }
 
+
     function getIsFollowing(userId){
         //return axios.get(`/api/user/follow/${userId}`).then(() => {
             // TODO Return true or false if we are following this account
@@ -118,8 +120,25 @@ export const useUserStore = defineStore('user', () => {
         //})
     }
 
+    function getAllFollowers(){
+        console.log("requesting users in user store");
+        return axios.get('/api/user/followers').then(
+            // TODO pass information back
+            (response) => {
+                console.log("GOT RESPONSE GETALLFOLLOWERS",response.data.users);
+                followers.value=response.data.users;
+            }, (response) => {
+                console.log("GOT ERROR RESPONSE GETALLFOLLOWERS",response.response.data.msg);
 
-    return { loggedIn, error, hasError, currentUser, login, signup, isEmailRegistered, logout, ping, getUser, saveEdit, deleteUser, followUser, unfollowUser, getIsFollowing};
+                hasError.value = true;
+                error.value = response.response.data.msg;
+                return hasError;
+            })
+    }
+
+  
+
+    return { loggedIn, error, hasError, currentUser, followers, login, signup, isEmailRegistered, logout, ping, getUser, saveEdit, deleteUser, followUser, unfollowUser, getIsFollowing, getAllFollowers};
 
 
 });
