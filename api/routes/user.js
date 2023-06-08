@@ -65,7 +65,19 @@ export default (DataSource) => {
     userRepo.delete(request.user.id).then((result) => {
         response.send(result);
     });
-});
+  });
+
+  router.post('/user/follow/:id', (request, response) => {
+    console.log("accessed api - following user")
+    // TODO - get user id off parameter and save it in the data base
+        response.status(200);
+  });
+
+  router.delete('/user/follow/:id', (request, response) => {
+    console.log("accessed api - unfollowing user")
+        // TODO - get user id off parameter and remove it from the data base
+        response.status(200);
+  });
 
   return router;
 }

@@ -106,12 +106,14 @@ export default (DataSource) => {
             }
         }).then((recipe) => {
             if (recipe) {
+                //TODO PLEASE FOR THE LOVE OF GOD HELP ME LOAD USER
                 req.recipe = recipe;
                 next();
             } else {
                 res.send(404);
             }
         });
+        
     });
 
 

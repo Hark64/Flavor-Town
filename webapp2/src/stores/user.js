@@ -99,7 +99,27 @@ export const useUserStore = defineStore('user', () => {
         })
     }
 
-    return { loggedIn, error, hasError, currentUser, login, signup, isEmailRegistered, logout, ping, getUser, saveEdit, deleteUser};
+    function followUser(userId){
+        console.log("following user ", userId)
+        return axios.post(`/api/user/follow/${userId}`).then(() => {
+        })
+    }
+
+    function unfollowUser(userId){
+        console.log("unfollowing user ", userId)
+        return axios.delete(`/api/user/follow/${userId}`).then(() => {
+        })
+    }
+
+    function getIsFollowing(userId){
+        //return axios.get(`/api/user/follow/${userId}`).then(() => {
+            // TODO Return true or false if we are following this account
+            // TODO make API 
+        //})
+    }
+
+
+    return { loggedIn, error, hasError, currentUser, login, signup, isEmailRegistered, logout, ping, getUser, saveEdit, deleteUser, followUser, unfollowUser, getIsFollowing};
 
 
 });
