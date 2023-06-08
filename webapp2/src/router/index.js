@@ -55,8 +55,7 @@ function buildRouter (){
       path: "/ratings",
       name: "ratings",
       component: () => import("../views/Ratings.vue")
-    }
-    ,
+    },
     {
       path: "/search",
       name: "search",
