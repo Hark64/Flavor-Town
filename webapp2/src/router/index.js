@@ -1,14 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useUserStore } from '@/stores/user';
 
 
-const router = createRouter({
+
+function buildRouter (){
+  const store = useUserStore();
+  const router = createRouter({
+ 
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
       name: 'home',
       component: HomeView
+    
     },
     {
       path: '/todos',
@@ -49,14 +55,36 @@ const router = createRouter({
       path: "/ratings",
       name: "ratings",
       component: () => import("../views/Ratings.vue")
-    }
-    ,
+    },
     {
       path: "/search",
       name: "search",
       component: () => import("../views/SearchView.vue")
     }
   ]
+  
 })
 
-export default router
+router.beforeEach(async (to, from) => {
+  const isLoggedIn = store.loggedIn
+  console.log(isLoggedIn)
+  if (
+    // make sure the user is authenticated
+    !isLoggedIn &&
+    // ❗️ Avoid an infinite redirect
+    to.name !== 'home' && to.name !== 'search' && to.name!='singleRecipe'
+  ) {
+    // redirect the user to the login page
+    return { name: 'home' }
+  }
+})
+
+return router;
+
+}
+// router.beforeEach((to, from, next) => {
+//   if (to.name !== 'home' && !isAuthenticated) next({ name: 'home' })
+//   else next()
+// })
+export default buildRouter;
+

@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, AfterUpdate, AfterInsert } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, AfterUpdate, AfterInsert, ManyToMany, JoinTable } from 'typeorm';
 import { User } from './user';
 import { Rating } from './rating';
+import { Tag } from './tag';
 
 @Entity()
 export class Recipe {
@@ -19,13 +20,14 @@ export class Recipe {
     @Column({type: 'varchar', nullable: false})
     fileName
 
-    @Column({type: 'numeric', default: 0})
-    avgScore
-
     @ManyToOne(() => User, (user) => user.recipes)
     user
 
     @OneToMany(() => Rating, (rating) => rating.recipe) 
     ratings
+
+    @ManyToMany(() => Tag)
+    @JoinTable()
+    tags
 
 }

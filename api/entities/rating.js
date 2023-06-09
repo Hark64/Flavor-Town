@@ -13,6 +13,9 @@ export class Rating {
     @Column({type: 'varchar', nullable: false})
     description
 
+    @Column({type: 'varchar', nullable: false})
+    associatedRecipeTitle
+
     @ManyToOne(() => User, (user) => user.ratings)
     user
 

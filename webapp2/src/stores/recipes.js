@@ -7,6 +7,7 @@ export const useRecipesStore = defineStore('recipes', () => {
     const hasError = ref(false);
     const error = ref("");
     const recipes = ref([]);
+    const recipe = ref();
     
 
     function loadRecipes() {
@@ -23,12 +24,29 @@ export const useRecipesStore = defineStore('recipes', () => {
     }
 
 
-    function postRecipe({ title, description, videoLink, file}) {
+    function getOneRecipe(recipeID) {
+        return axios.get(`/api/recipes/${recipeID}`).then(
+            (response) => {
+                recipe.value = response.data.recipe;
+                console.log("return recipe", response.data.recipe);
+            },
+            (response) => {
+                hasError.value = true;
+                error.value = response.response.data.msg;
+                return hasError;
+            }
+
+        )
+    }
+
+
+    function postRecipe({ title, description, videoLink, file, tags}) {
         const formData = new FormData();
-        formData.append('title', title);
-        formData.append('description', description);
+        formData.append('title', title.trim());
+        formData.append('description', description.trim());
         formData.append('videoLink', videoLink);
         formData.append('uploaded_file', file);
+        formData.append('tags', JSON.stringify(tags));
 
         
         return axios.post("/api/recipes", formData, {
@@ -52,5 +70,5 @@ export const useRecipesStore = defineStore('recipes', () => {
         })
     }
 
-    return { error, hasError, recipes, loadRecipes, postRecipe, deleteRecipe };
+    return { error, hasError, recipes, recipe, loadRecipes, getOneRecipe, postRecipe, deleteRecipe };
 });

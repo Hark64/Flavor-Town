@@ -12,38 +12,50 @@ export const useSearchStore = defineStore('search', () => {
 
     const zip = ref('');
     const message = ref('');
-    const tags = ref( [{id: 1, label: 'Thai', val: false}, {id: 2, label: 'Greek', val: false}, {id: 3, label: 'Mexican', val: false},
-    {id: 4, label: 'Sweet', val: false}, {id: 5, label: 'Spicy', val: false}, {id: 6, label: 'Salty', val: false}, 
-    {id: 7, label: 'Quick', val: false}, {id: 8, label: 'Easy', val: false}, {id: 9, label: 'Pro', val: false}, 
-    {id: 10, label: 'Cheap', val: false}, {id: 11, label: 'Expensive', val: false}, {id: 12, label: 'Free', val: false}]);
+    const currentTag=ref('');
+    const goodTags= ref([]);
 
     function $reset(){
-        message.value=''
-        zip.value = ''
-        tags.value=[{id: 1, label: 'Thai', val: false}, {id: 2, label: 'Greek', val: false}, {id: 3, label: 'Mexican', val: false},
-        {id: 4, label: 'Sweet', val: false}, {id: 5, label: 'Spicy', val: false}, {id: 6, label: 'Salty', val: false}, 
-        {id: 7, label: 'Quick', val: false}, {id: 8, label: 'Easy', val: false}, {id: 9, label: 'Pro', val: false}, 
-        {id: 10, label: 'Cheap', val: false}, {id: 11, label: 'Expensive', val: false}, {id: 12, label: 'Free', val: false}]
+        message.value='';
     }
 
+    function addTag(){
+        if(goodTags.value.includes(currentTag.value.toLowerCase().trim())==false && currentTag.value.trim()!=''){
+            goodTags.value.push(currentTag.value.toLowerCase().trim());
+        }
+        currentTag.value = '';
+    }
+
+    function removeTag(index) {
+        goodTags.value.splice(index, 1);
+    }
 
     function loadResults() {
+        zip.value = zip.value.trim();
+        zip.value = zip.value.slice(0, 5);
+        message.value = message.value.trim();
         const params = {};
 
-        if (showZip.value==true) {
+        if (showZip.value==true && zip.value!='' && zip.value.length==5) {
           params.showZip = showZip.value;
           params.zip = zip.value;
         }
 
-        return axios.get("/api/search", { params }).then((_recipes) => {
-            message.value = message.value.trim();
-            zip.value = zip.value.trim();
+        // if(goodTags.value.length>0){
+        //     params.tags=true;
+        // }
 
-            if(message.value=="" && (showZip.value==false || zip.value=='')){
+        return axios.get("/api/search", { params }).then((_recipes) => {
+
+            if(message.value=="" && (showZip.value==false || zip.value=='') && goodTags.value.length==0){
                 results.value=[];
             } else {
                 var temp = _recipes.data.recipes;
-                temp.sort(compareArrays);
+                console.log(temp);
+                // if(goodTags.value.length>0){
+                //     console.log(temp);
+                // }
+                temp = temp.sort(compareArrays);
 
                 for (var i = temp.length - 1; i >= 0; --i) {
                     if (temp[i].user == -1 || temp[i].user===null) {
@@ -51,7 +63,6 @@ export const useSearchStore = defineStore('search', () => {
                     }
                 }
 
-                console.log(temp);
                 results.value = temp;
             }
         });
@@ -59,15 +70,24 @@ export const useSearchStore = defineStore('search', () => {
 
     function compareArrays(a, b){
         //cntTagsA = countMatches(a.tags, tags);
-
-        const cntKeyWordsA = countMatches(message.value.split(" "), a.title.split(" "))
-                    + countMatches(message.value.split(" "), a.description.split(" "));
-        const cntKeyWordsB = countMatches(message.value.split(" "), b.title.split(" "))
-                    + countMatches(message.value.split(" "), b.description.split(" "));
-        if(cntKeyWordsA==0){
+        let cntKeyWordsA = countMatches(message.value, a.title, true)
+                    + countMatches(message.value, a.description, true);
+        let cntKeyWordsB = countMatches(message.value, b.title, true)
+                    + countMatches(message.value, b.description, true);
+        if(a.user !=null && a.user!=-1){
+            console.log(a);
+            cntKeyWordsA+=countMatches(message.value, a.user.firstName, true)
+                        +countMatches(message.value, a.user.lastName, true);
+        }
+        if(b.user !=null && b.user!=-1){
+            console.log(b);
+            cntKeyWordsB+=countMatches(message.value, b.user.firstName, true)
+                        +countMatches(message.value, b.user.lastName, true);
+        }
+        if(cntKeyWordsA==0 && message.value!=''){
             a.user=-1;
         }
-        if(cntKeyWordsB==0){
+        if(cntKeyWordsB==0 && message.value!=''){
             b.user=-1;
         }
 
@@ -95,7 +115,11 @@ export const useSearchStore = defineStore('search', () => {
                     // }
     }
 
-    function countMatches(arr1, arr2){
+    function countMatches(arr1, arr2, isString){
+        if(isString){
+            arr1 = arr1.toLowerCase().split(" ");
+            arr2 = arr2.toLowerCase().split(" ");
+        }
         arr1.sort();
         arr2.sort();
         let count = 0;
@@ -111,5 +135,5 @@ export const useSearchStore = defineStore('search', () => {
         return count;
     }
     
-    return { hasError, error, showZip, results, message, tags, zip, $reset, loadResults };
+    return { hasError, error, showZip, results, message, goodTags, currentTag, zip, $reset, addTag, removeTag, loadResults };
 });
