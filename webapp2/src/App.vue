@@ -22,7 +22,6 @@ const state = reactive({    // Kind of like a class- info we want to keep around
   zipCode: '',
   password: '',
   showLogin: true,
-  //loggedIn: false,
   isButtonDisabled: false,
   searchQuery: '',
   isMenuOpen: false,
@@ -35,19 +34,58 @@ function login() {
       state.loginDialog = false;
       store.loggedIn = true;
       console.log('Logged in');
+      window.location.reload();
     }
   });
 }
 
-function signup() {
+function validateEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
+async function signup() {
   const { firstName, lastName, email, zipCode, password } = state;
-  store.signup({ firstName, lastName, email, zipCode, password }).then((error) => {
-    if (!error) {
-      state.signupDialog = false;
-      console.log('Signed up');
-      store.login({email, password});
+  if (firstName.trim() === '' || lastName.trim() === '') {
+    alert('Please enter a valid first name and last name.');
+    return;
+  }
+
+  if (!validateEmail(email)) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  if (password.length < 8) {
+    alert('Please enter a password with at least 8 characters.');
+    return;
+  }
+
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
+
+  if (!hasLowerCase || !hasUpperCase || !hasNumber) {
+    alert('Password should contain at least one lowercase letter, one uppercase letter, and one number.');
+    return;
+  }
+
+  try {
+    const isEmailRegistered = await store.isEmailRegistered(email);
+    if (isEmailRegistered) {
+      alert('Email already registered.');
+      return;
     }
-  });
+
+    await store.signup({ firstName, lastName, email, zipCode, password });
+    state.signupDialog = false;
+    console.log('Signed up');
+    await store.login({ email, password });
+    window.location.reload();
+  } catch (error) {
+    // Handle error from API call
+    console.error(error);
+  }
 }
 
 function switchToSignup() {
@@ -111,7 +149,7 @@ function navigateTo(route) {
           <v-icon>mdi-menu</v-icon>
         </v-btn>
 
-        <h1 class="logo" @click="navigateTo('home')">FlavorTown.com</h1>
+        <h1 class="logo" @click="navigateTo('/')">FlavorTown.com</h1>
       </div>
 
       <div class="menu" :class="{ 'menu-open': state.isMenuOpen }">
@@ -119,8 +157,8 @@ function navigateTo(route) {
         <ul>
           <h1 class="menuBtn" @click="navigateTo('/')"><a>Home</a></h1>
           <h1 class="menuBtn" @click="navigateTo('/events')"><a>Events</a></h1>
-          <h1 class="menuBtn" @click="navigateTo('/account')"><a>My Account</a></h1>
           <h1 class="menuBtn" @click="navigateTo('/postrecipes')"><a>Post Recipes</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/account')"><a>My Account</a></h1>
         </ul>
       </div>
 

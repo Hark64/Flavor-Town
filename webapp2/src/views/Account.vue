@@ -18,16 +18,35 @@
         showEditAccountDialog: false, // Popup for Editing Account details.
         showConfirmDeleteDialog: false, // Popup for confirming delete Account request. 
         showDeletePostDialog: false,
+        firstName: '',
+        lastName: '',
+        zipCode: '',
+        email: '',
+        id: 0,
+        showFollowersDialog: false,
+        showFollowingDialog: false,
+        followerCount: 8, // TODO Change this number
+        followingCount: 20, // TODO Change this number
+
     })
 
     onMounted(async () => {
+
+      await userStore.getUser(); // show user first while loading recipes
+      
+      state.firstName = userStore.currentUser[0].firstName;
+      state.lastName = userStore.currentUser[0].lastName;
+      state.zipCode = userStore.currentUser[0].zipCode;
+      state.email = userStore.currentUser[0].email;
+      state.id = userStore.currentUser[0].id;
       await recipesStore.loadRecipes();
+      console.log(recipesStore.recipes);
 
       for (const recipe of recipesStore.recipes) {
         await ratingsStore.getRatings(recipe.recipe_id);
       }
-      
-      await userStore.getUser();
+
+      await ratingsStore.getUserRatings();
     });
 
     function openEditAccountDialog() {
@@ -38,21 +57,16 @@
 
     function saveAccountInfo() {
       console.log("Changes to account information saved.")
+      userStore.currentUser[0].firstName = state.firstName;
+      userStore.currentUser[0].lastName = state.lastName;
+      userStore.currentUser[0].zipCode = state.zipCode;
+      userStore.currentUser[0].email = state.email;
+      userStore.saveEdit(userStore.currentUser[0]); // May not be right
+      state.showEditAccountDialog = false;
       // TODO need to tie to backend. Will be a put instead of a post.
-      //userStore.currentUser[0].firstName
-      //userStore.currentUser[0] = firstName;
     }
 
-    function logout() {
-      // TODO sign out and delete
-      // TODO not sure why the logout button
-        userStore.deleteAccount().then((error) => {
-          //this.$root.logout();
-          console.log("Error during logout", error)
-        });
-     
-      
-    }
+
 
     function askConfirmationToDeleteAccount(){
       console.log("Popup opened: asking confirmation to delete account.")
@@ -61,10 +75,10 @@
 
     function deleteAccount(){
       // TODO Actually Delete Account (api call)
-      // TODO Actually remove popups and logout
       state.showConfirmDeleteDialog = false;
       state.showEditAccountDialog = false;
-      logout();
+      userStore.deleteUser(state.id);
+      userStore.loggedIn = false;
       alert("Account successfully deleted.");
     }
 
@@ -78,12 +92,6 @@
       state.showDeletePostDialog = true;
     }
 
-    function deletePost(){
-      // TODO Actually delete the post from front end and back end?? 
-      console.log("Post deleted.")
-      state.showDeletePostDialog = false;
-      alert("Your delicious post has been deleted.")  // TODO It would be nice to have the alert appear AFTER popup goes away.
-    }
 
     function abortDeletePost(){
       console.log("Post not deleted.")
@@ -91,13 +99,13 @@
     }
 
 
-    function postReview(recipeID) {
+    function postReview(recipeID, recipeTitle) {
       const {score, description} = state;
       if (isNaN(score) || score > 5 || score < 0) {
         alert("Score Value Invalid, Try Again. 0-5 only.");
       }
       else {
-        ratingsStore.postRating({score, description, recipeID}).then((error) => {
+        ratingsStore.postRating({score, description, recipeID, recipeTitle}).then((error) => {
           if (!error) {
             console.log("Review Posted");
             alert("Review Posted, Refresh Page to See");
@@ -127,6 +135,22 @@
       })
     }
 
+    function deleteRating(rating) {
+      ratingsStore.deleteRating(rating).then((error) => {
+        if (!error) {
+          console.log("Rating Deleted");
+        }
+      })
+    }
+
+    function toggleFollowers(){
+      state.showFollowersDialog = true;
+      userStore.getAllFollowers();
+    }
+
+    function toggleFollowing(){
+      state.showFollowingDialog = true;
+    }
   
     function closeScoreChecker() {
       state.invalidScore = false;
@@ -185,8 +209,27 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-    
 
+          <!-- TODO Implement Followers and Following PopUp-->
+          <v-btn @click="toggleFollowers">{{ userStore.followers?.length }} Followers</v-btn>
+            <v-dialog v-model="state.showFollowersDialog" max-width="500px">
+              
+                <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="follower in userStore.followers" :key="follower.id">
+              {{follower.firstName}} {{ follower.lastName }}</v-card>
+                
+              
+            </v-dialog>
+          <v-btn @click="toggleFollowing">{{ state.followingCount }} Following</v-btn>
+            <v-dialog v-model="state.showFollowingDialog" max-width="500px">
+                <v-card>
+                  <v-card-text>
+                    <p>List accounts I follow here. </p>
+                  </v-card-text>
+                </v-card>
+              
+            </v-dialog>
+
+    <h1> Your Recipes </h1>
     <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="recipe in recipesStore.recipes" :key="recipe.recipe_id">
         <v-alert density="compact" type="warning" icon="$warning" title="There was an issue getting your recipes" v-if="recipesStore.hasError">{{ recipesStore.error }}</v-alert>
         <v-card-item>
@@ -212,7 +255,23 @@
                 Description: {{rating.description}}
               </div>
             </v-card>
-            <v-btn @click="deleteRecipe(recipe, recipe.recipe_id)">Delete Recipe</v-btn>
+
+
+            <!-- ASKS CONFIRMATION TO DELETE RECIPE -->
+            <v-btn @click="openDeletePostDialog">Delete Recipe</v-btn>
+              <v-dialog v-model="state.showDeletePostDialog">
+                <v-card>
+                  <v-card-text>
+                    <v-form class="mt-2">
+                      <p>Are you sure you want to delete this post?</p>
+                      <v-btn @click="deleteRecipe(recipe, recipe.recipe_id)">Delete</v-btn>
+                      <v-btn @click="abortDeletePost">NOOOOOO</v-btn>
+                    </v-form>
+                  </v-card-text>
+                </v-card>
+              </v-dialog>
+            
+            
             <div>
               <v-btn>Post Review
                 <v-dialog activator="parent" width="400">
@@ -235,7 +294,7 @@
                       </v-form>
                     </v-card-text>
                     <v-card-actions class="d-flex flex-row-reverse ma-2">
-                      <v-btn color="primary" @click="postReview(recipe.recipe_id)">Post Review</v-btn>
+                      <v-btn color="primary" @click="postReview(recipe.recipe_id, recipe.recipe_title)">Post Review</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -243,6 +302,22 @@
             </div>
           </div>
         </v-card-item>
+    </v-card>
+
+
+
+    <h1>The Ratings You've Posted</h1>
+    <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="rating in ratingsStore.userRatings" :key="rating.id">
+      <div class="text-h6 mb-1">
+        Associated Recipe: {{rating.associatedRecipeTitle}}
+      </div>
+      <div class="text-h6 mb-1">
+        Rating Score: {{rating.score}}
+      </div>
+      <div class="test-h6 mb-1" v-if="rating.description">
+        Description: {{rating.description}}
+      </div>
+      <v-btn @click="deleteRating(rating)">Delete Rating</v-btn>
     </v-card>
   </main>
 </template>

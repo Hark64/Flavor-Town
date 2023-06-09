@@ -66,11 +66,13 @@ function buildRouter (){
 })
 
 router.beforeEach(async (to, from) => {
+  const isLoggedIn = store.loggedIn
+  console.log(isLoggedIn)
   if (
     // make sure the user is authenticated
-    !store.loggedIn &&
+    !isLoggedIn &&
     // ❗️ Avoid an infinite redirect
-    to.name !== 'home'
+    to.name !== 'home' && to.name !== 'search' && to.name!='singleRecipe'
   ) {
     // redirect the user to the login page
     return { name: 'home' }

@@ -11,12 +11,40 @@ const state = reactive({
   zipCode: ''
 });
 
-
+// Function to validate the zip code
+function validateZipCode(zipCode) {
+  const regex = /^\d{5}$/; // Regular expression to match 5 digits
+  return regex.test(zipCode);
+}
 
 // when user clicks post, posts to database and to events page
 // check
 function handleEvent() {
   const { title, location, description, zipCode } = state;
+  if (title.trim() === '') {
+    alert('Please enter a title.');
+    return;
+  }
+
+  if (location.trim() === '') {
+    alert('Please enter a location.');
+    return;
+  }
+
+  if (zipCode.trim() === '') {
+    alert('Please enter a zip code.');
+    return;
+  }
+  
+  if (!validateZipCode(zipCode)) {
+    alert('Please enter a valid 5-digit zip code.');
+    return;
+  }
+
+  if (description.trim() === '') {
+    alert('Please enter a description.');
+    return;
+  }
   store.postEvent({ title, location, description, zipCode}).then((error) => {
     if (!error) {
         store.getEvent().then((error) => {
