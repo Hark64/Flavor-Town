@@ -4,6 +4,7 @@ import { Recipe } from './recipe';
 import { Rating } from './rating';
 import { Event } from './event';
 
+// https://typeorm.biunav.com/en/many-to-many-relations.html#what-are-many-to-many-relations
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
