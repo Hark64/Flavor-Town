@@ -37,4 +37,6 @@ export class User {
     @OneToMany(() => Event, (event) => event.user) 
     events
 
+    //@OneToMany(() => User, ())
+    // Need to make followers and following 
 }

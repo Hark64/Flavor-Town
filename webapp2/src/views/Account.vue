@@ -145,6 +145,7 @@
 
     function toggleFollowers(){
       state.showFollowersDialog = true;
+      userStore.getAllFollowers();
     }
 
     function toggleFollowing(){
@@ -210,13 +211,13 @@
           </v-dialog>
 
           <!-- TODO Implement Followers and Following PopUp-->
-          <v-btn @click="toggleFollowers">{{ state.followerCount }} Followers</v-btn>
+          <v-btn @click="toggleFollowers">{{ userStore.followers?.length }} Followers</v-btn>
             <v-dialog v-model="state.showFollowersDialog" max-width="500px">
-              <v-card>
-                <v-card-text>
-                  <p>List my followers here. </p>
-                </v-card-text>
-              </v-card>
+              
+                <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="follower in userStore.followers" :key="follower.id">
+              {{follower.firstName}} {{ follower.lastName }}</v-card>
+                
+              
             </v-dialog>
           <v-btn @click="toggleFollowing">{{ state.followingCount }} Following</v-btn>
             <v-dialog v-model="state.showFollowingDialog" max-width="500px">
@@ -225,6 +226,7 @@
                     <p>List accounts I follow here. </p>
                   </v-card-text>
                 </v-card>
+              
             </v-dialog>
 
     <h1> Your Recipes </h1>

@@ -11,6 +11,7 @@ export const useUserStore = defineStore('user', () => {
     const error = ref("");
     const currentUser = ref();
     const recipePoster = ref();
+    const followers = ref([]);
     
 
     
@@ -85,12 +86,71 @@ export const useUserStore = defineStore('user', () => {
         )
     }
 
+    function saveEdit({id, firstName, lastName, email, zipCode}) {
+        console.log("in save edit, id is:", id);
+        return axios.put("/api/user", {id, firstName, lastName, email, zipCode}).then(
+        (response) => {
+            console.log(response);
+            loggedIn.value = true;
+        }, (response) => {
+            hasError.value = true;
+            error.value = response.response.data.msg;
+            return hasError;
+        });
+    }
+
     function isEmailRegistered(email) {
         return axios.get(`/api/check-email?email=${email}`).then((response) => {
           const emailRegistered  = response.data;
           return emailRegistered.emailRegistered;
         });
       }
-    return { loggedIn, error, hasError, currentUser, recipePoster, login, signup, isEmailRegistered, logout, ping, getUser, getWhoPosted, deleteAccount};
+    
+    function deleteUser(id) {
+        return axios.delete(`/api/user/${id}`).then(() => {
+            console.log("user deleted in webapp2 user store")
+        })
+    }
+
+    function followUser(userId){
+        console.log("following user ", userId)
+        return axios.post(`/api/user/follow/${userId}`).then(() => {
+        })
+    }
+
+    function unfollowUser(userId){
+        console.log("unfollowing user ", userId)
+        return axios.delete(`/api/user/follow/${userId}`).then(() => {
+        })
+    }
+
+
+    function getIsFollowing(userId){
+        //return axios.get(`/api/user/follow/${userId}`).then(() => {
+            // TODO Return true or false if we are following this account
+            // TODO make API 
+        //})
+    }
+
+    function getAllFollowers(){
+        console.log("requesting users in user store");
+        return axios.get('/api/user/followers').then(
+            // TODO pass information back
+            (response) => {
+                console.log("GOT RESPONSE GETALLFOLLOWERS",response.data.users);
+                followers.value=response.data.users;
+            }, (response) => {
+                console.log("GOT ERROR RESPONSE GETALLFOLLOWERS",response.response.data.msg);
+
+                hasError.value = true;
+                error.value = response.response.data.msg;
+                return hasError;
+            })
+    }
+
+  
+
+    return { loggedIn, error, hasError, currentUser, followers, recipePoster, login, signup, isEmailRegistered, logout, ping, getUser, getWhoPosted, saveEdit, deleteUser, followUser, unfollowUser, getIsFollowing, getAllFollowers};
+
 
 });

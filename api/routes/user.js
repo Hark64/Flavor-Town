@@ -42,6 +42,8 @@ export default (DataSource) => {
       );
   })
 
+
+
   router.use('/user', isAuthenticated).put('/user', (request, response) => {
     const { firstName, lastName, email, zipCode, id } = request.body;
     console.log("In put user, id is ", id)
@@ -94,6 +96,20 @@ export default (DataSource) => {
         // TODO - get user id off parameter and remove it from the data base
         response.status(200);
   });
+
+  router.get('/user/followers', (request, response) => {
+    // TODO change to only get followers 
+    console.log("followers requested");
+    if (request.user) {
+        userRepo.find().then(
+              (users) => {
+                  console.log("users", users);
+                  response.send({ users })
+              },
+              () => response.status(500).send({ msg: 'Cannot find user'})
+          );
+    }
+  })
 
   return router;
 }

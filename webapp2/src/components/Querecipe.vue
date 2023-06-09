@@ -30,10 +30,10 @@
           </div>
           <div class="text-caption"> {{obj.description}} </div>
           <img :src="obj.fileName" alt="No Image" style="object-fit: contain;" width="250" height="250"/>
-          <div>
+          <div v-if="obj.user!=null">
             {{obj.user.zipCode}}
           </div>
-          <div>
+          <div v-if="obj.user!=null">
             By: {{obj.user.firstName}} {{obj.user.lastName}}
           </div>
       </v-card>
