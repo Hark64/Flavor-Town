@@ -81,6 +81,7 @@ async function signup() {
     state.signupDialog = false;
     console.log('Signed up');
     await store.login({ email, password });
+    window.location.reload();
   } catch (error) {
     // Handle error from API call
     console.error(error);

@@ -10,6 +10,7 @@ export const useUserStore = defineStore('user', () => {
     const hasError = ref(false);
     const error = ref("");
     const currentUser = ref();
+    const recipePoster = ref();
     
 
     
@@ -72,12 +73,24 @@ export const useUserStore = defineStore('user', () => {
         });
     }
 
+    function getWhoPosted(userID) {
+        return axios.get(`/api/whoPosted/${userID}`).then(
+            (response) => {
+                recipePoster.value = response.data.user;
+            }, (response => {
+                hasError.value = true;
+                error.value = response.response.data.msg;
+                return hasError;
+            })
+        )
+    }
+
     function isEmailRegistered(email) {
         return axios.get(`/api/check-email?email=${email}`).then((response) => {
           const emailRegistered  = response.data;
           return emailRegistered.emailRegistered;
         });
       }
-    return { loggedIn, error, hasError, currentUser, login, signup, isEmailRegistered, logout, ping, getUser, deleteAccount};
+    return { loggedIn, error, hasError, currentUser, recipePoster, login, signup, isEmailRegistered, logout, ping, getUser, getWhoPosted, deleteAccount};
 
 });

@@ -20,8 +20,10 @@
       const recipeID = route.params.id;
       console.log(recipeID);
       await recipesStore.getOneRecipe(recipeID);
+      await userStore.getWhoPosted(recipesStore.recipe.recipe_userId);
+      console.log(userStore.recipePoster);
       await ratingsStore.getRatings(recipesStore.recipe.recipe_id);
-      await userStore.getIsFollowing(recipesStore.recipe.userId); // TODO - THIS MAY NOT BE RIGHT
+      // await userStore.getIsFollowing(recipesStore.recipe.userId); // TODO - THIS MAY NOT BE RIGHT
     });
 
     function postReview(recipeID, recipeTitle) {
@@ -66,9 +68,10 @@
             </div>
 
             <!-- TODO PLEASE FOR THE LOVE OF GOD HELP ME CALL USER NAME HERE -->
-            <div class="text-h6 mb-1">
-              <!--{{ recipesStore.recipe.user?.firstName }}-->
-              Author: SAVANNAH BOSLEY <!-- Input user name here-->
+            <div class="text-h6 mb-1" v-if="userStore.recipePoster">
+              Author:
+               {{ userStore.recipePoster[0].firstName }}
+               {{ userStore.recipePoster[0].lastName }}
               <v-btn @click="followUser" v-if = !state.following>FOLLOW USER</v-btn>
               <v-btn @click="unfollowUser" v-if = state.following>UNFOLLOW USER</v-btn>
             </div>

@@ -31,6 +31,16 @@ export default (DataSource) => {
     }
   })
 
+  router.get('/whoPosted/:id', (request, response) => {
+    userRepo.find({where: {
+      id: request.params.id
+    }}).then(
+          (user) => {
+              response.send({ user })
+          },
+          () => response.status(500).send({ msg: 'Cannot find user'})
+      );
+  })
 
   router.use('/user', isAuthenticated).put('/user', (request, response) => {
     const { firstName, lastName, email, zipCode, id } = request.body;
