@@ -85,41 +85,43 @@ export default (DataSource) => {
     });
   });
 
-  router.post('/user/:id/follow', async (request, response) => {
-    const personFollowingID = request.params.id;
-    const { personBeingFollowedID } = request.body;
 
-    const personFollowing = await userRepo.findOne({ where: { id: personFollowingID}, relations: ["followers"]});
-    const personBeingFollowed = await userRepo.findOne({where: { id: personBeingFollowedID}});
+  // router.post('/user/:id/follow', async (request, response) => {
+  //   const personFollowingID = request.params.id;
+  //   const { personBeingFollowedID } = request.body;
+
+  //   const personFollowing = await userRepo.findOne({ where: { id: personFollowingID}, relations: ["followers"]});
+  //   const personBeingFollowed = await userRepo.findOne({where: { id: personBeingFollowedID}, relations: ["following"]});
 
 
-    if (personFollowing && personBeingFollowed) {
+  //   if (personFollowing && personBeingFollowed) {
 
-      if (!personFollowing.following) {
-        personFollowing.following = [];
-      }
-      if (!personBeingFollowed.followers) {
-        personBeingFollowed.followers = [];
-      }
+  //     if (!personFollowing.following) {
+  //       personFollowing.following = [];
+  //     }
+  //     if (!personBeingFollowed.followers) {
+  //       personBeingFollowed.followers = [];
+  //     }
 
       
-      personFollowing.following.push(personBeingFollowed.id);
-      personBeingFollowed.followers.push(personFollowing.id);
+  //     personFollowing.following.push(personBeingFollowed.id);
+  //     personBeingFollowed.followers.push(personFollowing.id);
 
-      await userRepo.save([personFollowing, personBeingFollowed]);
+  //     await userRepo.save(personFollowing);
+  //     await userRepo.save(personBeingFollowed);
 
-      console.log(personFollowing);
-      console.log(personBeingFollowed);
+  //     console.log(personFollowing);
+  //     console.log(personBeingFollowed);
 
-      const updatedPersonFollowing = await userRepo.findOne({ where: { id: personFollowingID}});
-      const updatedPersonBeingFollowed = await userRepo.findOne({where: { id: personBeingFollowedID}});
+  //     const updatedPersonFollowing = await userRepo.findOne({ where: { id: personFollowingID}});
+  //     const updatedPersonBeingFollowed = await userRepo.findOne({where: { id: personBeingFollowedID}});
 
-      console.log(updatedPersonFollowing);
-      console.log(updatedPersonBeingFollowed);
+  //     console.log(updatedPersonFollowing);
+  //     console.log(updatedPersonBeingFollowed);
 
-      response.send({ message: 'Follow Successful'});
-    }
-  });
+  //     response.send({personFollowing, personBeingFollowed});
+  //   }
+  // });
 
   router.delete('/user/follow/:id', (request, response) => {
     console.log("accessed api - unfollowing user")

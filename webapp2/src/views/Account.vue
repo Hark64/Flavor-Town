@@ -33,10 +33,6 @@
     onMounted(async () => {
       await userStore.getUser(); // show user first while loading recipes
 
-      console.log(userStore.currentUser[0]);
-      console.log(userStore.currentUser[0].following);
-      console.log(userStore.currentUser[0].followers);
-
       state.firstName = userStore.currentUser[0].firstName;
       state.lastName = userStore.currentUser[0].lastName;
       state.zipCode = userStore.currentUser[0].zipCode;
@@ -47,6 +43,9 @@
       for (const recipe of recipesStore.recipes) {
         await ratingsStore.getRatings(recipe.recipe_id);
       }
+
+      await userStore.getAllFollowers(userStore.currentUser[0].id);
+      await userStore.getAllFollowing(userStore.currentUser[0].id);
     });
 
     function openEditAccountDialog() {
@@ -137,7 +136,7 @@
 
     function toggleFollowers(){
       state.showFollowersDialog = true;
-      userStore.getAllFollowers();
+      // userStore.getAllFollowers();
     }
 
     function toggleFollowing(){
@@ -208,17 +207,17 @@
               <v-card class="popup">
                 <v-card-text>
                   <ul>
-                    <li v-for="follower in userStore.followers" :key="follower.id">{{ follower.firstName }} {{ follower.lastName }}</li>
+                    <li v-for="follow in userStore.followers" :key="follow.userWhoIsFollowing.id">{{ follow.userWhoIsFollowing.firstName }} {{ follow.userWhoIsFollowing.lastName }}</li>
                   </ul>
                 </v-card-text>
               </v-card>      
             </v-dialog>
-          <v-btn @click="toggleFollowing">{{ userStore.followers?.length }} Following</v-btn>
+          <v-btn @click="toggleFollowing">{{ userStore.following?.length }} Following</v-btn>
             <v-dialog v-model="state.showFollowingDialog" max-width="500px">
               <v-card class="popup">
                 <v-card-text>
                   <ul>
-                    <li v-for="follower in userStore.followers" :key="follower.id"> {{follower.firstName}} {{ follower.lastName }} </li>
+                    <li v-for="follow in userStore.following" :key="follow.userBeingFollowed.id"> {{follow.userBeingFollowed.firstName}} {{ follow.userBeingFollowed.lastName }} </li>
                   </ul>
                 </v-card-text>
               </v-card>      

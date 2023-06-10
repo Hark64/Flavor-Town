@@ -12,6 +12,7 @@ export const useUserStore = defineStore('user', () => {
     const currentUser = ref();
     const recipePoster = ref();
     const followers = ref([]);
+    const following = ref([]);
     
 
     
@@ -113,8 +114,8 @@ export const useUserStore = defineStore('user', () => {
     }
 
 
-    function followUser(personFollowingID, personBeingFollowedID){
-        return axios.post(`/api/user/${personFollowingID}/follow`, {personBeingFollowedID}).then(
+    function followUser(userBeingFollowedID, userWhoIsFollowingID){
+        return axios.post("/api/follow", {userBeingFollowedID, userWhoIsFollowingID}).then(
             (response) => {
                 console.log(response);
             }, (response) => {
@@ -139,13 +140,28 @@ export const useUserStore = defineStore('user', () => {
         //})
     }
 
-    function getAllFollowers(){
+
+    function getAllFollowers(userID){
         console.log("requesting users in user store");
-        return axios.get('/api/user/followers').then(
+        return axios.get(`/api/user/${userID}/followers`).then(
             // TODO pass information back
             (response) => {
-                console.log("GOT RESPONSE GETALLFOLLOWERS",response.data.users);
-                followers.value=response.data.users;
+                followers.value = response.data.follows;
+            }, (response) => {
+                console.log("GOT ERROR RESPONSE GETALLFOLLOWERS",response.response.data.msg);
+
+                hasError.value = true;
+                error.value = response.response.data.msg;
+                return hasError;
+            })
+    }
+
+    function getAllFollowing(userID){
+        console.log("requesting users in user store");
+        return axios.get(`/api/user/${userID}/following`).then(
+            // TODO pass information back
+            (response) => {
+                following.value = response.data.follows;
             }, (response) => {
                 console.log("GOT ERROR RESPONSE GETALLFOLLOWERS",response.response.data.msg);
 
@@ -157,7 +173,7 @@ export const useUserStore = defineStore('user', () => {
 
   
 
-    return { loggedIn, error, hasError, currentUser, followers, recipePoster, login, signup, isEmailRegistered, logout, ping, getUser, getWhoPosted, saveEdit, deleteUser, followUser, unfollowUser, getIsFollowing, getAllFollowers};
+    return { loggedIn, error, hasError, currentUser, followers, following, recipePoster, login, signup, isEmailRegistered, logout, ping, getUser, getWhoPosted, saveEdit, deleteUser, followUser, unfollowUser, getIsFollowing, getAllFollowers, getAllFollowing};
 
 
 });

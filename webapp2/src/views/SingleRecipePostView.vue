@@ -21,6 +21,12 @@
       await recipesStore.getOneRecipe(recipeID);
       await userStore.getWhoPosted(recipesStore.recipe.recipe_userId);
       await ratingsStore.getRatings(recipesStore.recipe.recipe_id);
+      await userStore.getAllFollowing(userStore.currentUser[0].id);
+      for (const follow of userStore.following) {
+        if (follow.userBeingFollowed.id == recipesStore.recipe.recipe_userId) {
+          state.following = true;
+        }
+      }
       // await userStore.getIsFollowing(recipesStore.recipe.userId); // TODO - THIS MAY NOT BE RIGHT
     });
 
@@ -44,8 +50,7 @@
       // recipesStore.recipe.recipe_userID
       state.following = !state.following;
       //userStore.followUser(37);
-      userStore.followUser(userStore.currentUser[0].id, recipesStore.recipe.recipe_userId);
-      console.log(userStore.currentUser[0].following);
+      userStore.followUser(recipesStore.recipe.recipe_userId, userStore.currentUser[0].id);
     }
 
     function unfollowUser(){
