@@ -85,10 +85,40 @@ export default (DataSource) => {
     });
   });
 
-  router.post('/user/follow/:id', (request, response) => {
-    console.log("accessed api - following user")
-    // TODO - get user id off parameter and save it in the data base
-        response.status(200);
+  router.post('/user/:id/follow', async (request, response) => {
+    const personFollowingID = request.params.id;
+    const { personBeingFollowedID } = request.body;
+
+    const personFollowing = await userRepo.findOne({ where: { id: personFollowingID}, relations: ["followers"]});
+    const personBeingFollowed = await userRepo.findOne({where: { id: personBeingFollowedID}});
+
+
+    if (personFollowing && personBeingFollowed) {
+
+      if (!personFollowing.following) {
+        personFollowing.following = [];
+      }
+      if (!personBeingFollowed.followers) {
+        personBeingFollowed.followers = [];
+      }
+
+      
+      personFollowing.following.push(personBeingFollowed.id);
+      personBeingFollowed.followers.push(personFollowing.id);
+
+      await userRepo.save([personFollowing, personBeingFollowed]);
+
+      console.log(personFollowing);
+      console.log(personBeingFollowed);
+
+      const updatedPersonFollowing = await userRepo.findOne({ where: { id: personFollowingID}});
+      const updatedPersonBeingFollowed = await userRepo.findOne({where: { id: personBeingFollowedID}});
+
+      console.log(updatedPersonFollowing);
+      console.log(updatedPersonBeingFollowed);
+
+      response.send({ message: 'Follow Successful'});
+    }
   });
 
   router.delete('/user/follow/:id', (request, response) => {

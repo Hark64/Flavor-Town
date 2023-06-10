@@ -18,10 +18,8 @@
 
     onMounted(async () => {
       const recipeID = route.params.id;
-      console.log(recipeID);
       await recipesStore.getOneRecipe(recipeID);
       await userStore.getWhoPosted(recipesStore.recipe.recipe_userId);
-      console.log(userStore.recipePoster);
       await ratingsStore.getRatings(recipesStore.recipe.recipe_id);
       // await userStore.getIsFollowing(recipesStore.recipe.userId); // TODO - THIS MAY NOT BE RIGHT
     });
@@ -46,7 +44,8 @@
       // recipesStore.recipe.recipe_userID
       state.following = !state.following;
       //userStore.followUser(37);
-      userStore.followUser(recipesStore.recipe.recipe_userId);
+      userStore.followUser(userStore.currentUser[0].id, recipesStore.recipe.recipe_userId);
+      console.log(userStore.currentUser[0].following);
     }
 
     function unfollowUser(){
@@ -68,8 +67,6 @@
             <div class="text-h6 mb-1">
               Description: {{recipesStore.recipe.recipe_description}}
             </div>
-
-            <!-- TODO PLEASE FOR THE LOVE OF GOD HELP ME CALL USER NAME HERE -->
             <div class="text-h6 mb-1" v-if="userStore.recipePoster">
               Author:
                {{ userStore.recipePoster[0].firstName }}

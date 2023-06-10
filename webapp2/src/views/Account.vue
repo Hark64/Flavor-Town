@@ -33,6 +33,10 @@
     onMounted(async () => {
       await userStore.getUser(); // show user first while loading recipes
 
+      console.log(userStore.currentUser[0]);
+      console.log(userStore.currentUser[0].following);
+      console.log(userStore.currentUser[0].followers);
+
       state.firstName = userStore.currentUser[0].firstName;
       state.lastName = userStore.currentUser[0].lastName;
       state.zipCode = userStore.currentUser[0].zipCode;
