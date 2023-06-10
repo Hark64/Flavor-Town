@@ -83,6 +83,8 @@ function handleEvent() {
 </template>
 
 <style scoped>
+
+/*I've commented this out for now. Header was overlaying form. */
 /* .createevent{
   position: fixed;
   top: 150px;
