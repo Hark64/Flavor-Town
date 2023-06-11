@@ -81,6 +81,7 @@ export default (DataSource) => {
   router.delete('/user/:id', (request, response) => {
     console.log("deleting user in user.js api routes")
     userRepo.delete(request.user.id).then((result) => {
+        request.logout('local', () => response.send());  // TODO HELP
         response.send(result);
     });
   });
