@@ -126,10 +126,16 @@ export const useUserStore = defineStore('user', () => {
     }
 
 
-    function unfollowUser(userId){
-        console.log("unfollowing user ", userId)
-        return axios.delete(`/api/user/follow/${userId}`).then(() => {
-        })
+    function unfollowUser(userBeingFollowedID, userWhoIsFollowingID){
+        //console.log("unfollowing user", userBeingFollowedID)
+        return axios.post("/api/unfollow", {userBeingFollowedID, userWhoIsFollowingID}).then(
+            (response) => {
+                console.log(response);
+            }, (response) => {
+                hasError.value = true;
+                error.value = response.response.data.msg;
+                return hasError;
+            });
     }
 
 

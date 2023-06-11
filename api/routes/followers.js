@@ -33,6 +33,23 @@ export default (DataSource) => {
         }
     });
 
+    router.post('/unfollow', async (request, response) => {
+        console.log("unfollow in api");
+        const {userBeingFollowedID, userWhoIsFollowingID} = request.body;
+
+        const alreadyExists = await followerRepo.findOne({         // See if user exists
+            where: {
+              userBeingFollowed: { id: userBeingFollowedID },
+              userWhoIsFollowing: { id: userWhoIsFollowingID }
+            }
+        });
+        //console.log("Already exists", alreadyExists);
+        if (alreadyExists) {    // If user exists and is followed, need to unfollow
+            followerRepo.delete(alreadyExists.id).then((result) => {
+                response.send(result);
+            });
+        }
+    });
 
     router.get('/user/:id/followers', (req, res) => {
         followerRepo.find({where: {

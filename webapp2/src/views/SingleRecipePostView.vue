@@ -46,8 +46,6 @@
     }
 
     function followUser(){
-      // TODO Pass in actual user id associated with recipe
-      // recipesStore.recipe.recipe_userID
       state.following = !state.following;
       //userStore.followUser(37);
       userStore.followUser(recipesStore.recipe.recipe_userId, userStore.currentUser[0].id);
@@ -56,8 +54,9 @@
     function unfollowUser(){
       // TODO Pass in actual user id associated with recipe
       state.following = !state.following;
-      userStore.unfollowUser(recipesStore.recipe.recipe_userId);
+      userStore.unfollowUser(recipesStore.recipe.recipe_userId, userStore.currentUser[0].id);
     }
+    
 </script>
 
 <template>
