@@ -48,6 +48,7 @@
     function followUser(){
       state.following = !state.following;
       //userStore.followUser(37);
+
       userStore.followUser(recipesStore.recipe.recipe_userId, userStore.currentUser[0].id);
     }
 
@@ -56,7 +57,7 @@
       state.following = !state.following;
       userStore.unfollowUser(recipesStore.recipe.recipe_userId, userStore.currentUser[0].id);
     }
-    
+
 </script>
 
 <template>
@@ -75,7 +76,7 @@
               Author:
                {{ userStore.recipePoster[0].firstName }}
                {{ userStore.recipePoster[0].lastName }}
-              <v-btn @click="followUser" v-if = !state.following>FOLLOW USER</v-btn>
+              <v-btn @click="followUser" v-if = "!state.following && (recipesStore.recipe.recipe_userId != userStore.currentUser[0].id)">FOLLOW USER</v-btn>
               <v-btn @click="unfollowUser" v-if = state.following>UNFOLLOW USER</v-btn>
             </div>
             
