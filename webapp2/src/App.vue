@@ -103,6 +103,7 @@ function logOut() {
     if (!error) {
       store.loggedIn = false;
       console.log('Logged out');
+      navigateTo('/')
     }
   });
 }

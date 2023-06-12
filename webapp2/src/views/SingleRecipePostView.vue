@@ -98,7 +98,7 @@
               </div>
             </v-card>
             <div>
-              <v-btn>Post Review
+              <v-btn v-if="userStore.loggedIn">Post Review
                 <v-dialog activator="parent" width="400">
                   <v-card>
                     <v-card-text>
