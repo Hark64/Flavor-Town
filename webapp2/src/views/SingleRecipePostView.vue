@@ -21,13 +21,14 @@
       await recipesStore.getOneRecipe(recipeID);
       await userStore.getWhoPosted(recipesStore.recipe.recipe_userId);
       await ratingsStore.getRatings(recipesStore.recipe.recipe_id);
-      await userStore.getAllFollowing(userStore.currentUser[0].id);
-      for (const follow of userStore.following) {
+      if (userStore.currentUser){
+        await userStore.getAllFollowing(userStore.currentUser[0].id);
+        for (const follow of userStore.following) {
         if (follow.userBeingFollowed.id == recipesStore.recipe.recipe_userId) {
           state.following = true;
         }
       }
-      // await userStore.getIsFollowing(recipesStore.recipe.userId); // TODO - THIS MAY NOT BE RIGHT
+      }
     });
 
     function postReview(recipeID, recipeTitle) {
@@ -76,7 +77,7 @@
               Author:
                {{ userStore.recipePoster[0].firstName }}
                {{ userStore.recipePoster[0].lastName }}
-              <v-btn @click="followUser" v-if = "!state.following && (recipesStore.recipe.recipe_userId != userStore.currentUser[0].id)">FOLLOW USER</v-btn>
+              <v-btn @click="followUser" v-if = "userStore.currentUser && !state.following && (recipesStore.recipe.recipe_userId != userStore.currentUser[0].id)">FOLLOW USER</v-btn>
               <v-btn @click="unfollowUser" v-if = state.following>UNFOLLOW USER</v-btn>
             </div>
             

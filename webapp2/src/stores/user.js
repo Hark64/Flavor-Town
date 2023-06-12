@@ -44,12 +44,17 @@ export const useUserStore = defineStore('user', () => {
 
     function logout() {
         return axios.get("/api/logout").then(() => {
+            currentUser.value = null;   // Clear cache
+            recipePoster.value = null;
+            followers.value = [];
+            following.value = [];
             loggedIn.value = false;
         });
     }
 
     function deleteAccount() {
         return axios.get("/api/logout").then(() => {
+
             loggedIn.value = false;
         });
     }
