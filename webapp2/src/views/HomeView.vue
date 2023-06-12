@@ -55,7 +55,7 @@
       <v-progress-circular indeterminate color="purple"></v-progress-circular>
     </div>
     <div v-else-if="homeRecipes.length === 0">
-      <h1>Looks Like No Recipes Are Available In Your Area</h1>
+      <h1>Looks Like No Recipes Are Available</h1>
     </div>
     <div v-else>
       <div v-if="store.loggedIn">
