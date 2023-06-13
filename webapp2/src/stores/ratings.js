@@ -60,6 +60,7 @@ export const useRatingsStore = defineStore('ratings', () => {
             userRatings.value.splice(idx, 1);
         })
     }
+
     
     return { error, hasError, ratings, userRatings, postRating, deleteRatings, deleteRating, getRatings, getUserRatings};
 });

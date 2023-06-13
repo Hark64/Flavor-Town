@@ -189,13 +189,13 @@ export const useUserStore = defineStore('user', () => {
 
     function deleteFollows(userID) {
         return axios.delete(`/api/user/${userID}/delete`).then(() => {
-
         })
     }
 
   
 
-    return { loggedIn, error, hasError, currentUser, followers, following, recipePoster, login, signup, isEmailRegistered, logout, ping, getUser, getWhoPosted, saveEdit, deleteUser, followUser, unfollowUser, getIsFollowing, getAllFollowers, getAllFollowing, deleteUserEvents, deleteFollows};
+    return { loggedIn, error, hasError, currentUser, followers, following, recipePoster, 
+        login, signup, isEmailRegistered, logout, ping, getUser, getWhoPosted, saveEdit, deleteUser, followUser, unfollowUser, getIsFollowing, getAllFollowers, getAllFollowing, deleteUserEvents, deleteFollows};
 
 
 });
