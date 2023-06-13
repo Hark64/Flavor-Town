@@ -43,6 +43,12 @@ export default (DataSource) => {
         );
     })
 
+    router.delete('/user/:id/events', (req, res) => {
+        eventRepo.delete({user: {id: req.params.id} }).then((result) => {
+            res.send(result);
+        });
+    })
+
   return router;
 
 

@@ -53,6 +53,10 @@ export const useEventStore = defineStore('event', () => {
           }
         );
       }
+
+      
+
+
     return {eventsList, eventsListZip, error, hasError, postEvent, getEvent, getEventInZip};
 
 });

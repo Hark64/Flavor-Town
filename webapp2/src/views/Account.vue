@@ -44,6 +44,7 @@
         await ratingsStore.getRatings(recipe.recipe_id);
       }
 
+      await ratingsStore.getUserRatings();
       await userStore.getAllFollowers(userStore.currentUser[0].id);
       await userStore.getAllFollowing(userStore.currentUser[0].id);
     });
@@ -72,19 +73,29 @@
       state.showConfirmDeleteDialog = true;
     }
 
-    function deleteAccount(){
+    async function deleteAccount(){
       // TODO Actually Delete Account (api call)
       state.showConfirmDeleteDialog = false;
       state.showEditAccountDialog = false;
-      userStore.deleteUser(state.id);
+      for (const recipe of recipesStore.recipes) {
+        await deleteRecipe(recipe, recipe.recipe_id);
+      }
+      for (const rating of ratingsStore.userRatings) {
+        await deleteRating(rating);
+      }
+      await userStore.deleteUserEvents(state.id);
+      await userStore.deleteFollows(state.id);
+      await userStore.deleteUser(state.id);
       userStore.loggedIn = false;
       alert("Account successfully deleted.");
+      window.location.reload();
     }
 
     function abortDelete(){
       console.log("User decided not to delete account.")
       state.showConfirmDeleteDialog = false;
     }
+
 
     function openDeletePostDialog(){
       console.log("Popup opened: asking confirmation to delete account.")
@@ -98,13 +109,13 @@
     }
 
 
-    function postReview(recipeID) {
+    function postReview(recipeID, recipeTitle) {
       const {score, description} = state;
       if (isNaN(score) || score > 5 || score < 0) {
         alert("Score Value Invalid, Try Again. 0-5 only.");
       }
       else {
-        ratingsStore.postRating({score, description, recipeID}).then((error) => {
+        ratingsStore.postRating({score, description, recipeID, recipeTitle}).then((error) => {
           if (!error) {
             console.log("Review Posted");
             alert("Review Posted, Refresh Page to See");
@@ -112,6 +123,7 @@
         });
       }
     }
+
 
     function deleteRecipe(recipe, recipeID) {
       deleteRatings(recipeID);
@@ -130,6 +142,14 @@
       ratingsStore.deleteRatings(recipeID).then((error) => {
         if (!error) {
           console.log("Ratings Deleted");
+        }
+      })
+    }
+
+    function deleteRating(rating) {
+      ratingsStore.deleteRating(rating).then((error) => {
+        if (!error) {
+          console.log("Rating Deleted");
         }
       })
     }
@@ -166,7 +186,6 @@
       </div>
     </div>
     <!-- TODO HTML img tag of profile pic -->
-
     <!-- This button (and pop up) lets user edit their account. -->
     <v-btn class="editAccBtn" id="editAccount" @click="openEditAccountDialog">Edit Account</v-btn>
           <v-dialog v-model="state.showEditAccountDialog"  width="400">
@@ -223,6 +242,7 @@
               </v-card>      
             </v-dialog>
 
+    <h1>The Recipes You've Posted</h1>
     <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="recipe in recipesStore.recipes" :key="recipe.recipe_id">
         <v-alert density="compact" type="warning" icon="$warning" title="There was an issue getting your recipes" v-if="recipesStore.hasError">{{ recipesStore.error }}</v-alert>
         <v-card-item>
@@ -287,7 +307,7 @@
                       </v-form>
                     </v-card-text>
                     <v-card-actions class="d-flex flex-row-reverse ma-2">
-                      <v-btn color="primary" @click="postReview(recipe.recipe_id)">Post Review</v-btn>
+                      <v-btn color="primary" @click="postReview(recipe.recipe_id, recipe.recipe_title)">Post Review</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -295,6 +315,20 @@
             </div>
           </div>
         </v-card-item>
+    </v-card>
+
+    <h1>The Ratings You've Posted</h1>
+    <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="rating in ratingsStore.userRatings" :key="rating.id">
+      <div class="text-h6 mb-1">
+        Associated Recipe: {{rating.associatedRecipeTitle}}
+      </div>
+      <div class="text-h6 mb-1">
+        Rating Score: {{rating.score}}
+      </div>
+      <div class="test-h6 mb-1" v-if="rating.description">
+        Description: {{rating.description}}
+      </div>
+      <v-btn @click="deleteRating(rating)">Delete Rating</v-btn>
     </v-card>
   </main>
 </template>

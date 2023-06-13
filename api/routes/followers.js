@@ -75,6 +75,18 @@ export default (DataSource) => {
         );
     });
 
+    router.delete('/user/:id/delete', (req, res) => {
+        const deleteQuery = followerRepo.createQueryBuilder()
+        .delete()
+        .where('userWhoIsFollowing.id = :id OR userBeingFollowed.id = :id', { id: req.params.id});
+
+
+        deleteQuery.execute().then((result) => {
+            res.send(result);
+        })
+    })
+
+
     return router;
 }
    
