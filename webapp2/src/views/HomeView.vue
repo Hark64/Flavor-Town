@@ -55,7 +55,12 @@
       <v-progress-circular indeterminate color="purple"></v-progress-circular>
     </div>
     <div v-else-if="homeRecipes.length === 0">
-      <h1>Looks Like No Recipes Are Available</h1>
+      <div v-if="store.loggedIn">
+        <h1>Looks Like No Recipes Are Available In Your Area</h1>
+      </div>
+      <div v-else>
+        <h1>Looks Like No Recipes Are Available AT ALL. Try Signing Up and Making Your Own.</h1>
+      </div>
     </div>
     <div v-else>
       <div v-if="store.loggedIn">
@@ -69,10 +74,10 @@
         </h1>
       </div>
 
-      <v-sheet class="mx-auto" elevation="8" max-width="1600">
+      <v-sheet class="mx-auto" elevation="8" max-width="1600" max-height="1600" style="position: static;">
         <v-slide-group class="pa-4" show-arrows>
           <v-slide-group-item v-for="result in homeRecipes" :key="result.id">
-            <Results :obj="result" :width="'300px'" :height="'200px'"></Results>
+            <Results :obj="result" :width="'300px'" :height="'400px'"></Results>
           </v-slide-group-item>
         </v-slide-group>
       </v-sheet>

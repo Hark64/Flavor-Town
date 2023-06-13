@@ -74,7 +74,7 @@
             <v-card color="black">
               <v-text-field
                 v-model="store.currentTag"
-                label="Add a Tag"
+                label="Add a Tag (Min: 0, Max: 10)"
                 @keyup.enter="store.addTag()"
                 dense
                 clearable

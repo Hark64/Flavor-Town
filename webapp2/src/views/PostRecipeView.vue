@@ -13,7 +13,8 @@
     })
 
     function addTag(){
-        if(state.tags.includes(state.CurrentTag.toLowerCase().trim())==false && state.CurrentTag.trim()!=''){
+        if(state.tags.includes(state.CurrentTag.toLowerCase().trim())==false 
+          && state.CurrentTag.trim()!=''&& state.tags.length<=10){
             state.tags.push(state.CurrentTag.toLowerCase().trim());
         }
         state.CurrentTag = '';
@@ -78,7 +79,7 @@
 
                   <v-text-field
                     v-model="state.CurrentTag"
-                    label="Add a Tag"
+                    label="Add a Tag (Min: 0, Max: 10)"
                     @keyup.enter="addTag()"
                     dense
                     clearable
