@@ -64,7 +64,6 @@ function buildRouter (){
   ]
   
 })
-
 router.beforeEach(async (to, from) => {
   const isLoggedIn = store.loggedIn
   console.log(isLoggedIn)
@@ -78,6 +77,7 @@ router.beforeEach(async (to, from) => {
     return { name: 'home' }
   }
 })
+
 
 return router;
 

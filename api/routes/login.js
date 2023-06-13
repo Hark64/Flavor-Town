@@ -18,7 +18,9 @@ export default (passport) => {
   router.get('/logout', (req, res) => {
     req.logout('local', () => res.send());
   });
+
   router.use('/ping', isAuthenticated);
+  
   router.get('/ping', (req, res) => {
     res.send();
   });

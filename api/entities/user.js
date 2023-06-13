@@ -1,8 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { ToDo } from './todo';
 import { Recipe } from './recipe';
 import { Rating } from './rating';
 import { Event } from './event';
+import { Follower } from './follower';
 
 @Entity()
 export class User {
@@ -37,6 +38,16 @@ export class User {
     @OneToMany(() => Event, (event) => event.user) 
     events
 
-    //@OneToMany(() => User, ())
-    // Need to make followers and following 
+    @OneToMany(() => Follower, (follower) => follower.userBeingFollowed)
+    followers
+
+    @OneToMany(() => Follower, (follower) => follower.userWhoIsFollowing)
+    following
+
+    // @ManyToMany(() => User, (user) => user.following)
+    // @JoinTable()
+    // followers
+
+    // @ManyToMany(() => User, (user) => user.followers, {cascade: true})
+    // following
 }

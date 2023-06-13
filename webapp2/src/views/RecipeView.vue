@@ -2,9 +2,10 @@
     import { onMounted, reactive } from 'vue';
     import { useRecipesStore } from '@/stores/recipes';
     import { useRatingsStore } from '@/stores/ratings';
+    import { useUserStore } from '@/stores/user';
     const recipesStore = useRecipesStore();
     const ratingsStore = useRatingsStore();
-
+    const userStore = useUserStore();
     const state = reactive({
         score: 0,
         description: '',
