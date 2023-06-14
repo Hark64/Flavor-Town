@@ -11,7 +11,8 @@ const searchStore = useSearchStore();
     <div>
       We try to find all posts that have at least one tag or at least one matching keyword. Results are NOT sorted
       by recipe post score. Results are sorted by most matching tags, then most matching key words. If a ZipCode 
-      is provided, then only posts from a user with a matching ZipCode will be shown.
+      is provided, then only posts from a user with a matching ZipCode will be shown. A ZipCode can only be put into the
+      ZipCode bar that appears after clicking the location marker icon (next to the tags icon).
     </div>
     <SearchBar />
     <div v-if="searchStore.results.length==0">
