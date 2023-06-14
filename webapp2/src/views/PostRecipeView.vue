@@ -79,7 +79,7 @@
 
                   <v-text-field
                     v-model="state.CurrentTag"
-                    label="Add a Tag (Min: 0, Max: 10)"
+                    label="Add a Tag, Hit Enter after Typing (Min: 0, Max: 10)"
                     @keyup.enter="addTag()"
                     dense
                     clearable
