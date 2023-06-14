@@ -104,7 +104,7 @@
   display: flex;
   justify-content: center; /* Align items horizontally in the center */
   align-items: center; /* Align items vertically in the center */
-  padding: 1rem 0 16rem 0;
+  padding: 0 0 16rem 0;
 }
 
 .content {
