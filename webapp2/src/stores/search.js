@@ -92,6 +92,9 @@ export const useSearchStore = defineStore('search', () => {
     }
 
     function compareArrays(a, b) {
+      let cntTagsA = countMatches(a.myTags, goodTags.value, false);
+      let cntTagsB = countMatches(b.myTags, goodTags.value, false);
+
       let cntKeyWordsA =
         countMatches(message.value, a.title, true) +
         countMatches(message.value, a.description, true);
@@ -108,20 +111,12 @@ export const useSearchStore = defineStore('search', () => {
           countMatches(message.value, b.user.firstName, true) +
           countMatches(message.value, b.user.lastName, true);
       }
-      if (cntKeyWordsA == 0 && message.value != "") {
-        a.user = -1;
-      }
-      if (cntKeyWordsB == 0 && message.value != "") {
-        b.user = -1;
-      }
 
-      let cntTagsA = countMatches(a.myTags, goodTags.value, false);
-      let cntTagsB = countMatches(b.myTags, goodTags.value, false);
-    
-      if (cntTagsA == 0 && goodTags.value.length != 0) {
+
+      if (cntTagsA == 0 && cntKeyWordsA==cntTagsA) {
         a.user = -1;
       }
-      if (cntTagsB == 0 && goodTags.value.length != 0) {
+      if (cntTagsB == 0 && cntKeyWordsB==cntTagsB) {
         b.user = -1;
       }
     

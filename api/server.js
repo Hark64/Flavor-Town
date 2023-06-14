@@ -14,6 +14,7 @@ import recipes from './routes/recipes';
 import createevent from './routes/events';
 import ratings from './routes/ratings';
 import user from './routes/user';
+import followers from './routes/followers';
 
 
 const dbConfig = require('./ormconfig.json');
@@ -46,6 +47,7 @@ app.use(recipes(AppDataSource));
 app.use(createevent(AppDataSource));
 app.use(ratings(AppDataSource));
 app.use(user(AppDataSource));
+app.use(followers(AppDataSource));
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', (_req, res) => {

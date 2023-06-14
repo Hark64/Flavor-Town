@@ -64,23 +64,28 @@ function handleEvent() {
 </script>
 
 <template>
-    <div>
-      <header>
-        <h1 class="createevent">Create Event</h1>
-      </header>
+
+    <main>
+      <h1 class="createevent">Create Event</h1>
       <v-form class="form">
-    <v-text-field label="Enter Title (Required)" type="title" v-model="state.title"></v-text-field>
-    <v-text-field label="Enter Location (Required)" type="location" v-model="state.location"></v-text-field>
-    <v-text-field label="Enter Zip Code (Required)" type="zipCode" v-model="state.zipCode"></v-text-field>
-    <v-text-field label="Enter Description (Required)" type="description" v-model="state.description"></v-text-field>
-    <router-link tag="v-btn" to="events" @click="handleEvent">Post Event</router-link>
-  </v-form>
+        <v-text-field label="Enter Title (Required)" type="title" v-model="state.title"></v-text-field>
+        <v-text-field label="Enter Location (Required)" type="location" v-model="state.location"></v-text-field>
+        <v-text-field label="Enter Zip Code (Required)" type="zipCode" v-model="state.zipCode"></v-text-field>
+        <v-text-field label="Enter Description (Required)" type="description" v-model="state.description"></v-text-field>
+        <router-link tag="v-btn" to="events" @click="handleEvent">Post Event</router-link>
+      </v-form>
+    </main>
+    
+   
+    
       
-    </div>
+    
 </template>
 
 <style scoped>
-.createevent{
+
+/*I've commented this out for now. Header was overlaying form. */
+/* .createevent{
   position: fixed;
   top: 150px;
   left: 100px;
@@ -88,6 +93,6 @@ function handleEvent() {
 .form{
   position: fixed;
   left: 100px;
-  width: 1000px;
-}
+  width: 1000px; 
+}*/
 </style>

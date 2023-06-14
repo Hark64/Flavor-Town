@@ -12,6 +12,7 @@ export const useUserStore = defineStore('user', () => {
     const currentUser = ref();
     const recipePoster = ref();
     const followers = ref([]);
+    const following = ref([]);
     
 
     
@@ -43,12 +44,17 @@ export const useUserStore = defineStore('user', () => {
 
     function logout() {
         return axios.get("/api/logout").then(() => {
+            currentUser.value = null;   // Clear cache
+            recipePoster.value = null;
+            followers.value = [];
+            following.value = [];
             loggedIn.value = false;
         });
     }
 
     function deleteAccount() {
         return axios.get("/api/logout").then(() => {
+
             loggedIn.value = false;
         });
     }
@@ -112,16 +118,29 @@ export const useUserStore = defineStore('user', () => {
         })
     }
 
-    function followUser(userId){
-        console.log("following user ", userId)
-        return axios.post(`/api/user/follow/${userId}`).then(() => {
-        })
+
+    function followUser(userBeingFollowedID, userWhoIsFollowingID){
+        return axios.post("/api/follow", {userBeingFollowedID, userWhoIsFollowingID}).then(
+            (response) => {
+                console.log(response);
+            }, (response) => {
+                hasError.value = true;
+                error.value = response.response.data.msg;
+                return hasError;
+            });
     }
 
-    function unfollowUser(userId){
-        console.log("unfollowing user ", userId)
-        return axios.delete(`/api/user/follow/${userId}`).then(() => {
-        })
+
+    function unfollowUser(userBeingFollowedID, userWhoIsFollowingID){
+        //console.log("unfollowing user", userBeingFollowedID)
+        return axios.post("/api/unfollow", {userBeingFollowedID, userWhoIsFollowingID}).then(
+            (response) => {
+                console.log(response);
+            }, (response) => {
+                hasError.value = true;
+                error.value = response.response.data.msg;
+                return hasError;
+            });
     }
 
 
@@ -132,13 +151,13 @@ export const useUserStore = defineStore('user', () => {
         //})
     }
 
-    function getAllFollowers(){
+
+    function getAllFollowers(userID){
         console.log("requesting users in user store");
-        return axios.get('/api/user/followers').then(
+        return axios.get(`/api/user/${userID}/followers`).then(
             // TODO pass information back
             (response) => {
-                console.log("GOT RESPONSE GETALLFOLLOWERS",response.data.users);
-                followers.value=response.data.users;
+                followers.value = response.data.follows;
             }, (response) => {
                 console.log("GOT ERROR RESPONSE GETALLFOLLOWERS",response.response.data.msg);
 
@@ -148,9 +167,35 @@ export const useUserStore = defineStore('user', () => {
             })
     }
 
+    function getAllFollowing(userID){
+        console.log("requesting users in user store");
+        return axios.get(`/api/user/${userID}/following`).then(
+            // TODO pass information back
+            (response) => {
+                following.value = response.data.follows;
+            }, (response) => {
+                console.log("GOT ERROR RESPONSE GETALLFOLLOWERS",response.response.data.msg);
+
+                hasError.value = true;
+                error.value = response.response.data.msg;
+                return hasError;
+            })
+    }
+
+    function deleteUserEvents(userID) {
+        return axios.delete(`/api/user/${userID}/events`).then(() => {
+        })
+    }
+
+    function deleteFollows(userID) {
+        return axios.delete(`/api/user/${userID}/delete`).then(() => {
+
+        })
+    }
+
   
 
-    return { loggedIn, error, hasError, currentUser, followers, recipePoster, login, signup, isEmailRegistered, logout, ping, getUser, getWhoPosted, saveEdit, deleteUser, followUser, unfollowUser, getIsFollowing, getAllFollowers};
+    return { loggedIn, error, hasError, currentUser, followers, following, recipePoster, login, signup, isEmailRegistered, logout, ping, getUser, getWhoPosted, saveEdit, deleteUser, followUser, unfollowUser, getIsFollowing, getAllFollowers, getAllFollowing, deleteUserEvents, deleteFollows};
 
 
 });

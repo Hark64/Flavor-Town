@@ -31,22 +31,22 @@
     })
 
     onMounted(async () => {
-
       await userStore.getUser(); // show user first while loading recipes
-      
+
       state.firstName = userStore.currentUser[0].firstName;
       state.lastName = userStore.currentUser[0].lastName;
       state.zipCode = userStore.currentUser[0].zipCode;
       state.email = userStore.currentUser[0].email;
       state.id = userStore.currentUser[0].id;
       await recipesStore.loadRecipes();
-      console.log(recipesStore.recipes);
 
       for (const recipe of recipesStore.recipes) {
         await ratingsStore.getRatings(recipe.recipe_id);
       }
 
       await ratingsStore.getUserRatings();
+      await userStore.getAllFollowers(userStore.currentUser[0].id);
+      await userStore.getAllFollowing(userStore.currentUser[0].id);
     });
 
     function openEditAccountDialog() {
@@ -73,19 +73,29 @@
       state.showConfirmDeleteDialog = true;
     }
 
-    function deleteAccount(){
+    async function deleteAccount(){
       // TODO Actually Delete Account (api call)
       state.showConfirmDeleteDialog = false;
       state.showEditAccountDialog = false;
-      userStore.deleteUser(state.id);
+      for (const recipe of recipesStore.recipes) {
+        await deleteRecipe(recipe, recipe.recipe_id);
+      }
+      for (const rating of ratingsStore.userRatings) {
+        await deleteRating(rating);
+      }
+      await userStore.deleteUserEvents(state.id);
+      await userStore.deleteFollows(state.id);
+      await userStore.deleteUser(state.id);
       userStore.loggedIn = false;
       alert("Account successfully deleted.");
+      window.location.reload();
     }
 
     function abortDelete(){
       console.log("User decided not to delete account.")
       state.showConfirmDeleteDialog = false;
     }
+
 
     function openDeletePostDialog(){
       console.log("Popup opened: asking confirmation to delete account.")
@@ -113,6 +123,7 @@
         });
       }
     }
+
 
     function deleteRecipe(recipe, recipeID) {
       deleteRatings(recipeID);
@@ -145,7 +156,7 @@
 
     function toggleFollowers(){
       state.showFollowersDialog = true;
-      userStore.getAllFollowers();
+      // userStore.getAllFollowers();
     }
 
     function toggleFollowing(){
@@ -175,7 +186,6 @@
       </div>
     </div>
     <!-- TODO HTML img tag of profile pic -->
-
     <!-- This button (and pop up) lets user edit their account. -->
     <v-btn class="editAccBtn" id="editAccount" @click="openEditAccountDialog">Edit Account</v-btn>
           <v-dialog v-model="state.showEditAccountDialog"  width="400">
@@ -210,26 +220,29 @@
             </v-card>
           </v-dialog>
 
-          <!-- TODO Implement Followers and Following PopUp-->
+          <!-- TODO ACTUALLY DISPLAY FOLLOWERS AND FOLLOWING, NOT ALL ACCOUNTS-->
           <v-btn @click="toggleFollowers">{{ userStore.followers?.length }} Followers</v-btn>
             <v-dialog v-model="state.showFollowersDialog" max-width="500px">
-              
-                <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="follower in userStore.followers" :key="follower.id">
-              {{follower.firstName}} {{ follower.lastName }}</v-card>
-                
-              
+              <v-card class="popup">
+                <v-card-text>
+                  <ul>
+                    <li v-for="follow in userStore.followers" :key="follow.userWhoIsFollowing.id">{{ follow.userWhoIsFollowing.firstName }} {{ follow.userWhoIsFollowing.lastName }}</li>
+                  </ul>
+                </v-card-text>
+              </v-card>      
             </v-dialog>
-          <v-btn @click="toggleFollowing">{{ state.followingCount }} Following</v-btn>
+          <v-btn @click="toggleFollowing">{{ userStore.following?.length }} Following</v-btn>
             <v-dialog v-model="state.showFollowingDialog" max-width="500px">
-                <v-card>
-                  <v-card-text>
-                    <p>List accounts I follow here. </p>
-                  </v-card-text>
-                </v-card>
-              
+              <v-card class="popup">
+                <v-card-text>
+                  <ul>
+                    <li v-for="follow in userStore.following" :key="follow.userBeingFollowed.id"> {{follow.userBeingFollowed.firstName}} {{ follow.userBeingFollowed.lastName }} </li>
+                  </ul>
+                </v-card-text>
+              </v-card>      
             </v-dialog>
 
-    <h1> Your Recipes </h1>
+    <h1>The Recipes You've Posted</h1>
     <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="recipe in recipesStore.recipes" :key="recipe.recipe_id">
         <v-alert density="compact" type="warning" icon="$warning" title="There was an issue getting your recipes" v-if="recipesStore.hasError">{{ recipesStore.error }}</v-alert>
         <v-card-item>
@@ -304,8 +317,6 @@
         </v-card-item>
     </v-card>
 
-
-
     <h1>The Ratings You've Posted</h1>
     <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="rating in ratingsStore.userRatings" :key="rating.id">
       <div class="text-h6 mb-1">
@@ -323,6 +334,21 @@
 </template>
 
 <style>
+
+.popup {
+  background-color: rgba(0, 0, 0, 0.8); /* Opacity: 0.8 */
+  color: white;
+  border-radius: 5px;
+}
+
+.popup ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.popup li {
+  margin-bottom: 10px;
+}
 
 .editAccountBtn {
   margin-left: 20px;

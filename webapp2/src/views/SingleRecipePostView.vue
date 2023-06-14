@@ -18,12 +18,17 @@
 
     onMounted(async () => {
       const recipeID = route.params.id;
-      console.log(recipeID);
       await recipesStore.getOneRecipe(recipeID);
       await userStore.getWhoPosted(recipesStore.recipe.recipe_userId);
-      console.log(userStore.recipePoster);
       await ratingsStore.getRatings(recipesStore.recipe.recipe_id);
-      // await userStore.getIsFollowing(recipesStore.recipe.userId); // TODO - THIS MAY NOT BE RIGHT
+      if (userStore.currentUser){
+        await userStore.getAllFollowing(userStore.currentUser[0].id);
+        for (const follow of userStore.following) {
+        if (follow.userBeingFollowed.id == recipesStore.recipe.recipe_userId) {
+          state.following = true;
+        }
+      }
+      }
     });
 
     function postReview(recipeID, recipeTitle) {
@@ -42,18 +47,18 @@
     }
 
     function followUser(){
-      // TODO Pass in actual user id associated with recipe
-      // recipesStore.recipe.recipe_userID
       state.following = !state.following;
       //userStore.followUser(37);
-      userStore.followUser(recipesStore.recipe.recipe_userId);
+
+      userStore.followUser(recipesStore.recipe.recipe_userId, userStore.currentUser[0].id);
     }
 
     function unfollowUser(){
       // TODO Pass in actual user id associated with recipe
       state.following = !state.following;
-      userStore.unfollowUser(recipesStore.recipe.recipe_userId);
+      userStore.unfollowUser(recipesStore.recipe.recipe_userId, userStore.currentUser[0].id);
     }
+
 </script>
 
 <template>
@@ -68,13 +73,11 @@
             <div class="text-h6 mb-1">
               Description: {{recipesStore.recipe.recipe_description}}
             </div>
-
-            <!-- TODO PLEASE FOR THE LOVE OF GOD HELP ME CALL USER NAME HERE -->
             <div class="text-h6 mb-1" v-if="userStore.recipePoster">
               Author:
                {{ userStore.recipePoster[0].firstName }}
                {{ userStore.recipePoster[0].lastName }}
-              <v-btn @click="followUser" v-if = !state.following>FOLLOW USER</v-btn>
+              <v-btn @click="followUser" v-if = "userStore.currentUser && !state.following && (recipesStore.recipe.recipe_userId != userStore.currentUser[0].id)">FOLLOW USER</v-btn>
               <v-btn @click="unfollowUser" v-if = state.following>UNFOLLOW USER</v-btn>
             </div>
             
@@ -96,7 +99,7 @@
               </div>
             </v-card>
             <div>
-              <v-btn>Post Review
+              <v-btn v-if="userStore.loggedIn">Post Review
                 <v-dialog activator="parent" width="400">
                   <v-card>
                     <v-card-text>

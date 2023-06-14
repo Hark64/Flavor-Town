@@ -52,7 +52,6 @@ export default (DataSource) => {
     }}).then(
           (user) => {
             console.log("found user about to edit in user.js");
-            //userRepo.updateById(id, {firstName, lastName, email, zipCode});
             user.firstName = firstName
             user.lastName = lastName
             user.zipCode = zipCode
@@ -80,25 +79,20 @@ export default (DataSource) => {
 
   router.delete('/user/:id', (request, response) => {
     console.log("deleting user in user.js api routes")
+    // TODO - Delete recipes, posts, followers, following and any other data where this user id is referenced
     userRepo.delete(request.user.id).then((result) => {
+        request.logout('local', () => response.send());  
         response.send(result);
     });
   });
 
-  router.post('/user/follow/:id', (request, response) => {
-    console.log("accessed api - following user")
-    // TODO - get user id off parameter and save it in the data base
-        response.status(200);
-  });
 
   router.delete('/user/follow/:id', (request, response) => {
     console.log("accessed api - unfollowing user")
-        // TODO - get user id off parameter and remove it from the data base
         response.status(200);
   });
 
   router.get('/user/followers', (request, response) => {
-    // TODO change to only get followers 
     console.log("followers requested");
     if (request.user) {
         userRepo.find().then(
