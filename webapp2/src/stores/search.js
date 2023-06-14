@@ -71,7 +71,8 @@ export const useSearchStore = defineStore('search', () => {
               temp.splice(i, 1);
             }
           }
-
+          
+          console.log(temp);
           results.value = temp;
         }
       } catch (error) {
@@ -113,10 +114,10 @@ export const useSearchStore = defineStore('search', () => {
       }
 
 
-      if (cntTagsA == 0 && cntKeyWordsA==cntTagsA) {
+      if (cntTagsA == 0 && cntKeyWordsA==cntTagsA && showZip.value==false) {
         a.user = -1;
       }
-      if (cntTagsB == 0 && cntKeyWordsB==cntTagsB) {
+      if (cntTagsB == 0 && cntKeyWordsB==cntTagsB && showZip.value==false) {
         b.user = -1;
       }
     
