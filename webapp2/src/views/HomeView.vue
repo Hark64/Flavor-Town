@@ -23,7 +23,7 @@
     } else {
       delete params.showZip;
       delete params.zip;
-      delete params.top;
+      // delete params.top;
     }
 
     await axios.get("/api/search", { params }).then((_recipes) => {
