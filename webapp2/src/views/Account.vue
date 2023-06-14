@@ -55,13 +55,24 @@
     }
 
 
-    function saveAccountInfo() {
+    async function saveAccountInfo() {
       console.log("Changes to account information saved.")
       userStore.currentUser[0].firstName = state.firstName;
       userStore.currentUser[0].lastName = state.lastName;
       userStore.currentUser[0].zipCode = state.zipCode;
       userStore.currentUser[0].email = state.email;
-      userStore.saveEdit(userStore.currentUser[0]); // May not be right
+      
+      if (await userStore.isEmailRegistered(state.email)) {
+        if (userStore.duplicateEmailUser.id == userStore.currentUser[0].id) {
+          userStore.saveEdit(userStore.currentUser[0]);
+        }
+        else {
+          alert("That email is taken, try another one");
+        }
+      }
+      else {
+        userStore.saveEdit(userStore.currentUser[0]);
+      }
       state.showEditAccountDialog = false;
       // TODO need to tie to backend. Will be a put instead of a post.
     }
