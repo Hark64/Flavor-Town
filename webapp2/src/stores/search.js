@@ -114,10 +114,10 @@ export const useSearchStore = defineStore('search', () => {
       }
 
 
-      if (cntTagsA == 0 && cntKeyWordsA==cntTagsA && showZip.value==false) {
+      if (cntTagsA == 0 && cntKeyWordsA==cntTagsA && (showZip.value==false || zip.value=='')) {
         a.user = -1;
       }
-      if (cntTagsB == 0 && cntKeyWordsB==cntTagsB && showZip.value==false) {
+      if (cntTagsB == 0 && cntKeyWordsB==cntTagsB && (showZip.value==false || zip.value=='')) {
         b.user = -1;
       }
     
