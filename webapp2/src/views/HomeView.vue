@@ -45,44 +45,7 @@ const store = useUserStore();
 </script>
 
 <template>
-  <main>
-    <div>
-      <SearchBar />
-    </div>
-
-    <div v-if="isLoading">
-      <h1>Loading...</h1>
-      <v-progress-circular indeterminate color="purple"></v-progress-circular>
-    </div>
-    <div v-else-if="homeRecipes.length === 0">
-      <h1>Looks Like No Recipes Are Available</h1>
-    </div>
-    <div v-else>
-      <div v-if="store.loggedIn">
-        <h1>
-          Recipes in Your Area (Based On ZipCode)
-        </h1>
-      </div>
-      <div v-else>
-        <h1>
-          Random Recipes
-        </h1>
-      </div>
-
-      <v-sheet class="mx-auto" elevation="8" max-width="1600">
-        <v-slide-group class="pa-4" show-arrows>
-          <v-slide-group-item v-for="result in homeRecipes" :key="result.id">
-            <Results :obj="result" :width="'300px'" :height="'200px'"></Results>
-          </v-slide-group-item>
-        </v-slide-group>
-      </v-sheet>
-    </div>
-  </main>
-</template>
-
-<template>
   <div id="background"></div>
-
 
   <div class="search">
     <SearchBar />
@@ -91,171 +54,14 @@ const store = useUserStore();
   <div class="content">
     <h1 class="headers">For you</h1>
     <div class="posts-container">
-      <v-container class="post">
-        <v-row justify="space-around">
-          <v-card width="260">
-            <v-img height="160" src="https://www.kitchensanctuary.com/wp-content/uploads/2020/01/Orange-Chicken-square-1200.jpg" cover
-              class="text-white">
-            </v-img>
-            <v-card-text>
-              <div class="ms-1 mb-3">
-                30-40 min
-              </div>
-              <div class="font-weight-bold ms-1 mb-2">
-                Tangy Orange Chicken
-              </div>
-              <v-timeline density="compact">
-                <v-timeline-item v-for="message in messages" :key="message.time" :dot-color="message.color"
-                  size="x-small">
-                  <div class="mb-4">
-                    <div class="font-weight-normal">
-                      <strong>{{ message.from }}</strong> @{{ message.time }}
-                    </div>
-                    <div>{{ message.message }}</div>
-                  </div>
-                </v-timeline-item>
-              </v-timeline>
-            </v-card-text>
-          </v-card>
-        </v-row>
-      </v-container>
-      <v-container class="post">
-        <v-row justify="space-around">
-          <v-card width="260">
-            <v-img height="160" src="https://www.kitchensanctuary.com/wp-content/uploads/2020/01/Orange-Chicken-square-1200.jpg" cover
-              class="text-white">
-            </v-img>
-            <v-card-text>
-              <div class="ms-1 mb-3">
-                30-40 min
-              </div>
-              <div class="font-weight-bold ms-1 mb-2">
-                Tangy Orange Chicken
-              </div>
-              <v-timeline density="compact">
-                <v-timeline-item v-for="message in messages" :key="message.time" :dot-color="message.color"
-                  size="x-small">
-                  <div class="mb-4">
-                    <div class="font-weight-normal">
-                      <strong>{{ message.from }}</strong> @{{ message.time }}
-                    </div>
-                    <div>{{ message.message }}</div>
-                  </div>
-                </v-timeline-item>
-              </v-timeline>
-            </v-card-text>
-          </v-card>
-        </v-row>
-      </v-container>
-      <v-container class="post">
-        <v-row justify="space-around">
-          <v-card width="260">
-            <v-img height="160" src="https://www.kitchensanctuary.com/wp-content/uploads/2020/01/Orange-Chicken-square-1200.jpg" cover
-              class="text-white">
-            </v-img>
-            <v-card-text>
-              <div class="ms-1 mb-3">
-                30-40 min
-              </div>
-              <div class="font-weight-bold ms-1 mb-2">
-                Tangy Orange Chicken
-              </div>
-              <v-timeline density="compact">
-                <v-timeline-item v-for="message in messages" :key="message.time" :dot-color="message.color"
-                  size="x-small">
-                  <div class="mb-4">
-                    <div class="font-weight-normal">
-                      <strong>{{ message.from }}</strong> @{{ message.time }}
-                    </div>
-                    <div>{{ message.message }}</div>
-                  </div>
-                </v-timeline-item>
-              </v-timeline>
-            </v-card-text>
-          </v-card>
-        </v-row>
-      </v-container>
-      <v-container class="post">
-        <v-row justify="space-around">
-          <v-card width="260">
-            <v-img height="160" src="https://www.kitchensanctuary.com/wp-content/uploads/2020/01/Orange-Chicken-square-1200.jpg" cover
-              class="text-white">
-            </v-img>
-            <v-card-text>
-              <div class="ms-1 mb-3">
-                30-40 min
-              </div>
-              <div class="font-weight-bold ms-1 mb-2">
-                Tangy Orange Chicken
-              </div>
-              <v-timeline density="compact">
-                <v-timeline-item v-for="message in messages" :key="message.time" :dot-color="message.color"
-                  size="x-small">
-                  <div class="mb-4">
-                    <div class="font-weight-normal">
-                      <strong>{{ message.from }}</strong> @{{ message.time }}
-                    </div>
-                    <div>{{ message.message }}</div>
-                  </div>
-                </v-timeline-item>
-              </v-timeline>
-            </v-card-text>
-          </v-card>
-        </v-row>
-      </v-container>
-      <v-container class="post">
-        <v-row justify="space-around">
-          <v-card width="260">
-            <v-img height="160" src="https://www.kitchensanctuary.com/wp-content/uploads/2020/01/Orange-Chicken-square-1200.jpg" cover
-              class="text-white">
-            </v-img>
-            <v-card-text>
-              <div class="ms-1 mb-3">
-                30-40 min
-              </div>
-              <div class="font-weight-bold ms-1 mb-2">
-                Tangy Orange Chicken
-              </div>
-              <v-timeline density="compact">
-                <v-timeline-item v-for="message in messages" :key="message.time" :dot-color="message.color"
-                  size="x-small">
-                  <div class="mb-4">
-                    <div class="font-weight-normal">
-                      <strong>{{ message.from }}</strong> @{{ message.time }}
-                    </div>
-                    <div>{{ message.message }}</div>
-                  </div>
-                </v-timeline-item>
-              </v-timeline>
-            </v-card-text>
-          </v-card>
-        </v-row>
-      </v-container>
-    </div>
-  </div>
-
-  <div v-if="homeRecipes.length == 0">
-    <h1>Looks Like No Recipes Are Available</h1>
-  </div>
-  <div v-else>
-    <div v-if="store.loggedIn == true">
-      <h1>
-        Recipes in Your Area (Based On ZipCode *DOESNT_WORK*)
-      </h1>
-    </div>
-    <div v-else>
-      <h1>
-        Random Recipes
-      </h1>
-    </div>
-
-    <v-sheet class="mx-auto" elevation="8" max-width="800">
+      <v-sheet class="mx-auto" elevation="8" max-width="800">
       <v-slide-group class="pa-4" show-arrows>
         <v-slide-group-item v-for="result in homeRecipes" :key="result.id">
           <Results :obj="result" :width="'300px'" :height="'200px'"></Results>
         </v-slide-group-item>
       </v-slide-group>
     </v-sheet>
+    </div>
   </div>
 </template>
 
@@ -291,20 +97,12 @@ const store = useUserStore();
   align-items: flex-start;
   margin: 0 auto;
 }
-
-.post{
-  width: 20%;
-  margin: 10px;
-  box-sizing: border-box;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  box-sizing: border-box;
+.posts-container {
+  display: flex;
+  justify-content: flex-start;
 }
 
-.post img {
-  width: 100%;
-  height: 100%;
+.headers {
+  margin: 1em;
 }
 </style>

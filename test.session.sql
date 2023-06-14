@@ -1,1 +1,1 @@
-delete from tag
+delete from user

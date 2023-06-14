@@ -207,7 +207,7 @@ function navigateTo(route) {
             </v-card>
           </v-dialog>
         </v-btn>
-        <v-btn v-if = store.loggedIn @click="logOut">Logout
+        <v-btn id="logout" v-if = store.loggedIn @click="logOut">Logout
         </v-btn>
       </div>
     </div>
@@ -215,6 +215,10 @@ function navigateTo(route) {
     <div class="router">
       <router-view></router-view>
     </div>
+  </div>
+
+  <div class="bottomNav">
+        <p class="copyright">© 2023 The Chefs</p>
   </div>
 </template>
 
@@ -299,6 +303,11 @@ li {
   height: 40px;
 }
 
+#logout {
+  height: 40px;
+  border: 2px solid rgb(200, 200, 200);
+}
+
 #signup {
   height: 40px;
   border: 2px solid rgb(200, 200, 200); /* Add this line to add a border */
@@ -322,5 +331,15 @@ li {
   position: absolute;
   top: 20px;
   right: 20px;
+}
+
+.bottomNav {
+  display: flex;
+  height: 160px;
+  font-size: 20px;
+  background-color: #F5B971;
+  color: white;
+  justify-content: center;
+  align-items: center;
 }
 </style>

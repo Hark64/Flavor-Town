@@ -1,305 +1,334 @@
 <script setup>
-    import { onMounted, reactive } from 'vue';
-    import { useRecipesStore } from '@/stores/recipes';
-    import { useRatingsStore } from '@/stores/ratings';
-    import { useUserStore } from '@/stores/user';
-    import { storeToRefs } from 'pinia';
-    //import { SvgIcon } from '@jamescoyle/vue-icon';
-    //import { mdiDotsVertical } from '@mdi/js';
+import { onMounted, reactive } from 'vue';
+import { useRecipesStore } from '@/stores/recipes';
+import { useRatingsStore } from '@/stores/ratings';
+import { useUserStore } from '@/stores/user';
+import { storeToRefs } from 'pinia';
+//import { SvgIcon } from '@jamescoyle/vue-icon';
+//import { mdiDotsVertical } from '@mdi/js';
 
 
-    const userStore = useUserStore();
-    const recipesStore = useRecipesStore();
-    const ratingsStore = useRatingsStore();
+const userStore = useUserStore();
+const recipesStore = useRecipesStore();
+const ratingsStore = useRatingsStore();
 
-    const state = reactive({
-        score: 0,
-        description: '',
-        showEditAccountDialog: false, // Popup for Editing Account details.
-        showConfirmDeleteDialog: false, // Popup for confirming delete Account request. 
-        showDeletePostDialog: false,
-        firstName: '',
-        lastName: '',
-        zipCode: '',
-        email: '',
-        id: 0,
-        showFollowersDialog: false,
-        showFollowingDialog: false,
-        followerCount: 8, // TODO Change this number
-        followingCount: 20, // TODO Change this number
+const state = reactive({
+  score: 0,
+  description: '',
+  showEditAccountDialog: false, // Popup for Editing Account details.
+  showConfirmDeleteDialog: false, // Popup for confirming delete Account request. 
+  showDeletePostDialog: false,
+  firstName: '',
+  lastName: '',
+  zipCode: '',
+  email: '',
+  id: 0,
+  showFollowersDialog: false,
+  showFollowingDialog: false,
+  followerCount: 8, // TODO Change this number
+  followingCount: 20, // TODO Change this number
 
-    })
+})
 
-    onMounted(async () => {
-      await userStore.getUser(); // show user first while loading recipes
+onMounted(async () => {
+  await userStore.getUser(); // show user first while loading recipes
 
-      state.firstName = userStore.currentUser[0].firstName;
-      state.lastName = userStore.currentUser[0].lastName;
-      state.zipCode = userStore.currentUser[0].zipCode;
-      state.email = userStore.currentUser[0].email;
-      state.id = userStore.currentUser[0].id;
-      await recipesStore.loadRecipes();
+  state.firstName = userStore.currentUser[0].firstName;
+  state.lastName = userStore.currentUser[0].lastName;
+  state.zipCode = userStore.currentUser[0].zipCode;
+  state.email = userStore.currentUser[0].email;
+  state.id = userStore.currentUser[0].id;
+  await recipesStore.loadRecipes();
 
-      for (const recipe of recipesStore.recipes) {
-        await ratingsStore.getRatings(recipe.recipe_id);
+  for (const recipe of recipesStore.recipes) {
+    await ratingsStore.getRatings(recipe.recipe_id);
+  }
+});
+
+function openEditAccountDialog() {
+  console.log("Opened edit dialog.");
+  state.showEditAccountDialog = true;
+}
+
+
+function saveAccountInfo() {
+  console.log("Changes to account information saved.")
+  userStore.currentUser[0].firstName = state.firstName;
+  userStore.currentUser[0].lastName = state.lastName;
+  userStore.currentUser[0].zipCode = state.zipCode;
+  userStore.currentUser[0].email = state.email;
+  userStore.saveEdit(userStore.currentUser[0]); // May not be right
+  state.showEditAccountDialog = false;
+  // TODO need to tie to backend. Will be a put instead of a post.
+}
+
+
+
+function askConfirmationToDeleteAccount() {
+  console.log("Popup opened: asking confirmation to delete account.")
+  state.showConfirmDeleteDialog = true;
+}
+
+function deleteAccount() {
+  // TODO Actually Delete Account (api call)
+  state.showConfirmDeleteDialog = false;
+  state.showEditAccountDialog = false;
+  userStore.deleteUser(state.id);
+  userStore.loggedIn = false;
+  alert("Account successfully deleted.");
+}
+
+function abortDelete() {
+  console.log("User decided not to delete account.")
+  state.showConfirmDeleteDialog = false;
+}
+
+function openDeletePostDialog() {
+  console.log("Popup opened: asking confirmation to delete account.")
+  state.showDeletePostDialog = true;
+}
+
+
+function abortDeletePost() {
+  console.log("Post not deleted.")
+  state.showDeletePostDialog = false;
+}
+
+
+function postReview(recipeID) {
+  const { score, description } = state;
+  if (isNaN(score) || score > 5 || score < 0) {
+    alert("Score Value Invalid, Try Again. 0-5 only.");
+  }
+  else {
+    ratingsStore.postRating({ score, description, recipeID }).then((error) => {
+      if (!error) {
+        console.log("Review Posted");
+        alert("Review Posted, Refresh Page to See");
       }
     });
+  }
+}
 
-    function openEditAccountDialog() {
-      console.log("Opened edit dialog.");
-      state.showEditAccountDialog = true;
+function deleteRecipe(recipe, recipeID) {
+  deleteRatings(recipeID);
+  recipesStore.deleteRecipe(recipe).then((error) => {
+    if (!error) {
+      console.log("Recipe Deleted");
+      alert("Recipe Deleted Successfully");
     }
-
-
-    function saveAccountInfo() {
-      console.log("Changes to account information saved.")
-      userStore.currentUser[0].firstName = state.firstName;
-      userStore.currentUser[0].lastName = state.lastName;
-      userStore.currentUser[0].zipCode = state.zipCode;
-      userStore.currentUser[0].email = state.email;
-      userStore.saveEdit(userStore.currentUser[0]); // May not be right
-      state.showEditAccountDialog = false;
-      // TODO need to tie to backend. Will be a put instead of a post.
+    else {
+      alert("Failed to Delete Recipe");
     }
+  })
+}
 
-
-
-    function askConfirmationToDeleteAccount(){
-      console.log("Popup opened: asking confirmation to delete account.")
-      state.showConfirmDeleteDialog = true;
+function deleteRatings(recipeID) {
+  ratingsStore.deleteRatings(recipeID).then((error) => {
+    if (!error) {
+      console.log("Ratings Deleted");
     }
+  })
+}
 
-    function deleteAccount(){
-      // TODO Actually Delete Account (api call)
-      state.showConfirmDeleteDialog = false;
-      state.showEditAccountDialog = false;
-      userStore.deleteUser(state.id);
-      userStore.loggedIn = false;
-      alert("Account successfully deleted.");
-    }
+function toggleFollowers() {
+  state.showFollowersDialog = true;
+  userStore.getAllFollowers();
+}
 
-    function abortDelete(){
-      console.log("User decided not to delete account.")
-      state.showConfirmDeleteDialog = false;
-    }
+function toggleFollowing() {
+  state.showFollowingDialog = true;
+}
 
-    function openDeletePostDialog(){
-      console.log("Popup opened: asking confirmation to delete account.")
-      state.showDeletePostDialog = true;
-    }
+function closeScoreChecker() {
+  state.invalidScore = false;
+}
 
-
-    function abortDeletePost(){
-      console.log("Post not deleted.")
-      state.showDeletePostDialog = false;
-    }
-
-
-    function postReview(recipeID) {
-      const {score, description} = state;
-      if (isNaN(score) || score > 5 || score < 0) {
-        alert("Score Value Invalid, Try Again. 0-5 only.");
-      }
-      else {
-        ratingsStore.postRating({score, description, recipeID}).then((error) => {
-          if (!error) {
-            console.log("Review Posted");
-            alert("Review Posted, Refresh Page to See");
-          }
-        });
-      }
-    }
-
-    function deleteRecipe(recipe, recipeID) {
-      deleteRatings(recipeID);
-      recipesStore.deleteRecipe(recipe).then((error) => {
-        if (!error) {
-          console.log("Recipe Deleted");
-          alert("Recipe Deleted Successfully");
-        }
-        else {
-          alert("Failed to Delete Recipe");
-        }
-      })
-    }
-
-    function deleteRatings(recipeID) {
-      ratingsStore.deleteRatings(recipeID).then((error) => {
-        if (!error) {
-          console.log("Ratings Deleted");
-        }
-      })
-    }
-
-    function toggleFollowers(){
-      state.showFollowersDialog = true;
-      userStore.getAllFollowers();
-    }
-
-    function toggleFollowing(){
-      state.showFollowingDialog = true;
-    }
-  
-    function closeScoreChecker() {
-      state.invalidScore = false;
-    }
-
-    function closeReviewPosted() {
-      state.reviewPosted = false;
-    }
+function closeReviewPosted() {
+  state.reviewPosted = false;
+}
 
 </script>
     
-<template>   
+<template>
   <main>
-    <div>
+    <div class="content">
+
       <!--<img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600"></img>-->
       <h1>PROFILE</h1>
       <div v-if="userStore.currentUser">
-        <p>First Name: {{ userStore.currentUser[0].firstName }} </p>
-        <p>Last Name: {{ userStore.currentUser[0].lastName }} </p>
-        <p>Email: {{ userStore.currentUser[0].email }}</p>
-        <p>ZipCode: {{ userStore.currentUser[0].zipCode }}</p>
+        <ul class="pfInfo">
+          <p><strong>First Name:</strong> {{ userStore.currentUser[0].firstName }}</p>
+          <p><strong>Last Name:</strong> {{ userStore.currentUser[0].lastName }}</p>
+          <p><strong>Email:</strong> {{ userStore.currentUser[0].email }}</p>
+          <p><strong>ZipCode:</strong> {{ userStore.currentUser[0].zipCode }}</p>
+        </ul>
       </div>
     </div>
     <!-- TODO HTML img tag of profile pic -->
 
     <!-- This button (and pop up) lets user edit their account. -->
     <v-btn class="editAccBtn" id="editAccount" @click="openEditAccountDialog">Edit Account</v-btn>
-          <v-dialog v-model="state.showEditAccountDialog"  width="400">
-            <v-card>
-              <v-card-text>
-                <v-form class="mt-2">
-                  <v-text-field label="First Name" type="firstName" v-model="state.firstName"></v-text-field>
-                  <v-text-field label="Last Name" type="lastName" v-model="state.lastName"></v-text-field>
-                  <v-text-field label="Email address" type="email" v-model="state.email"></v-text-field>
-                  <v-text-field label="ZipCode" type="zipcode" v-model="state.zipCode"></v-text-field>
-                  <p>Delete my account.</p> 
-                  <!-- This button (and pop up) gives user a chance to confirm account deletion. -->
-                  <v-btn @click="askConfirmationToDeleteAccount">Delete
-                    <v-dialog v-model="state.showConfirmDeleteDialog" width="400">
-                      <v-card>
-                        <v-card-text>
-                          <v-form class="mt-2">
-                            <p>Are you sure you want to delete your account?</p>
-                            <v-btn @click="deleteAccount">Delete</v-btn>
-                            <v-btn @click="abortDelete">NOOOOOO</v-btn>
-                          </v-form>
-                        </v-card-text>
-                      </v-card>
-                    </v-dialog>
-                  </v-btn> 
-                </v-form>
-              </v-card-text>
-              <v-card-actions class="d-flex flex-row-reverse ma-2">
-                <!-- This button lets user save changes. -->
-                <v-btn color="primary" @click="saveAccountInfo()">Save</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-
-          <!-- TODO ACTUALLY DISPLAY FOLLOWERS AND FOLLOWING, NOT ALL ACCOUNTS-->
-          <v-btn @click="toggleFollowers">{{ userStore.followers?.length }} Followers</v-btn>
-            <v-dialog v-model="state.showFollowersDialog" max-width="500px">
-              <v-card class="popup">
-                <v-card-text>
-                  <ul>
-                    <li v-for="follower in userStore.followers" :key="follower.id">{{ follower.firstName }} {{ follower.lastName }}</li>
-                  </ul>
-                </v-card-text>
-              </v-card>      
-            </v-dialog>
-          <v-btn @click="toggleFollowing">{{ userStore.followers?.length }} Following</v-btn>
-            <v-dialog v-model="state.showFollowingDialog" max-width="500px">
-              <v-card class="popup">
-                <v-card-text>
-                  <ul>
-                    <li v-for="follower in userStore.followers" :key="follower.id"> {{follower.firstName}} {{ follower.lastName }} </li>
-                  </ul>
-                </v-card-text>
-              </v-card>      
-            </v-dialog>
-
-    <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="recipe in recipesStore.recipes" :key="recipe.recipe_id">
-        <v-alert density="compact" type="warning" icon="$warning" title="There was an issue getting your recipes" v-if="recipesStore.hasError">{{ recipesStore.error }}</v-alert>
-        <v-card-item>
-          <div>
-            <div class="text-overline mb-1">
-              <h1> {{ recipe.recipe_title }} </h1>
-            </div>
-            <div class="text-h6 mb-1">
-              Description: {{recipe.recipe_description}}
-            </div>
-            <div class="text-h6 mb-1" v-if="recipe.recipe_videoLink">
-              Video Link: {{recipe.recipe_videoLink}}
-            </div>
-            <div class="text-h6 mb-1" v-if="recipe.avgScore">
-              Score: {{recipe.avgScore}}
-            </div>
-            <img :src="recipe.recipe_fileName" alt="No Image" style="object-fit: contain;" width="500" height="500"/>
-            <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="rating in ratingsStore.ratings[recipe.recipe_id]" :key="rating.id">
-              <div class="text-h6 mb-1">
-                Rating Score: {{rating.score}}
-              </div>
-              <div class="test-h6 mb-1" v-if="rating.description">
-                Description: {{rating.description}}
-              </div>
-            </v-card>
-
-
-            <!-- ASKS CONFIRMATION TO DELETE RECIPE -->
-            <v-btn @click="openDeletePostDialog">Delete Recipe</v-btn>
-              <v-dialog v-model="state.showDeletePostDialog">
+    <v-dialog v-model="state.showEditAccountDialog" width="400">
+      <v-card>
+        <v-card-text>
+          <v-form class="mt-2">
+            <v-text-field label="First Name" type="firstName" v-model="state.firstName"></v-text-field>
+            <v-text-field label="Last Name" type="lastName" v-model="state.lastName"></v-text-field>
+            <v-text-field label="Email address" type="email" v-model="state.email"></v-text-field>
+            <v-text-field label="ZipCode" type="zipcode" v-model="state.zipCode"></v-text-field>
+            <p>Delete my account.</p>
+            <!-- This button (and pop up) gives user a chance to confirm account deletion. -->
+            <v-btn @click="askConfirmationToDeleteAccount">Delete
+              <v-dialog v-model="state.showConfirmDeleteDialog" width="400">
                 <v-card>
                   <v-card-text>
                     <v-form class="mt-2">
-                      <p>Are you sure you want to delete this post?</p>
-                      <v-btn @click="deleteRecipe(recipe, recipe.recipe_id)">Delete</v-btn>
-                      <v-btn @click="abortDeletePost">NOOOOOO</v-btn>
+                      <p>Are you sure you want to delete your account?</p>
+                      <v-btn @click="deleteAccount">Delete</v-btn>
+                      <v-btn @click="abortDelete">NOOOOOO</v-btn>
                     </v-form>
                   </v-card-text>
                 </v-card>
               </v-dialog>
-            
-            
-            <div>
-              <v-btn>Post Review
-                <v-dialog activator="parent" width="400">
-                  <v-card>
-                    <v-card-text>
-                      <v-form class="mt-2">
-                        <v-text-field
-                          label="Score (0-5)"
-                          type="number"
-                          min="0"
-                          max="5"
-                          step="0.5"
-                          v-model="state.score"
-                        ></v-text-field>
-                        <v-text-field
-                          label="Description"
-                          type="text"
-                          v-model="state.description">
-                        </v-text-field>
-                      </v-form>
-                    </v-card-text>
-                    <v-card-actions class="d-flex flex-row-reverse ma-2">
-                      <v-btn color="primary" @click="postReview(recipe.recipe_id)">Post Review</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-btn>
-            </div>
+            </v-btn>
+          </v-form>
+        </v-card-text>
+        <v-card-actions class="d-flex flex-row-reverse ma-2">
+          <!-- This button lets user save changes. -->
+          <v-btn color="primary" @click="saveAccountInfo()">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- TODO ACTUALLY DISPLAY FOLLOWERS AND FOLLOWING, NOT ALL ACCOUNTS-->
+    <v-btn @click="toggleFollowers">{{ userStore.followers?.length }} Followers</v-btn>
+    <v-dialog v-model="state.showFollowersDialog" max-width="500px">
+      <v-card class="popup">
+        <v-card-text>
+          <ul>
+            <li v-for="follower in userStore.followers" :key="follower.id">{{ follower.firstName }} {{ follower.lastName
+            }}</li>
+          </ul>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-btn @click="toggleFollowing">{{ userStore.followers?.length }} Following</v-btn>
+    <v-dialog v-model="state.showFollowingDialog" max-width="500px">
+      <v-card class="popup">
+        <v-card-text>
+          <ul>
+            <li v-for="follower in userStore.followers" :key="follower.id"> {{ follower.firstName }} {{ follower.lastName
+            }}
+            </li>
+          </ul>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-card class="mx-auto" min-width="1200" variant="outlined" v-for="recipe in recipesStore.recipes"
+      :key="recipe.recipe_id">
+      <v-alert density="compact" type="warning" icon="$warning" title="There was an issue getting your recipes"
+        v-if="recipesStore.hasError">{{ recipesStore.error }}</v-alert>
+      <v-card-item>
+        <div>
+          <div class="text-overline mb-1">
+            <h1> {{ recipe.recipe_title }} </h1>
           </div>
-        </v-card-item>
+          <div class="text-h6 mb-1">
+            Description: {{ recipe.recipe_description }}
+          </div>
+          <div class="text-h6 mb-1" v-if="recipe.recipe_videoLink">
+            Video Link: {{ recipe.recipe_videoLink }}
+          </div>
+          <div class="text-h6 mb-1" v-if="recipe.avgScore">
+            Score: {{ recipe.avgScore }}
+          </div>
+          <img :src="recipe.recipe_fileName" alt="No Image" style="object-fit: contain;" width="500" height="500" />
+          <v-card class="mx-auto" min-width="1200" variant="outlined"
+            v-for="rating in ratingsStore.ratings[recipe.recipe_id]" :key="rating.id">
+            <div class="text-h6 mb-1">
+              Rating Score: {{ rating.score }}
+            </div>
+            <div class="test-h6 mb-1" v-if="rating.description">
+              Description: {{ rating.description }}
+            </div>
+          </v-card>
+
+
+          <!-- ASKS CONFIRMATION TO DELETE RECIPE -->
+          <v-btn @click="openDeletePostDialog">Delete Recipe</v-btn>
+          <v-dialog v-model="state.showDeletePostDialog">
+            <v-card>
+              <v-card-text>
+                <v-form class="mt-2">
+                  <p>Are you sure you want to delete this post?</p>
+                  <v-btn @click="deleteRecipe(recipe, recipe.recipe_id)">Delete</v-btn>
+                  <v-btn @click="abortDeletePost">NOOOOOO</v-btn>
+                </v-form>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+
+
+          <div>
+            <v-btn>Post Review
+              <v-dialog activator="parent" width="400">
+                <v-card>
+                  <v-card-text>
+                    <v-form class="mt-2">
+                      <v-text-field label="Score (0-5)" type="number" min="0" max="5" step="0.5"
+                        v-model="state.score"></v-text-field>
+                      <v-text-field label="Description" type="text" v-model="state.description">
+                      </v-text-field>
+                    </v-form>
+                  </v-card-text>
+                  <v-card-actions class="d-flex flex-row-reverse ma-2">
+                    <v-btn color="primary" @click="postReview(recipe.recipe_id)">Post Review</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-btn>
+          </div>
+        </div>
+      </v-card-item>
     </v-card>
   </main>
 </template>
 
-<style>
+<style scoped>
+
+
+.content {
+  min-height: 800px;
+  padding: 0 0 2rem 4rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.content h1 {
+  font-size: 36px;
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+.content ul {
+  width: 50%;
+  font-size: 18px;
+  border: 2px solid rgb(200, 200, 200);
+  border-radius: 10px;
+  background-color: white;
+  padding: 1rem;
+}
+
+.content p {
+  color: black;
+  padding: 0.75rem;
+}
 
 .popup {
-  background-color: rgba(0, 0, 0, 0.8); /* Opacity: 0.8 */
+  background-color: rgba(0, 0, 0, 0.8);
+  /* Opacity: 0.8 */
   color: white;
   border-radius: 5px;
 }
@@ -331,18 +360,11 @@ h2 {
   margin-right: 20px;
 }
 
-.profile-info {
-  display: flex;
-  align-items: center;
-  margin-left: 10%;
+.pfInfo {
+  border: 1px solid grey;
+  padding: 10px;
 }
 
-.profile-info img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50;
-  margin: 20px;
-}
 
 .button-container {
   text-align: center;
@@ -462,5 +484,4 @@ main {
 #prev {
   width: 12rem;
 }
-
 </style>
