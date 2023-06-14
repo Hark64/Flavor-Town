@@ -13,7 +13,8 @@
     })
 
     function addTag(){
-        if(state.tags.includes(state.CurrentTag.toLowerCase().trim())==false && state.CurrentTag.trim()!=''){
+        if(state.tags.includes(state.CurrentTag.toLowerCase().trim())==false 
+          && state.CurrentTag.trim()!=''&& state.tags.length<10){
             state.tags.push(state.CurrentTag.toLowerCase().trim());
         }
         state.CurrentTag = '';
@@ -55,11 +56,10 @@
 </script>
 
 <template>
-    <main>
-        <h1 class="text-h1">Create Post</h1>
-        <v-card v-if="!state.done">
-            <v-card-text>
-                <v-form class="mt-2" enctype="multipart/form-data">
+    <div class="content">
+        <h1 class="title">Create Post</h1>
+        <v-card class="form" v-if="!state.done">
+                <v-form  enctype="multipart/form-data">
                   <v-text-field
                     label="Title (required)"
                     type="text"
@@ -78,7 +78,7 @@
 
                   <v-text-field
                     v-model="state.CurrentTag"
-                    label="Add a Tag"
+                    label="Add a Tag, Hit Enter after Typing (Min: 0, Max: 10)"
                     @keyup.enter="addTag()"
                     dense
                     clearable
@@ -99,12 +99,31 @@
                   <v-card-text>Upload Photo (required, jpg only)</v-card-text>
                   <input type="file" name="uploaded_file" accept="image/jpeg" @change="state.file = $event.target.files[0]"/>
                 </v-form>
-                <v-btn @click="submitForm" ref="submitFormButton">Submit</v-btn>
-            </v-card-text>
+                <v-btn id="submit" @click="submitForm" ref="submitFormButton">Submit</v-btn>
         </v-card>
-    </main>
+      </div>
 
 </template>
 
 <style scoped>
+.title {
+  padding-bottom: 20px;
+}
+.content {
+  background-color: white;
+  margin: 4rem 4rem 8rem 5rem;
+  padding: 2rem 4rem 3rem 4rem;
+  border-radius: 30px;
+  border: 4px solid rgb(200,200,200);
+}
+.form {
+  border: none;
+  box-shadow: none;
+}
+
+#submit {
+  margin-top: 2rem;
+  background-color: rgb(245, 185, 113);
+  color: white;
+}
 </style>

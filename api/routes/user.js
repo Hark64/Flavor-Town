@@ -71,7 +71,7 @@ export default (DataSource) => {
       (user) => {
         console.log("email registered ", user, !!user)
         const emailRegistered = !!user;
-        response.send({ emailRegistered });
+        response.send({ emailRegistered, user });
       },
       () => response.status(500).send({ msg: 'Cannot check email' })
     );

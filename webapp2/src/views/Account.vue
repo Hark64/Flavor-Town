@@ -55,13 +55,24 @@
     }
 
 
-    function saveAccountInfo() {
+    async function saveAccountInfo() {
       console.log("Changes to account information saved.")
       userStore.currentUser[0].firstName = state.firstName;
       userStore.currentUser[0].lastName = state.lastName;
       userStore.currentUser[0].zipCode = state.zipCode;
       userStore.currentUser[0].email = state.email;
-      userStore.saveEdit(userStore.currentUser[0]); // May not be right
+      
+      if (await userStore.isEmailRegistered(state.email)) {
+        if (userStore.duplicateEmailUser.id == userStore.currentUser[0].id) {
+          userStore.saveEdit(userStore.currentUser[0]);
+        }
+        else {
+          alert("That email is taken, try another one");
+        }
+      }
+      else {
+        userStore.saveEdit(userStore.currentUser[0]);
+      }
       state.showEditAccountDialog = false;
       // TODO need to tie to backend. Will be a put instead of a post.
     }
@@ -179,10 +190,12 @@
       <!--<img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600"></img>-->
       <h1>PROFILE</h1>
       <div v-if="userStore.currentUser">
-        <p>First Name: {{ userStore.currentUser[0].firstName }} </p>
-        <p>Last Name: {{ userStore.currentUser[0].lastName }} </p>
-        <p>Email: {{ userStore.currentUser[0].email }}</p>
-        <p>ZipCode: {{ userStore.currentUser[0].zipCode }}</p>
+        <ul class="pfInfo">
+          <p>First Name: {{ userStore.currentUser[0].firstName }} </p>
+          <p>Last Name: {{ userStore.currentUser[0].lastName }} </p>
+          <p>Email: {{ userStore.currentUser[0].email }}</p>
+          <p>ZipCode: {{ userStore.currentUser[0].zipCode }}</p>
+        </ul>  
       </div>
     </div>
     <!-- TODO HTML img tag of profile pic -->
@@ -333,7 +346,34 @@
   </main>
 </template>
 
-<style>
+<style scoped>
+
+.content {
+  min-height: 800px;
+  padding: 0 0 2rem 4rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.content h1 {
+  font-size: 36px;
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+.content ul {
+  width: 50%;
+  font-size: 18px;
+  border: 2px solid rgb(200, 200, 200);
+  border-radius: 10px;
+  background-color: white;
+  padding: 1rem;
+}
+
+.content p {
+  color: black;
+  padding: 0.75rem;
+}
 
 .popup {
   background-color: rgba(0, 0, 0, 0.8); /* Opacity: 0.8 */
@@ -367,6 +407,12 @@
 h2 {
   margin-right: 20px;
 }
+
+.pfInfo {
+  border: 1px solid grey;
+  padding: 10px;
+}
+
 
 .profile-info {
   display: flex;
