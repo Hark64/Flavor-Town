@@ -60,6 +60,11 @@ async function signup() {
     alert('Please enter a password with at least 8 characters.');
     return;
   }
+  
+  if (zipCode.length != 5) {
+    alert('Zip Code is not five digits');
+    return;
+  }
 
   const hasLowerCase = /[a-z]/.test(password);
   const hasUpperCase = /[A-Z]/.test(password);
