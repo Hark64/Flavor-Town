@@ -62,8 +62,6 @@ export const useSearchStore = defineStore('search', () => {
 
           temp.sort((a, b) => compareArrays(a, b));
 
-          
-          console.log(temp[0]==temp[1]);
           if (temp.length==2 && temp[0]==temp[1]){
             temp.pop()
           }
@@ -127,21 +125,15 @@ export const useSearchStore = defineStore('search', () => {
         b.user = -1;
       }
     
-      console.log(cntTagsA, cntTagsB);
       if (cntTagsA > cntTagsB) {
-        console.log("tagA");
         return -1;
       } else if (cntTagsA < cntTagsB) {
-        console.log("tagB");
         return 1;
       } else if (cntKeyWordsA > cntKeyWordsB) {
-        console.log("wordA");
         return -1;
       } else if (cntKeyWordsA < cntKeyWordsB) {
-        console.log("wordB");
         return 1;
       } else {
-        console.log("equal");
         return 0;
       }
     }
