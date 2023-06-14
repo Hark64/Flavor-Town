@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { Recipe } from '../entities/recipe';
 import { Tag } from '../entities/tag';
+import { EntityManager } from 'typeorm';
 
 
 export default (DataSource) => {
@@ -56,6 +57,25 @@ export default (DataSource) => {
         );
     });
 
+    router.get('/recipes/:id/tags', (req, res) => {
+        const recipeId = req.params.id;
+        const myQuery =`
+        SELECT DISTINCT t.text
+        FROM tag t, recipe_tags_tag rt
+        WHERE t.id = rt.tagId AND rt.recipeId = ` + recipeId;
+
+        //recipeResource.findOne( req.params.id, { relations: ['tags'] })
+        DataSource.manager.query(myQuery)
+        .then((recipe) => {
+                const stringList = recipe.map((row) => row.text);
+                res.send({tags: JSON.stringify(stringList)})
+            }, 
+            () => {
+                res.send({tags: []})
+            }
+        );
+    });
+
 
     router.get('/search', (request, response) => {
         let myQuery = recipeResource.createQueryBuilder("recipes")
@@ -68,11 +88,11 @@ export default (DataSource) => {
             myQuery.where("user.zipCode = :zip", { zip });
         }
 
-        if(!request.query.getTop){
-            myQuery.orderBy('RAND()')
-        } else {
-            // myQuery.orderBy('avgScore')
-        }
+        // if(!request.query.getTop){
+        //     myQuery.orderBy('RAND()')
+        // } else {
+        //     myQuery.orderBy('avgScore')
+        // }
 
         if (request.query.count) {
             myQuery.limit(request.query.count);
@@ -91,32 +111,52 @@ export default (DataSource) => {
                 () => response.send({recipes: []})
             );
     });
-
     router.post('/recipes', upload.single('uploaded_file'), (request, response) => {
         const tags = JSON.parse(request.body.tags);
-
         const tagObjects = [];
+        const promises = [];
+    
         for (const tag of tags) {
             const tagObj = tagResource.create({ text: tag });
-            tagResource.save(tagObj);
-            tagObjects.push(tagObj);
-        }    
-        
-        
-        const {title, description, videoLink} = request.body;
-        const fileName = "../../uploads/" + request.file.filename;
-        const recipe = recipeResource.create({
-            title,
-            description,
-            videoLink,
-            fileName,
-            user: request.user,
-            tags: tagObjects
-        });
-        recipeResource.save(recipe).then((result) => {
-            response.send(result);
-        });
+            const savePromise = tagResource.save(tagObj)
+                .then(() => {
+                    tagObjects.push(tagObj);
+                })
+                .catch(() => {
+                    const findOnePromise = tagResource.findOne({ where: { text: tag } })
+                        .then((foundTag) => {
+                            if (foundTag) {
+                                tagObjects.push(foundTag);
+                            }
+                        });
+                    promises.push(findOnePromise);
+                    return findOnePromise;
+                });
+    
+            promises.push(savePromise);
+        }
+    
+        Promise.all(promises)
+            .then(() => {
+                const { title, description, videoLink } = request.body;
+                const fileName = "../../uploads/" + request.file.filename;
+                const recipe = recipeResource.create({
+                    title,
+                    description,
+                    videoLink,
+                    fileName,
+                    user: request.user,
+                    tags: tagObjects
+                });
+                recipeResource.save(recipe).then((result) => {
+                    response.send(result);
+                });
+            })
+            .catch((error) => {
+                console.error("Error occurred:", error);
+            });
     });
+    
 
     router.param('id', (req, res, next, id) => {
         const recipe = recipeResource.findOne({

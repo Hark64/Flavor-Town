@@ -13,7 +13,7 @@ export const useUserStore = defineStore('user', () => {
     const recipePoster = ref();
     const followers = ref([]);
     const following = ref([]);
-    
+    const duplicateEmailUser = ref();
 
     
     function login({ email, password }) {
@@ -107,8 +107,10 @@ export const useUserStore = defineStore('user', () => {
 
     function isEmailRegistered(email) {
         return axios.get(`/api/check-email?email=${email}`).then((response) => {
-          const emailRegistered  = response.data;
-          return emailRegistered.emailRegistered;
+          const emailRegistered  = response.data.emailRegistered;
+          const user = response.data.user;
+          duplicateEmailUser.value = user;
+          return emailRegistered;
         });
       }
     
@@ -194,7 +196,7 @@ export const useUserStore = defineStore('user', () => {
 
   
 
-    return { loggedIn, error, hasError, currentUser, followers, following, recipePoster, 
+    return { loggedIn, error, hasError, currentUser, followers, following, recipePoster, duplicateEmailUser,
         login, signup, isEmailRegistered, logout, ping, getUser, getWhoPosted, saveEdit, deleteUser, followUser, unfollowUser, getIsFollowing, getAllFollowers, getAllFollowing, deleteUserEvents, deleteFollows};
 
 
