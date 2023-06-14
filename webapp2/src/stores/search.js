@@ -31,109 +31,113 @@ export const useSearchStore = defineStore('search', () => {
         goodTags.value.splice(index, 1);
     }
 
-    function loadResults() {
-        zip.value = zip.value.trim();
-        zip.value = zip.value.slice(0, 5);
-        message.value = message.value.trim();
-        const params = {};
-
-        if (showZip.value==true && zip.value!='' && zip.value.length==5) {
-          params.showZip = showZip.value;
-          params.zip = zip.value;
-        }
-
-        // if(goodTags.value.length>0){
-        //     params.tags=true;
-        // }
-
-        return axios.get("/api/search", { params }).then((_recipes) => {
-
-            if(message.value=="" && (showZip.value==false || zip.value=='') && goodTags.value.length==0){
-                results.value=[];
-            } else {
-                var temp = _recipes.data.recipes;
-                temp = temp.sort(compareArrays);
-
-                for (var i = temp.length - 1; i >= 0; --i) {
-                    if (temp[i].user == -1 || temp[i].user===null) {
-                        temp.splice(i,1);
-                    }
-                }
-
-                results.value = temp;
+    async function loadResults() {
+      zip.value = zip.value.trim();
+      zip.value = zip.value.slice(0, 5);
+      message.value = message.value.trim();
+      const params = {};
+  
+      if (showZip.value == true && zip.value != '' && zip.value.length == 5) {
+        params.showZip = showZip.value;
+        params.zip = zip.value;
+      }
+  
+      try {
+        const _recipes = await axios.get("/api/search", { params });
+  
+        if (message.value == "" && (showZip.value == false || zip.value == '') && goodTags.value.length == 0) {
+          results.value = [];
+        } else {
+          var temp = _recipes.data.recipes;
+  
+          await Promise.all(
+            temp.map(async (recipe) => {
+              recipe.myTags = await fetchRecipeTags(recipe.id);
+            })
+          );
+  
+          console.log(temp);
+          temp.sort(compareArrays);
+  
+          for (var i = temp.length - 1; i >= 0; --i) {
+            if (temp[i].user == -1 || temp[i].user === null) {
+              temp.splice(i, 1);
             }
-        });
+          }
+  
+          results.value = temp;
+        }
+      } catch (error) {
+        console.error("Error occurred:", error);
+        hasError.value = true;
+        error.value = "Failed to load results.";
+      }
+    }
+  
+    async function fetchRecipeTags(recipeId) {
+      try {
+        const response = await axios.get(`/api/recipes/${recipeId}/tags`);
+        return JSON.parse(response.data.tags);
+      } catch (error) {
+        console.error("Error occurred:", error);
+        return [];
+      }
     }
 
-    function compareArrays(a, b){
+    function compareArrays(a, b) {
+      let cntKeyWordsA =
+        countMatches(message.value, a.title, true) +
+        countMatches(message.value, a.description, true);
+      let cntKeyWordsB =
+        countMatches(message.value, b.title, true) +
+        countMatches(message.value, b.description, true);
+      if (a.user != null && a.user != -1) {
+        cntKeyWordsA +=
+          countMatches(message.value, a.user.firstName, true) +
+          countMatches(message.value, a.user.lastName, true);
+      }
+      if (b.user != null && b.user != -1) {
+        cntKeyWordsB +=
+          countMatches(message.value, b.user.firstName, true) +
+          countMatches(message.value, b.user.lastName, true);
+      }
+      if (cntKeyWordsA == 0 && message.value != "") {
+        a.user = -1;
+      }
+      if (cntKeyWordsB == 0 && message.value != "") {
+        b.user = -1;
+      }
 
-
-        let cntKeyWordsA = countMatches(message.value, a.title, true)
-                    + countMatches(message.value, a.description, true);
-        let cntKeyWordsB = countMatches(message.value, b.title, true)
-                    + countMatches(message.value, b.description, true);
-        if(a.user !=null && a.user!=-1){
-            cntKeyWordsA+=countMatches(message.value, a.user.firstName, true)
-                        +countMatches(message.value, a.user.lastName, true);
-        }
-        if(b.user !=null && b.user!=-1){
-            cntKeyWordsB+=countMatches(message.value, b.user.firstName, true)
-                        +countMatches(message.value, b.user.lastName, true);
-        }
-        if(cntKeyWordsA==0 && message.value!=''){
-            a.user=-1;
-        }
-        if(cntKeyWordsB==0 && message.value!=''){
-            b.user=-1;
-        }
-
-        const aTagsPromise = axios.get(`/api/recipes/${a.id}/tags`)
-        .then((response) => {
-          return JSON.parse(response.data.tags);
-        })
-        .catch((error) => {
-          console.error('Error occurred:', error);
-          return [];
-        });
+      let cntTagsA = countMatches(a.myTags, goodTags.value, false);
+      let cntTagsB = countMatches(b.myTags, goodTags.value, false);
     
-      const bTagsPromise = axios.get(`/api/recipes/${b.id}/tags`)
-        .then((response) => {
-          return JSON.parse(response.data.tags);
-        })
-        .catch((error) => {
-          console.error('Error occurred:', error);
-          return [];
-        });
+      if (cntTagsA == 0 && goodTags.value.length != 0) {
+        a.user = -1;
+      }
+      if (cntTagsB == 0 && goodTags.value.length != 0) {
+        b.user = -1;
+      }
     
-      return Promise.all([aTagsPromise, bTagsPromise])
-        .then(([aTags, bTags]) => {
-            let cntTagsA = countMatches(aTags, goodTags.value, false);
-            let cntTagsB = countMatches(bTags, goodTags.value, false);
-
-            console.log("tags", cntTagsA, cntTagsB, a, b);
-            console.log("words", cntKeyWordsA, cntKeyWordsB);
-            console.log(aTags, bTags, goodTags.value);
-
-            if(cntTagsA==0 && goodTags.value.length!=0){
-                a.user=-1;
-            }
-            if(cntTagsB==0 && goodTags.value.length!=0){
-                b.user=-1;
-            }
-
-            if(cntTagsA > cntTagsB){
-                return 1;
-            } else if (cntTagsA < cntTagsB){
-                return -1;
-            } else if(cntKeyWordsA > cntKeyWordsB){
-                return 1;
-            } else if(cntKeyWordsA < cntKeyWordsB){
-                return -1;
-            } else{
-                return 0;
-            }
-        });
+      console.log(cntTagsA, cntTagsB);
+      if (cntTagsA > cntTagsB) {
+        console.log("tagA");
+        return 1;
+      } else if (cntTagsA < cntTagsB) {
+        console.log("tagB");
+        return -1;
+      } else if (cntKeyWordsA > cntKeyWordsB) {
+        console.log("wordA");
+        return 1;
+      } else if (cntKeyWordsA < cntKeyWordsB) {
+        console.log("wordB");
+        return -1;
+      } else {
+        console.log("equal");
+        return 0;
+      }
     }
+    
+      
 
     function countMatches(arr1, arr2, isString){
         if(isString){

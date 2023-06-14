@@ -88,11 +88,11 @@ export default (DataSource) => {
             myQuery.where("user.zipCode = :zip", { zip });
         }
 
-        if(!request.query.getTop){
-            myQuery.orderBy('RAND()')
-        } else {
-            myQuery.orderBy('avgScore')
-        }
+        // if(!request.query.getTop){
+        //     myQuery.orderBy('RAND()')
+        // } else {
+        //     myQuery.orderBy('avgScore')
+        // }
 
         if (request.query.count) {
             myQuery.limit(request.query.count);

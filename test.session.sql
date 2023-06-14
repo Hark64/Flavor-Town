@@ -1,3 +1,6 @@
-SELECT DISTINCT t.text
-FROM tag t, recipe_tags_tag rt
-WHERE t.id=rt.tagId AND rt.recipeId=77
+DELETE FROM recipe_tags_tag;
+DELETE FROM tag;
+DELETE FROM rating;
+DELETE FROM recipe;
+DELETE FROM event;
+DELETE FROM user;
