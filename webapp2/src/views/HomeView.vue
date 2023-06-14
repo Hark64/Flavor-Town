@@ -69,7 +69,7 @@
         </h1>
       </div>
       <div v-else>
-        <h1>
+        <h1 class="headers">
           Random Recipes
         </h1>
       </div>
@@ -122,6 +122,7 @@
 }
 
 .headers {
+  background-color: rgb(255, 217, 152);
   margin: 1em;
 }
 </style>
