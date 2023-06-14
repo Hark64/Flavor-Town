@@ -14,7 +14,7 @@
 
     function addTag(){
         if(state.tags.includes(state.CurrentTag.toLowerCase().trim())==false 
-          && state.CurrentTag.trim()!=''&& state.tags.length<=10){
+          && state.CurrentTag.trim()!=''&& state.tags.length<10){
             state.tags.push(state.CurrentTag.toLowerCase().trim());
         }
         state.CurrentTag = '';

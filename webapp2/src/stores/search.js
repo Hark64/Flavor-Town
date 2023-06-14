@@ -21,7 +21,7 @@ export const useSearchStore = defineStore('search', () => {
 
     function addTag(){
         if(goodTags.value.includes(currentTag.value.toLowerCase().trim())==false 
-            && currentTag.value.trim()!='' && goodTags.value.length<=10){
+            && currentTag.value.trim()!='' && goodTags.value.length<10){
             goodTags.value.push(currentTag.value.toLowerCase().trim());
         }
         currentTag.value = '';
