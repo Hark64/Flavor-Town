@@ -35,7 +35,7 @@ function handleEvent() {
     alert('Please enter a zip code.');
     return;
   }
-  
+
   if (!validateZipCode(zipCode)) {
     alert('Please enter a valid 5-digit zip code.');
     return;
@@ -45,9 +45,9 @@ function handleEvent() {
     alert('Please enter a description.');
     return;
   }
-  store.postEvent({ title, location, description, zipCode}).then((error) => {
+  store.postEvent({ title, location, description, zipCode }).then((error) => {
     if (!error) {
-        store.getEvent().then((error) => {
+      store.getEvent().then((error) => {
         if (!error) {
           console.log('Event posted');
         }
@@ -59,7 +59,9 @@ function handleEvent() {
       });
 
       console.log('Event posted to database');
-    }})}
+    }
+  })
+}
 
 </script>
 
@@ -83,16 +85,29 @@ function handleEvent() {
 </template>
 
 <style scoped>
+.content {
+  background-color: white;
+  margin: 4rem 4rem 6rem 5rem;
+  padding: 2rem 4rem 3rem 4rem;
+  border-radius: 30px;
+  border: 4px solid rgb(200,200,200);
+}
 
-/*I've commented this out for now. Header was overlaying form. */
-/* .createevent{
-  position: fixed;
+.createevent {
   top: 150px;
   left: 100px;
+  margin-bottom: 16px;
 }
-.form{
-  position: fixed;
+
+.form {
   left: 100px;
-  width: 1000px; 
-}*/
+  width: 800px;
+}
+
+#postBtn {
+  background-color:  rgb(245, 185, 113);
+  color: white;
+  font-size: 16px;
+  height: 45px;
+}
 </style>
