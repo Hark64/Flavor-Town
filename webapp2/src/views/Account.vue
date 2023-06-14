@@ -234,7 +234,7 @@
             </v-card>
           </v-dialog>
 
-          <!-- TODO ACTUALLY DISPLAY FOLLOWERS AND FOLLOWING, NOT ALL ACCOUNTS-->
+          <!-- This shows followers and followed accounts.-->
           <v-btn @click="toggleFollowers">{{ userStore.followers?.length }} Followers</v-btn>
             <v-dialog v-model="state.showFollowersDialog" max-width="500px">
               <v-card class="popup">
@@ -283,11 +283,11 @@
               </div>
             </v-card>
 
-
-            <!-- ASKS CONFIRMATION TO DELETE RECIPE -->
-            <v-btn @click="openDeletePostDialog">Delete Recipe</v-btn>
-              <v-dialog v-model="state.showDeletePostDialog">
-                <v-card>
+            <div>
+              <!-- ASKS CONFIRMATION TO DELETE RECIPE -->
+              <v-btn>Delete recipe
+                  <v-dialog activator="parent" width="400">
+                    <v-card>
                   <v-card-text>
                     <v-form class="mt-2">
                       <p>Are you sure you want to delete this post?</p>
@@ -296,10 +296,8 @@
                     </v-form>
                   </v-card-text>
                 </v-card>
-              </v-dialog>
-            
-            
-            <div>
+                  </v-dialog>
+                </v-btn>
               <v-btn>Post Review
                 <v-dialog activator="parent" width="400">
                   <v-card>
