@@ -55,16 +55,25 @@ export const useSearchStore = defineStore('search', () => {
               recipe.myTags = await fetchRecipeTags(recipe.id);
             })
           );
-  
-          console.log(temp);
+          
+          if(temp.length==1){
+            temp.push(temp[0])
+          }
+
           temp.sort((a, b) => compareArrays(a, b));
-  
+
+          
+          console.log(temp[0]==temp[1]);
+          if (temp.length==2 && temp[0]==temp[1]){
+            temp.pop()
+          }
+
           for (var i = temp.length - 1; i >= 0; --i) {
             if (temp[i].user == -1 || temp[i].user === null) {
               temp.splice(i, 1);
             }
           }
-  
+
           results.value = temp;
         }
       } catch (error) {
