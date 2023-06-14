@@ -142,6 +142,7 @@
         if (!error) {
           console.log("Recipe Deleted");
           alert("Recipe Deleted Successfully");
+          refreshPage();
         }
         else {
           alert("Failed to Delete Recipe");
