@@ -18,14 +18,28 @@ export default (DataSource) => {
         );
     });
 
+    router.get('/ratings', (request, response) => {
+        ratingResource.find({
+            where: {
+                user: request.user
+            }
+        }).then(
+            (ratings) => {
+                response.send({ ratings })
+            },
+            () => response.send({ ratings: [] })
+        );
+    })
+
 
 
 
     router.post('/recipes/:recipeID/ratings', (request, response) => {
-        const {score, description, recipeID} = request.body;
+        const {score, description, recipeID, recipeTitle} = request.body;
         const rating = ratingResource.create({
             score,
             description,
+            associatedRecipeTitle: recipeTitle,
             recipe: recipeID,
             user: request.user
         });
@@ -37,6 +51,12 @@ export default (DataSource) => {
 
     router.delete('/recipes/:id/ratings', (req, res) => {
         ratingResource.delete({recipe: {id: req.params.id} }).then((result) => {
+            res.send(result);
+        });
+    });
+
+    router.delete('/ratings/:id', (req, res) => {
+        ratingResource.delete({id: req.params.id}).then((result) => {
             res.send(result);
         });
     });

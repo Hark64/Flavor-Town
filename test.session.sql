@@ -1,1 +1,1 @@
-DELETE from recipe
+delete from tag

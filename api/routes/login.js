@@ -11,9 +11,10 @@ export default (passport) => {
       if (!user) {
         return res.status(400).send({ user, msg: 'Cannot log in', info });
       }
-      return req.login(user, () => res.send({ success: true }));
+      return req.login(user, () => res.send({ user }));
     })(req, res, next);
   });
+
   router.get('/logout', (req, res) => {
     req.logout('local', () => res.send());
   });
@@ -21,5 +22,17 @@ export default (passport) => {
   router.get('/ping', (req, res) => {
     res.send();
   });
+
+  router.get('/getUser', (request, response) => {
+    userRepo.find({where: {
+        user: request.user
+    }}).then(
+        (user) => {
+            response.send({user})
+        }, 
+        () => response.send({user: []})
+    );
+});
+
   return router;
 };

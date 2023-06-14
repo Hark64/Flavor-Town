@@ -1,37 +1,84 @@
 <script setup>
-import SearchBar from '../components/SearchBar.vue'
-import Results from '../components/Querecipe.vue'
-import { onMounted, ref } from 'vue';
-import axios from 'axios'
-import { useUserStore } from '@/stores/user';
+  import SearchBar from '../components/SearchBar.vue'
+  import Results from '../components/Querecipe.vue'
+  import { onMounted, ref, watch, reactive } from 'vue';
+  import axios from 'axios'
+  import { useUserStore } from '@/stores/user';
 
 const store = useUserStore();
 
-const params = {};
-let homeRecipes = ref([]);
+  const params = reactive({ count: 10 });
+  const homeRecipes = ref([]);
+  const isLoading = ref(true);
 
-params.count = 10;
+  const fetchData = async () => {
+    isLoading.value = true;
 
-onMounted(() => {
-  if (store.loggedIn == true) {
-    store.getUser({}).then((error) => {
-      if (!error) {
-        console.log(store.currentUser, store.hasError);
+    if (store.loggedIn) {
+      await store.getUser({});
+      if (!store.hasError) {
         params.showZip = true;
-        params.zip = store.currentUser.zipCode.value;
+        params.zip = store.currentUser[0].zipCode;
       }
-    });
-  }
+    } else {
+      delete params.showZip;
+      delete params.zip;
+      delete params.top;
+    }
 
-  axios.get("/api/search", { params }).then((_recipes) => {
-    homeRecipes.value = _recipes.data.recipes;
-  },
-    (error) => {
-      console.error(error);
-    });
+    await axios.get("/api/search", { params }).then((_recipes) => {
+        homeRecipes.value = _recipes.data.recipes;
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        isLoading.value = false;
+      });
+  };
 
-});
+  onMounted(fetchData);
+
+  watch(() => store.loggedIn, async () => {
+    fetchData();
+  });
 </script>
+
+<template>
+  <main>
+    <div>
+      <SearchBar />
+    </div>
+
+    <div v-if="isLoading">
+      <h1>Loading...</h1>
+      <v-progress-circular indeterminate color="purple"></v-progress-circular>
+    </div>
+    <div v-else-if="homeRecipes.length === 0">
+      <h1>Looks Like No Recipes Are Available</h1>
+    </div>
+    <div v-else>
+      <div v-if="store.loggedIn">
+        <h1>
+          Recipes in Your Area (Based On ZipCode)
+        </h1>
+      </div>
+      <div v-else>
+        <h1>
+          Random Recipes
+        </h1>
+      </div>
+
+      <v-sheet class="mx-auto" elevation="8" max-width="1600">
+        <v-slide-group class="pa-4" show-arrows>
+          <v-slide-group-item v-for="result in homeRecipes" :key="result.id">
+            <Results :obj="result" :width="'300px'" :height="'200px'"></Results>
+          </v-slide-group-item>
+        </v-slide-group>
+      </v-sheet>
+    </div>
+  </main>
+</template>
 
 <template>
   <div id="background"></div>
@@ -212,6 +259,8 @@ onMounted(() => {
   </div>
 </template>
 
+
+
 <style scoped>
 #background {
   position: fixed;
@@ -228,34 +277,30 @@ onMounted(() => {
 
 .search {
   display: flex;
-  justify-content: center;
-  /* Align items horizontally in the center */
-  align-items: center;
-  /* Align items vertically in the center */
+  justify-content: center; /* Align items horizontally in the center */
+  align-items: center; /* Align items vertically in the center */
   padding: 12rem 0 16rem 0;
 }
 
 .content {
   background-color: rgb(255, 217, 152);
-  margin: 3px;
   border-radius: 30px 30px 0 0;
   height: 800px;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
+  margin: 0 auto;
 }
 
-.posts-container {
-  display: flex;
-  justify-content: flex-start;
-}
-
-.headers {
-  margin: 1em;
-}
-
-.post {
-  cursor: pointer;
+.post{
+  width: 20%;
+  margin: 10px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .post img {

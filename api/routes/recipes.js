@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { Recipe } from '../entities/recipe';
-import { User } from '../entities/user';
+import { Tag } from '../entities/tag';
 
 
 export default (DataSource) => {
     const router = Router();
     const recipeResource = DataSource.getRepository(Recipe);
-    const userResource = DataSource.getRepository(User);
+    const tagResource = DataSource.getRepository(Tag);
    
     const multer = require('multer');
 
@@ -20,6 +20,8 @@ export default (DataSource) => {
       
     const upload = multer({ storage: storage });
 
+
+    
 
     router.get('/recipes', (request, response) => {
         recipeResource.createQueryBuilder("recipe")
@@ -38,18 +40,47 @@ export default (DataSource) => {
         );
     });
 
+    router.get('/recipes/:id', (request, response) => {
+        recipeResource.createQueryBuilder("recipe")
+        .leftJoin("recipe.ratings", "rating")
+        .addSelect("AVG(rating.score)", "avgScore")
+        .where("recipe.id = :recipeID", { recipeID: request.params.id})
+        .getRawOne()
+        .then(
+            (recipe) => {
+                response.send({recipe: recipe});
+            }, 
+            () => {
+                response.send();
+            }
+        );
+    });
+
+
     router.get('/search', (request, response) => {
         let myQuery = recipeResource.createQueryBuilder("recipes")
             .leftJoinAndSelect("recipes.user", "user")
+            // .leftJoin("recipe.ratings", "rating")
+            // .addSelect("AVG(rating.score)", "avgScore")
         
         if (request.query.showZip) {
             const zip = request.query.zip;
             myQuery.where("user.zipCode = :zip", { zip });
         }
 
+        if(!request.query.getTop){
+            myQuery.orderBy('RAND()')
+        } else {
+            // myQuery.orderBy('avgScore')
+        }
+
         if (request.query.count) {
             myQuery.limit(request.query.count);
         }
+
+        // if(request.query.tags){
+        //     myQuery.leftJoinAndSelect("recipes.tags", "tag");
+        // }
             
         //myQuery.orderBy("recipes.score", "DESC").getMany()
         myQuery.getMany()
@@ -61,10 +92,17 @@ export default (DataSource) => {
             );
     });
 
-                 //.where("recipes.zipcode = :zip", { zip: "idk how to get this from frontend search.js store" })
-             //put after leftjoin
-
     router.post('/recipes', upload.single('uploaded_file'), (request, response) => {
+        const tags = JSON.parse(request.body.tags);
+
+        const tagObjects = [];
+        for (const tag of tags) {
+            const tagObj = tagResource.create({ text: tag });
+            tagResource.save(tagObj);
+            tagObjects.push(tagObj);
+        }    
+        
+        
         const {title, description, videoLink} = request.body;
         const fileName = "../../uploads/" + request.file.filename;
         const recipe = recipeResource.create({
@@ -72,7 +110,8 @@ export default (DataSource) => {
             description,
             videoLink,
             fileName,
-            user: request.user
+            user: request.user,
+            tags: tagObjects
         });
         recipeResource.save(recipe).then((result) => {
             response.send(result);
@@ -82,17 +121,19 @@ export default (DataSource) => {
     router.param('id', (req, res, next, id) => {
         const recipe = recipeResource.findOne({
             where: {
-                id,
-                user: req.user
+                id//,
+                //user: req.user
             }
         }).then((recipe) => {
             if (recipe) {
+                //TODO PLEASE FOR THE LOVE OF GOD HELP ME LOAD USER
                 req.recipe = recipe;
                 next();
             } else {
                 res.send(404);
             }
         });
+        
     });
 
 

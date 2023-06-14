@@ -1,10 +1,15 @@
 <script setup>
-import router from './router/index.js'
+// original
+// import router from './router/index.js'
+import { useRouter, useRoute } from 'vue-router'
 import { RouterLink, RouterView } from 'vue-router'
 import { reactive, onMounted } from 'vue';
 import { useUserStore } from '@/stores/user';
+import { useRatingsStore } from './stores/ratings';
 
+const routing = useRouter()
 const store = useUserStore();
+// new line
 
 const state = reactive({    // Kind of like a class- info we want to keep around.
   loginDialog: false,
@@ -17,15 +22,9 @@ const state = reactive({    // Kind of like a class- info we want to keep around
   zipCode: '',
   password: '',
   showLogin: true,
-  loggedIn: false,
   isButtonDisabled: false,
   searchQuery: '',
   isMenuOpen: false,
-
-  methods: {
-    // TO DO make method in app.vue to export. something like login state.
-  }
-
 });
 
 function login() {
@@ -33,22 +32,60 @@ function login() {
   store.login({ email, password }).then((error) => {
     if (!error) {
       state.loginDialog = false;
-      state.loggedIn = true;
+      store.loggedIn = true;
       console.log('Logged in');
+      window.location.reload();
     }
   });
 }
 
-function signup() {
+function validateEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
+async function signup() {
   const { firstName, lastName, email, zipCode, password } = state;
-  store.signup({ firstName, lastName, email, zipCode, password }).then((error) => {
-    if (!error) {
-      state.signupDialog = false;
-      state.loggedIn = true;
-      console.log('Signed up');
-      store.login({email, password});
+  if (firstName.trim() === '' || lastName.trim() === '') {
+    alert('Please enter a valid first name and last name.');
+    return;
+  }
+
+  if (!validateEmail(email)) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  if (password.length < 8) {
+    alert('Please enter a password with at least 8 characters.');
+    return;
+  }
+
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
+
+  if (!hasLowerCase || !hasUpperCase || !hasNumber) {
+    alert('Password should contain at least one lowercase letter, one uppercase letter, and one number.');
+    return;
+  }
+
+  try {
+    const isEmailRegistered = await store.isEmailRegistered(email);
+    if (isEmailRegistered) {
+      alert('Email already registered.');
+      return;
     }
-  });
+
+    await store.signup({ firstName, lastName, email, zipCode, password });
+    state.signupDialog = false;
+    console.log('Signed up');
+    await store.login({ email, password });
+    window.location.reload();
+  } catch (error) {
+    // Handle error from API call
+    console.error(error);
+  }
 }
 
 function switchToSignup() {
@@ -64,7 +101,7 @@ function switchToLogin() {
 function logOut() {
   store.logout().then((error) => {
     if (!error) {
-      state.loggedIn = false;
+      store.loggedIn = false;
       console.log('Logged out');
     }
   });
@@ -75,13 +112,21 @@ function toggleMenu(){
 }
 
 function navigateTo(route) {
-  if (!state.loggedIn && (route  != '/') && (route != '/recipes')){
+  if (!store.loggedIn && (route  != '/') && (route != '/recipes')){
     state.loginDialog = true;
     return;
   }
-  router.push(route);
+  // original
+  // router.push(route);
+  console.log(route);
+  routing.push(route);
   toggleMenu(); 
 }
+
+  onMounted(() => {
+    store.getUser();
+  });
+
 </script>
 
 
@@ -104,7 +149,7 @@ function navigateTo(route) {
           <v-icon>mdi-menu</v-icon>
         </v-btn>
 
-        <h1 class="logo" @click="navigateTo('home')">FlavorTown.com</h1>
+        <h1 class="logo" @click="navigateTo('/')">FlavorTown.com</h1>
       </div>
 
       <div class="menu" :class="{ 'menu-open': state.isMenuOpen }">
@@ -112,13 +157,13 @@ function navigateTo(route) {
         <ul>
           <h1 class="menuBtn" @click="navigateTo('/')"><a>Home</a></h1>
           <h1 class="menuBtn" @click="navigateTo('/events')"><a>Events</a></h1>
-          <h1 class="menuBtn" @click="navigateTo('/account')"><a>My Account</a></h1>
           <h1 class="menuBtn" @click="navigateTo('/postrecipes')"><a>Post Recipes</a></h1>
+          <h1 class="menuBtn" @click="navigateTo('/account')"><a>My Account</a></h1>
         </ul>
       </div>
 
       <div class="buttonsContainer">
-        <v-btn class="signLogBtn" id="login" v-if=!state.loggedIn>Login
+        <v-btn class="signLogBtn" id="login" v-if=!store.loggedIn>Login
           <v-dialog v-model="state.loginDialog" activator="parent" width="400">
             <v-card>
               <v-card-text>
@@ -138,7 +183,7 @@ function navigateTo(route) {
           </v-dialog>
 
         </v-btn>
-        <v-btn class="signLogBtn" id="signup" v-if=!state.loggedIn>Signup
+        <v-btn class="signLogBtn" id="signup" v-if=!store.loggedIn>Signup
           <v-dialog v-model="state.signupDialog" activator="parent" width="400">
             <v-card>
               <v-card-text>
@@ -162,7 +207,7 @@ function navigateTo(route) {
             </v-card>
           </v-dialog>
         </v-btn>
-        <v-btn v-if = state.loggedIn @click="logOut">Logout
+        <v-btn v-if = store.loggedIn @click="logOut">Logout
         </v-btn>
       </div>
     </div>
