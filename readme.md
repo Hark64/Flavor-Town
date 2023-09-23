@@ -1,3 +1,6 @@
+Flavor town is a website for creating and sharing recipes, as well as food related events, for people in your area. Rate and comment on your favorite recipes and follow your favorite accounts.
+
+
 We did not seed the database, so once you get the website up and running using the instructions below, make sure to make multiple users and switch between them to test the website's full functionality.
 
 
